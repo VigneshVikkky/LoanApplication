@@ -43,4 +43,5 @@ public class Customer extends BaseEntity{
     private String referralCode;
     private String mobileOTP;
 
+
 }

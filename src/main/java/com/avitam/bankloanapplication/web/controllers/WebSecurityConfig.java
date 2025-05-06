@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.UnanimousBased;
@@ -32,26 +33,30 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    private static final String SERVER_URL = "server.url";
+    private static final String SERVER_UI_URL = "server.ui.url";
     @Qualifier("userDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
     private JwtFilter jwtFilter;
+    @Autowired
+    private Environment env;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests((requests) -> {
-                    try{
-                    requests
-                                    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                    .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword","/admin/role/get","/admin/customer/edit" ,  "/resetpassword", "/handleUploadOperation", "/registrationConfirm").permitAll()
-                                    .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                        }catch (Exception e){
-                        throw  new RuntimeException();
-                    }
-                }
+                            try {
+                                requests
+                                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm", "/admin/email/**", "/admin/mobile/send-otp", "/admin/mobile/validate-otp", "/admin/mobile/save-username", "/admin/role", "/admin/role/get", "admin/user/checkReferral").permitAll()
+                                        .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                            } catch (Exception e) {
+                                throw new RuntimeException();
+                            }
+                        }
 
                 )
                 .rememberMe((rememberMe) -> rememberMe
@@ -72,11 +77,10 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://stg-ecom.zero-in.tech", "http://localhost:3000", "http://ec2-35-159-142-22.eu-central-1.compute.amazonaws.com:3000", "https://stg1-ecom.zero-in.tech")); // Allow the specific origin
+        configuration.setAllowedOrigins(Arrays.asList("/**", "http://localhost:3000")); // Allow the specific origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); // Allow credentials if needed
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Apply CORS settings to all paths
         return source;
@@ -98,16 +102,13 @@ public class WebSecurityConfig {
         List<AccessDecisionVoter<?>> decisionVoters = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor());
         return new UnanimousBased(decisionVoters);
     }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-   /*
-    /*@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }*/
+
     @Bean
     public AuthenticationProvider userDetailsAuthProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

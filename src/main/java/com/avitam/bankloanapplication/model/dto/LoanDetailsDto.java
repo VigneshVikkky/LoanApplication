@@ -14,12 +14,12 @@ import java.util.List;
 @Document("loanDetails")
 public class LoanDetailsDto extends CommonDto{
 
-    private double interestRate;
+   // private double interestRate;
     private double instalment;
     private double interestAmount;
     private double totalPayable;
     private String loanLimitId;
-    private int monthDuration;
+   // private int monthDuration;
     private double loanAmount;
     private List<LoanDetails> loanDetailsList;
     private double totalInterestAmount;

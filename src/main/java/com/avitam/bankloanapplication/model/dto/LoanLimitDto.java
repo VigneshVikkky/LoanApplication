@@ -13,8 +13,12 @@ import lombok.ToString;
 public class LoanLimitDto extends CommonDto{
 
     private String description;
-    private double loanLimitAmount;
-    private double incomeLimit;
-
+    private Double loanLimitAmount;
+    private Double incomeLimit;
+    private String customerId;
+    private Double cibilScore;
+    private Double emi;
+    private Double interestRate;
+    private Integer tenure;
 
 }

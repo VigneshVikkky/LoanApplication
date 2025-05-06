@@ -7,13 +7,12 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
     private final String username; // Can hold email or mobile number
-    private final String password;
-    private final boolean isActive=true;
+    private final boolean isActive;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(String username,  boolean isActive, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;
-        this.password = password;
+        this.isActive = isActive;
         this.authorities = authorities;
     }
 
@@ -24,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password; // Exclude password
+        return null; // Exclude password
     }
 
     @Override

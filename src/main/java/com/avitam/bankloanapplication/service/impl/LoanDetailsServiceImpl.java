@@ -90,13 +90,13 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         LoanLimit loanLimit = loanLimitRepository.findByRecordId(loanDetails.getLoanLimitId());
 
         double totalLoanAmount = loanLimit.getLoanLimitAmount();
-        double installment = totalLoanAmount / loanDetails.getMonthDuration();
-        double interestRate = loanDetails.getInterestRate() / 100;
+        double installment = totalLoanAmount / (loanLimit.getTenure()*12);
+        double interestRate = (loanLimit.getInterestRate()/100) / 12;
         double interestAmount;
         double emi;
         int i;
 
-        for (i = 1; i <= loanDetails.getMonthDuration(); i++) {
+        for (i = 1; i <= loanLimit.getTenure()*12; i++) {
 
             LoanDetails loanDetails1 = new LoanDetails();
             loanDetails.setLoanAmount(totalLoanAmount);
@@ -104,7 +104,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             emi = installment + interestAmount;
             totalLoanAmount = totalLoanAmount - installment;
             loanDetails1.setInterestAmount(interestAmount);
-            loanDetails1.setInterestRate(interestRate);
+           // loanDetails1.setInterestRate(interestRate);
             loanDetails1.setInstalment(installment);
             loanDetails1.setInterestAmount(interestAmount);
             loanDetails1.setTotalPayable(emi);
