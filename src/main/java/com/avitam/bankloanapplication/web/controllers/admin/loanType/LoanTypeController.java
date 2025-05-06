@@ -1,9 +1,14 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loanType;
 
+import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.entity.Loan;
+import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanType;
+import com.avitam.bankloanapplication.repository.LoanLimitRepository;
+import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.service.LoanTypeService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
@@ -15,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +35,10 @@ public class LoanTypeController extends BaseController {
     private LoanTypeService loanTypeService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private LoanRepository loanRepository;
+    @Autowired
+    private LoanLimitRepository loanLimitRepository;
 
     @PostMapping
     public LoanTypeWsDto getAllLoanTypes(@RequestBody LoanTypeWsDto loanTypeWsDto) {
@@ -42,6 +52,23 @@ public class LoanTypeController extends BaseController {
         loanTypeWsDto.setTotalRecords(page.getTotalElements());
         return loanTypeWsDto;
 
+    }
+
+    @GetMapping("/getEligibleLoanTypes")
+    public List<LoanTypeDto> getEligibleLoans(@RequestBody LoanDto loanDto) {
+        List<LoanTypeDto> loanTypeDtoList = new ArrayList<>();
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerId());
+        if(loanLimit!=null){
+            List<LoanType> loanTypeList = loanTypeRepository.findAll();
+            for(LoanType loanType : loanTypeList){
+                List<Loan> loans = loanRepository.findByLoanTypeAndStatus(loanType.getRecordId(), true);
+                Double loanLimitAmt = loanLimit.getLoanLimitAmount();
+                if(loans.stream().anyMatch(loan -> loanLimitAmt > loan.getDesiredLoan())){
+                    loanTypeDtoList.add(modelMapper.map(loanType, LoanTypeDto.class));
+                }
+            }
+        }
+        return loanTypeDtoList;
     }
 
     @GetMapping("/get")

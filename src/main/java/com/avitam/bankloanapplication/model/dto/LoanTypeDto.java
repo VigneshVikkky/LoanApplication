@@ -12,5 +12,6 @@ import lombok.ToString;
 public class LoanTypeDto extends CommonDto{
     private String description;
     private String images;
+    private Double maxLoanLimit;
 
 }

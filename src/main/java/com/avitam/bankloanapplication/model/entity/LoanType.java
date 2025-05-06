@@ -15,5 +15,6 @@ public class LoanType extends BaseEntity {
 
     private String description;
     private String images;
+    private Double maxLoanLimit;
 
 }

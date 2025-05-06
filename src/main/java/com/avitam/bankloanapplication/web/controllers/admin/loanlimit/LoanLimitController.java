@@ -54,7 +54,7 @@ public class LoanLimitController extends BaseController {
     }
 
     @PostMapping("/edit")
-    public LoanLimitWsDto createLoanLimit(@RequestBody LoanLimitWsDto request){
+    public LoanLimitWsDto createLoanLimit(@RequestBody LoanLimitDto request){
         return loanLimitService.editLoanLimit(request);
     }
 

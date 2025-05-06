@@ -1,22 +1,26 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loan;
 
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanWsDto;
-import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.dto.*;
 import com.avitam.bankloanapplication.model.entity.Loan;
+import com.avitam.bankloanapplication.model.entity.LoanLimit;
+import com.avitam.bankloanapplication.model.entity.LoanType;
+import com.avitam.bankloanapplication.repository.LoanLimitRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.service.LoanService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/loans/loan")
@@ -27,6 +31,8 @@ public class LoanController extends BaseController {
     private LoanRepository loanRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private LoanLimitRepository loanLimitRepository;
 
     private static final String ADMIN_LOAN = "/loans/loan";
 
@@ -41,6 +47,20 @@ public class LoanController extends BaseController {
         loanWsDto.setTotalPages(page.getTotalPages());
         loanWsDto.setTotalRecords(page.getTotalElements());
         return loanWsDto;
+    }
+
+    @GetMapping("/getEligibleLoans")
+    public List<LoanDto> getEligibleLoans(@RequestBody LoanDto loanDto) {
+        List<LoanDto> loanDtoList = new ArrayList<>();
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerId());
+        if(loanLimit!=null){
+            List<Loan> loans = loanRepository.findByLoanTypeAndStatus(loanDto.getLoanType(), true);
+            Double loanLimitAmt = loanLimit.getLoanLimitAmount();
+            Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+            loanDtoList.addAll(modelMapper.map(loans.stream().filter(loan -> loanLimitAmt >
+                    loan.getDesiredLoan()).collect(Collectors.toList()), listType));
+        }
+        return loanDtoList;
     }
 
     @PostMapping("/edit")
@@ -64,7 +84,8 @@ public class LoanController extends BaseController {
     public LoanWsDto getLoanById() {
         LoanWsDto loanWsDto = new LoanWsDto();
         List<Loan> loans = loanRepository.findByStatus(true);
-        loanWsDto.setLoanDtoList(modelMapper.map(loans, List.class));
+        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+        loanWsDto.setLoanDtoList(modelMapper.map(loans, listType));
         loanWsDto.setBaseUrl(ADMIN_LOAN);
         return loanWsDto;
     }
