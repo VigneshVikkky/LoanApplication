@@ -9,7 +9,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class LoanTypeDto extends CommonDto{
+public class
+LoanTypeDto extends CommonDto{
     private String description;
     private String images;
     private Double maxLoanLimit;

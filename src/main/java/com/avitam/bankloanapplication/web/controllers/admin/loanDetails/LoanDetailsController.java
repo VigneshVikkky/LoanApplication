@@ -8,6 +8,7 @@ import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

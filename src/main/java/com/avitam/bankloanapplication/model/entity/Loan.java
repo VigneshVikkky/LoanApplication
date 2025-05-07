@@ -21,4 +21,5 @@ public class Loan extends BaseEntity{
    private String loanName;
    private String loanScoreResultId;
    private Integer creditMultiplier;
+   private String customerId;
 }
