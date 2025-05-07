@@ -24,6 +24,6 @@ public class LoanLimitDto extends CommonDto{
     private Double emi;
     private Double interestRate;
     private Integer tenure;
-    private Map<String, List<Double>> loanTypeList;
+    //private Map<String, List<Double>> loanTypeList;
 
 }

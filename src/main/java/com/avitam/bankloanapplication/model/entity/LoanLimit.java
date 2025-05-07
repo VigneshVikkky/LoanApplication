@@ -20,6 +20,6 @@ public class LoanLimit extends BaseEntity{
     private Double emi;
     private Double interestRate;
     private Integer tenure;
-    private Map<String, List<Double>> loanTypeList;
+   // private Map<String, List<Double>> loanTypeList;
 
 }

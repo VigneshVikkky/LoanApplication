@@ -58,7 +58,7 @@ public class LoanLimitServiceImpl implements LoanLimitService {
             }
 
             loanLimitDto.setLoanLimitAmount(LoanLimitCalculator(loanLimitDto));
-            loanLimitDto.setLoanTypeList(eligibleLoanTypes(loanLimitDto));
+            //loanLimitDto.setLoanTypeList(eligibleLoanTypes(loanLimitDto));
 
             loanLimit = modelMapper.map(loanLimitDto, LoanLimit.class);
             loanLimit.setCreationTime(new Date());
@@ -89,7 +89,7 @@ public class LoanLimitServiceImpl implements LoanLimitService {
         return Math.round((numerator / denominator) * 100.0) / 100.0;
     }
 
-    public Map<String, List<Double>> eligibleLoanTypes(LoanLimitDto loanLimitDto) {
+    /*public Map<String, List<Double>> eligibleLoanTypes(LoanLimitDto loanLimitDto) {
 
         List<LoanType> loanTypeList = loanTypeRepository.findAll();
         Map<String, List<Double>> eliglibleLoanAmount = new HashMap<>();
@@ -112,5 +112,5 @@ public class LoanLimitServiceImpl implements LoanLimitService {
         }
 
         return eliglibleLoanAmount;
-    }
+    }*/
 }
