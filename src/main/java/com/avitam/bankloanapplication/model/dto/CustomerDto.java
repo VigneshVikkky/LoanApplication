@@ -40,4 +40,6 @@ public class CustomerDto extends CommonDto {
     private boolean isNew;
     private String referralCode;
     private String mobileOTP;
+    private String profileVerificationIndex;
+    private boolean profileVerificationStatus;
 }

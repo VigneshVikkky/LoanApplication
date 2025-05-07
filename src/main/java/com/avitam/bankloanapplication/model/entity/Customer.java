@@ -42,6 +42,8 @@ public class Customer extends BaseEntity{
     private String currentEMI;
     private String referralCode;
     private String mobileOTP;
+    private String profileVerificationIndex;
+    private boolean profileVerificationStatus;
 
 
 }
