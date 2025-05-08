@@ -142,7 +142,7 @@ public class CustomerOTPServiceImpl implements CustomerOTPService {
         CustomerWsDto customerWsDto = new CustomerWsDto();
         List<CustomerDto> customerDtoList = new ArrayList<>();
         String email = customerDto.getEmail();
-        String otp = customerDto.getEmailOTP();
+        String otp = customerDto.getOtp();
 
         boolean isOtpValid = otpMap.containsKey(email) &&
                 otpMap.get(email).equals(otp) &&
@@ -270,7 +270,7 @@ public class CustomerOTPServiceImpl implements CustomerOTPService {
         List<CustomerDto> customerDtoList = new ArrayList<>();
         CustomerWsDto customerWsDto = new CustomerWsDto();
         String mobileNumber = customerDto.getPhone();
-        String otp = customerDto.getMobileOTP();
+        String otp = customerDto.getOtp();
 
         boolean isOtpValid = otpMap.containsKey(mobileNumber) &&
                 otpMap.get(mobileNumber).equals(otp) &&
