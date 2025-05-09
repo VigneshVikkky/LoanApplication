@@ -1,14 +1,17 @@
 package com.avitam.bankloanapplication.service.impl;
 
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanStatusDto;
 import com.avitam.bankloanapplication.model.dto.LoanStatusWsDto;
 import com.avitam.bankloanapplication.model.entity.LoanStatus;
 import com.avitam.bankloanapplication.repository.LoanStatusRepository;
 import com.avitam.bankloanapplication.service.LoanStatusService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +51,8 @@ public class LoanStatusServiceImpl implements LoanStatusService{
             request.setBaseUrl(ADMIN_LOANSTATUS);
             request.setMessage("Data added Successfully");
         }
-        request.setLoanStatusDtos(modelMapper.map(loanStatuses,List.class));
+        Type listType = new TypeToken<List<LoanStatusDto>>() {}.getType();
+        request.setLoanStatusDtos(modelMapper.map(loanStatuses,listType));
         return request;
     }
 }

@@ -16,9 +16,11 @@ import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,7 +86,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             request.setMessage("Data added Successfully");
             loanApplications.add(loanApplication);
         }
-        request.setLoanApplicationDtos(modelMapper.map(loanApplications, List.class));
+        Type listType = new TypeToken<List<LoanApplicationDto>>() {}.getType();
+        request.setLoanApplicationDtos(modelMapper.map(loanApplications, listType));
         return request;
     }
 

@@ -1,6 +1,7 @@
 package com.avitam.bankloanapplication.web.controllers.admin.intrface;
 
 import com.avitam.bankloanapplication.core.service.UserService;
+import com.avitam.bankloanapplication.model.dto.CustomerDto;
 import com.avitam.bankloanapplication.model.dto.NodeDto;
 import com.avitam.bankloanapplication.model.dto.NodeWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
@@ -10,6 +11,7 @@ import com.avitam.bankloanapplication.service.NodeService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @RestController
@@ -39,7 +42,8 @@ public class InterfaceController extends BaseController {
         NodeDto nodeDto = CollectionUtils.isNotEmpty(nodeWsDto.getNodeDtos()) ? nodeWsDto.getNodeDtos().get(0) : new NodeDto();
         Node node = modelMapper.map(nodeDto, Node.class);
         Page<Node> page = isSearchActive(node) != null ? nodeRepository.findAll(Example.of(node), pageable) : nodeRepository.findAll(pageable);
-        nodeWsDto.setNodeDtos(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<NodeDto>>() {}.getType();
+        nodeWsDto.setNodeDtos(modelMapper.map(page.getContent(), listType));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         nodeWsDto.setTotalPages(page.getTotalPages());
         nodeWsDto.setTotalRecords(page.getTotalElements());
@@ -51,7 +55,8 @@ public class InterfaceController extends BaseController {
     public NodeWsDto getActiveNodes() {
         NodeWsDto nodeWsDto = new NodeWsDto();
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
-        nodeWsDto.setNodeDtos(modelMapper.map(nodeRepository.findByStatusOrderByDisplayPriority(true), List.class));
+        Type listType = new TypeToken<List<NodeDto>>() {}.getType();
+        nodeWsDto.setNodeDtos(modelMapper.map(nodeRepository.findByStatusOrderByDisplayPriority(true), listType));
         return nodeWsDto;
     }
 
@@ -82,7 +87,9 @@ public class InterfaceController extends BaseController {
     @ResponseBody
     public NodeWsDto addInterface() {
         NodeWsDto nodeWsDto = new NodeWsDto();
-        nodeWsDto.setNodeDtos(modelMapper.map(nodeRepository.findByStatusOrderByDisplayPriority(true), List.class));
+        Type listType = new TypeToken<List<NodeDto>>() {}.getType();
+
+        nodeWsDto.setNodeDtos(modelMapper.map(nodeRepository.findByStatusOrderByDisplayPriority(true), listType));
         nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
         return nodeWsDto;
     }

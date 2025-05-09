@@ -8,12 +8,14 @@ import com.avitam.bankloanapplication.service.impl.NotificationServiceImpl;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -40,7 +42,8 @@ public class NotificationController extends BaseController {
         CommonDto notificationDto = CollectionUtils.isNotEmpty(notificationwsDto.getNotificationDtoList()) ? notificationwsDto.getNotificationDtoList().get(0) : new LoanStatusDto();
         Notification notification = modelMapper.map(notificationwsDto, Notification.class);
         Page<Notification> page=isSearchActive(notification) !=null ? notificationRepository.findAll(Example.of(notification),pageable) : notificationRepository.findAll(pageable);
-        notificationwsDto.setNotificationDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<NotificationDto>>() {}.getType();
+        notificationwsDto.setNotificationDtoList(modelMapper.map(page.getContent(), listType));
         notificationwsDto.setBaseUrl(ADMIN_NOTIFICATION);
         notificationwsDto.setTotalPages(page.getTotalPages());
         notificationwsDto.setTotalRecords(page.getTotalElements());
@@ -54,7 +57,8 @@ public class NotificationController extends BaseController {
         for(NotificationDto notificationDto: request.getNotificationDtoList()) {
             notifications.add(notificationRepository.findByRecordId(notificationDto.getRecordId()));
         }
-        notificationWsDto.setNotificationDtoList(modelMapper.map(notifications,List.class));
+        Type listType = new TypeToken<List<NotificationDto>>() {}.getType();
+        notificationWsDto.setNotificationDtoList(modelMapper.map(notifications,listType));
         notificationWsDto.setBaseUrl(ADMIN_NOTIFICATION);
         return notificationWsDto;
     }

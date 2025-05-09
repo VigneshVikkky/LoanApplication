@@ -9,6 +9,7 @@ import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 
@@ -41,7 +43,8 @@ public class KYCController extends BaseController {
         KYCDto kycDto = CollectionUtils.isNotEmpty(kycWsDto.getKycDtoList()) ? kycWsDto.getKycDtoList().get(0): new KYCDto();
         KYC kyc = modelMapper.map(kycDto, KYC.class);
         Page<KYC> page= isSearchActive(kyc)!= null ? kycRepository.findAll(Example.of(kyc),pageable) : kycRepository.findAll(pageable);
-        kycWsDto.setKycDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<KYCDto>>() {}.getType();
+        kycWsDto.setKycDtoList(modelMapper.map(page.getContent(), listType));
         kycWsDto.setBaseUrl(ADMIN_KYC);
         kycWsDto.setTotalPages(page.getTotalPages());
         kycWsDto.setTotalRecords(page.getTotalElements());
@@ -50,7 +53,8 @@ public class KYCController extends BaseController {
     @GetMapping("/get")
     public KYCWsDto getActiveKYC(){
         KYCWsDto kycWsDto = new KYCWsDto();
-        kycWsDto.setKycDtoList(modelMapper.map(kycRepository.findByStatusOrderByIdentifier(true),List.class));
+        Type listType = new TypeToken<List<KYCDto>>() {}.getType();
+        kycWsDto.setKycDtoList(modelMapper.map(kycRepository.findByStatusOrderByIdentifier(true),listType));
         kycWsDto.setBaseUrl(ADMIN_KYC);
         return kycWsDto;
 
@@ -72,14 +76,16 @@ public class KYCController extends BaseController {
         KYCWsDto kycWsDto = new KYCWsDto();
         kycWsDto.setBaseUrl(ADMIN_KYC);
         KYC kyc = kycRepository.findByRecordId(request.getRecordId());
-        kycWsDto.setKycDtoList(modelMapper.map(kyc,List.class));
+        Type listType = new TypeToken<List<KYCDto>>() {}.getType();
+        kycWsDto.setKycDtoList(modelMapper.map(kyc,listType));
         return kycWsDto;
     }
 
     @PostMapping("/add")
     public KYCWsDto addKyc(){
         KYCWsDto kycWsDto = new KYCWsDto();
-        kycWsDto.setKycDtoList(modelMapper.map(kycRepository.findByStatusOrderByIdentifier(true),List.class));
+        Type listType = new TypeToken<List<KYCDto>>() {}.getType();
+        kycWsDto.setKycDtoList(modelMapper.map(kycRepository.findByStatusOrderByIdentifier(true),listType));
         kycWsDto.setBaseUrl(ADMIN_KYC);
         return kycWsDto;
     }

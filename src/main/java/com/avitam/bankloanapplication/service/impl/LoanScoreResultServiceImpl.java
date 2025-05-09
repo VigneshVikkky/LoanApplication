@@ -1,14 +1,17 @@
 package com.avitam.bankloanapplication.service.impl;
 
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanScoreResultDto;
 import com.avitam.bankloanapplication.model.dto.LoanScoreResultWsDto;
 import com.avitam.bankloanapplication.model.entity.LoanScoreResult;
 import com.avitam.bankloanapplication.repository.LoanScoreResultRepository;
 import com.avitam.bankloanapplication.service.LoanScoreResultService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +52,8 @@ public class LoanScoreResultServiceImpl implements LoanScoreResultService {
         request.setBaseUrl(ADMIN_LOANSCORE);
             request.setMessage("Data added Successfully");
         }
-        request.setLoanScoreDtos(modelMapper.map(loanScoreResults,List.class));
+        Type listType = new TypeToken<List<LoanScoreResultDto>>() {}.getType();
+        request.setLoanScoreDtos(modelMapper.map(loanScoreResults,listType));
         return request;
 
     }

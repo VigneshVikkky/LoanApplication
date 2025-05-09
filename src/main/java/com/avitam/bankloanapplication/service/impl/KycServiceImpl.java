@@ -3,6 +3,7 @@ package com.avitam.bankloanapplication.service.impl;
 import com.avitam.bankloanapplication.core.service.CoreService;
 import com.avitam.bankloanapplication.model.dto.KYCDto;
 import com.avitam.bankloanapplication.model.dto.KYCWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.entity.KYC;
 import com.avitam.bankloanapplication.repository.KYCRepository;
 import com.avitam.bankloanapplication.service.KycService;
@@ -10,10 +11,12 @@ import org.bouncycastle.math.raw.Mod;
 import org.bson.types.Binary;
 import org.checkerframework.checker.units.qual.K;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -70,7 +73,8 @@ public class KycServiceImpl implements KycService {
 
 
         }
-        request.setKycDtoList(modelMapper.map(kycs, List.class));
+        Type listType = new TypeToken<List<KYCDto>>() {}.getType();
+        request.setKycDtoList(modelMapper.map(kycs, listType));
         return request;
     }
 }

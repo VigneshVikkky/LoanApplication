@@ -7,12 +7,14 @@ import com.avitam.bankloanapplication.service.LoanLimitService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,8 @@ public class LoanLimitController extends BaseController {
         LoanLimitDto loanLimitDto = CollectionUtils.isNotEmpty(loanLimitWsDto.getLoanLimitDtos()) ? loanLimitWsDto.getLoanLimitDtos().get(0) : new LoanLimitDto();
         LoanLimit loanLimit = modelMapper.map(loanLimitWsDto, LoanLimit.class);
         Page<LoanLimit> page=isSearchActive(loanLimit) !=null ? loanLimitRepository.findAll(Example.of(loanLimit),pageable) : loanLimitRepository.findAll(pageable);
-        loanLimitWsDto.setLoanLimitDtos(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<LoanLimitDto>>() {}.getType();
+        loanLimitWsDto.setLoanLimitDtos(modelMapper.map(page.getContent(), listType));
         loanLimitWsDto.setBaseUrl(ADMIN_LOANLIMIT);
         loanLimitWsDto.setTotalPages(page.getTotalPages());
         loanLimitWsDto.setTotalRecords(page.getTotalElements());
@@ -48,7 +51,8 @@ public class LoanLimitController extends BaseController {
         for(LoanLimitDto loanLimitDto: request.getLoanLimitDtos()) {
             loanLimits.add(loanLimitRepository.findByRecordId(loanLimitDto.getRecordId()));
         }
-        loanLimitWsDto.setLoanLimitDtos(modelMapper.map(loanLimits,List.class));
+        Type listType = new TypeToken<List<LoanLimitDto>>() {}.getType();
+        loanLimitWsDto.setLoanLimitDtos(modelMapper.map(loanLimits,listType));
         loanLimitWsDto.setBaseUrl(ADMIN_LOANLIMIT);
         return loanLimitWsDto;
     }

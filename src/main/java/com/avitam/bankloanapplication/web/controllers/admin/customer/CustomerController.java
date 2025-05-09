@@ -8,6 +8,7 @@ import com.avitam.bankloanapplication.service.impl.CustomerServiceImpl;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Controller
@@ -38,7 +40,8 @@ public class CustomerController extends BaseController {
         CustomerDto customerDto = CollectionUtils.isNotEmpty(customerWsDto.getCustomerDtoList()) ? customerWsDto.getCustomerDtoList().get(0) : new CustomerDto();
         Customer customer = modelMapper.map(customerDto, Customer.class);
         Page<Customer> page = isSearchActive(customer) != null ? customerRepository.findAll(Example.of(customer), pageable) : customerRepository.findAll(pageable);
-        customerWsDto.setCustomerDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<CustomerDto>>() {}.getType();
+        customerWsDto.setCustomerDtoList(modelMapper.map(page.getContent(), listType));
         customerWsDto.setTotalPages(page.getTotalPages());
         customerWsDto.setTotalRecords(page.getTotalElements());
         customerWsDto.setBaseUrl(ADMIN_CUSTOMER);
@@ -49,7 +52,8 @@ public class CustomerController extends BaseController {
     public CustomerWsDto getActiveCustomerList() {
         CustomerWsDto customerWsDto = new CustomerWsDto();
         List<Customer> customers = customerRepository.findByStatus(true);
-        customerWsDto.setCustomerDtoList(modelMapper.map(customers, List.class));
+        Type listType = new TypeToken<List<CustomerDto>>() {}.getType();
+        customerWsDto.setCustomerDtoList(modelMapper.map(customers, listType));
         customerWsDto.setBaseUrl(ADMIN_CUSTOMER);
         return customerWsDto;
     }
@@ -58,7 +62,8 @@ public class CustomerController extends BaseController {
     public CustomerWsDto getByRecordId(@RequestParam String recordId) {
         CustomerWsDto customerWsDto = new CustomerWsDto();
         List<Customer> customers = customerRepository.findByRecordId(recordId,true);
-        customerWsDto.setCustomerDtoList(modelMapper.map(customers, List.class));
+        Type listType = new TypeToken<List<CustomerDto>>() {}.getType();
+        customerWsDto.setCustomerDtoList(modelMapper.map(customers, listType));
         customerWsDto.setBaseUrl(ADMIN_CUSTOMER);
         return customerWsDto;
     }

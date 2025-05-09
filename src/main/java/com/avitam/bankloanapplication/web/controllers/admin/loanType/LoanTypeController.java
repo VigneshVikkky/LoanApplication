@@ -1,9 +1,6 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loanType;
 
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
-import com.avitam.bankloanapplication.model.dto.LoanTypeWsDto;
-import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.dto.*;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanType;
@@ -13,6 +10,7 @@ import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.service.LoanTypeService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -20,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,8 @@ public class LoanTypeController extends BaseController {
         LoanTypeDto loanTypeDto = CollectionUtils.isNotEmpty(loanTypeWsDto.getLoanTypeDtoList()) ? loanTypeWsDto.getLoanTypeDtoList().get(0) : new LoanTypeDto();
         LoanType loanType = modelMapper.map(loanTypeWsDto, LoanType.class);
         Page<LoanType> page = isSearchActive(loanType) != null ? loanTypeRepository.findAll(Example.of(loanType), pageable) : loanTypeRepository.findAll(pageable);
-        loanTypeWsDto.setLoanTypeDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<LoanTypeDto>>() {}.getType();
+        loanTypeWsDto.setLoanTypeDtoList(modelMapper.map(page.getContent(), listType));
         loanTypeWsDto.setBaseUrl(ADMIN_LOANTYPE);
         loanTypeWsDto.setTotalPages(page.getTotalPages());
         loanTypeWsDto.setTotalRecords(page.getTotalElements());
@@ -75,7 +75,8 @@ public class LoanTypeController extends BaseController {
     public LoanTypeWsDto getLoanType() {
         LoanTypeWsDto loanTypewsDto = new LoanTypeWsDto();
         List<LoanType> loanTypes = loanTypeRepository.findByStatus(true);
-        loanTypewsDto.setLoanTypeDtoList(modelMapper.map(loanTypes, List.class));
+        Type listType = new TypeToken<List<LoanTypeDto>>() {}.getType();
+        loanTypewsDto.setLoanTypeDtoList(modelMapper.map(loanTypes, listType));
         loanTypewsDto.setBaseUrl(ADMIN_LOANTYPE);
         return loanTypewsDto;
     }

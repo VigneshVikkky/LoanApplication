@@ -1,6 +1,7 @@
 package com.avitam.bankloanapplication.web.controllers.admin.websiteSetting;
 
 import com.avitam.bankloanapplication.core.service.CoreService;
+import com.avitam.bankloanapplication.model.dto.RoleDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.dto.WebsiteSettingDto;
 import com.avitam.bankloanapplication.model.dto.WebsiteSettingWsDto;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @RestController
@@ -39,7 +41,8 @@ public class WebsiteSettingController extends BaseController {
         WebsiteSettingDto websiteSettingDto = CollectionUtils.isNotEmpty(websiteSettingWsDto.getWebSiteSettingDtoList()) ? websiteSettingWsDto.getWebSiteSettingDtoList().get(0) : new WebsiteSettingDto();
         WebsiteSetting websiteSetting = modelMapper.map(websiteSettingDto, WebsiteSetting.class);
         Page<WebsiteSetting> page = isSearchActive(websiteSetting) != null ? websiteSettingRepository.findAll(Example.of(websiteSetting), pageable) : websiteSettingRepository.findAll(pageable);
-        websiteSettingWsDto.setWebSiteSettingDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new org.modelmapper.TypeToken<List<WebsiteSettingDto>>() {}.getType();
+        websiteSettingWsDto.setWebSiteSettingDtoList(modelMapper.map(page.getContent(),listType));
         websiteSettingWsDto.setBaseUrl(ADMIN_WEBSITESETTING);
         websiteSettingWsDto.setTotalPages(page.getTotalPages());
         websiteSettingWsDto.setTotalRecords(page.getTotalElements());
@@ -51,7 +54,8 @@ public class WebsiteSettingController extends BaseController {
     @GetMapping("/get")
     public WebsiteSettingWsDto getActiveStatus() {
         WebsiteSettingWsDto websiteSettingWsDto = new WebsiteSettingWsDto();
-        websiteSettingWsDto.setWebSiteSettingDtoList(modelMapper.map(websiteSettingRepository.findByStatusOrderById(true), List.class));
+        Type listType = new org.modelmapper.TypeToken<List<WebsiteSettingDto>>() {}.getType();
+        websiteSettingWsDto.setWebSiteSettingDtoList(modelMapper.map(websiteSettingRepository.findByStatusOrderById(true), listType));
         websiteSettingWsDto.setBaseUrl(ADMIN_WEBSITESETTING);
         return websiteSettingWsDto;
 

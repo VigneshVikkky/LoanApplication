@@ -8,12 +8,14 @@ import com.avitam.bankloanapplication.service.LoanStatusService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,8 @@ public class LoanStatusController extends BaseController {
         LoanStatusDto loanTypeDto = CollectionUtils.isNotEmpty(loanStatusWsDto.getLoanStatusDtos()) ? loanStatusWsDto.getLoanStatusDtos().get(0) : new LoanStatusDto();
         LoanStatus loanStatus = modelMapper.map(loanStatusWsDto, LoanStatus.class);
         Page<LoanStatus> page=isSearchActive(loanStatus) !=null ? loanStatusRepository.findAll(Example.of(loanStatus),pageable) : loanStatusRepository.findAll(pageable);
-        loanStatusWsDto.setLoanStatusDtos(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<LoanStatusDto>>() {}.getType();
+        loanStatusWsDto.setLoanStatusDtos(modelMapper.map(page.getContent(), listType));
         loanStatusWsDto.setBaseUrl(ADMIN_LOANSTATUS);
         loanStatusWsDto.setTotalPages(page.getTotalPages());
         loanStatusWsDto.setTotalRecords(page.getTotalElements());
@@ -45,7 +48,8 @@ public class LoanStatusController extends BaseController {
     public LoanStatusWsDto getLoanStatus() {
         LoanStatusWsDto loanStatusWsDto = new LoanStatusWsDto();
         List<LoanStatus> loanStatuses =  loanStatusRepository.findByStatus(true) ;
-        loanStatusWsDto.setLoanStatusDtos(modelMapper.map(loanStatuses,List.class));
+        Type listType = new TypeToken<List<LoanStatusDto>>() {}.getType();
+        loanStatusWsDto.setLoanStatusDtos(modelMapper.map(loanStatuses,listType));
         loanStatusWsDto.setBaseUrl(ADMIN_LOANSTATUS);
         return loanStatusWsDto;
     }

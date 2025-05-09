@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,8 @@ public class AdminController extends BaseController{
         CustomerDto customerDto = CollectionUtils.isNotEmpty(customerWsDto.getCustomerDtoList()) ? customerWsDto.getCustomerDtoList().get(0) : new CustomerDto();
         Customer customer = modelMapper.map(customerDto, Customer.class);
         Page<Customer> page=isSearchActive(customer) !=null ? customerRepository.findAll(Example.of(customer),pageable) : customerRepository.findAll(pageable);
-        customerWsDto.setCustomerDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new org.modelmapper.TypeToken<List<CustomerDto>>() {}.getType();
+        customerWsDto.setCustomerDtoList(modelMapper.map(page.getContent(), listType));
         customerWsDto.setBaseUrl(ADMIN_USER);
         customerWsDto.setTotalPages(page.getTotalPages());
         customerWsDto.setTotalRecords(page.getTotalElements());
@@ -65,7 +67,8 @@ public class AdminController extends BaseController{
         for(CustomerDto customerDto: request.getCustomerDtoList()) {
             customers.add(customerRepository.findByRecordId(customerDto.getRecordId()));
         }
-        customerWsDto.setCustomerDtoList(modelMapper.map(customers,List.class));
+        Type listType = new org.modelmapper.TypeToken<List<CustomerDto>>() {}.getType();
+        customerWsDto.setCustomerDtoList(modelMapper.map(customers,listType));
         customerWsDto.setBaseUrl(ADMIN_USER);
 
         return customerWsDto;
@@ -79,7 +82,8 @@ public class AdminController extends BaseController{
         for(CustomerDto customerDto:request.getCustomerDtoList()) {
             customers.add(customerRepository.findByRecordId(customerDto.getRecordId()));
         }
-        customerWsDto.setCustomerDtoList(modelMapper.map(customers,List.class));
+        Type listType = new org.modelmapper.TypeToken<List<CustomerDto>>() {}.getType();
+        customerWsDto.setCustomerDtoList(modelMapper.map(customers,listType));
         customerWsDto.setBaseUrl(ADMIN_USER);
         return customerWsDto;
     }

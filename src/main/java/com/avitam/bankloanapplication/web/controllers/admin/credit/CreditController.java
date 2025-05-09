@@ -2,6 +2,7 @@ package com.avitam.bankloanapplication.web.controllers.admin.credit;
 
 import com.avitam.bankloanapplication.model.dto.CreditDto;
 import com.avitam.bankloanapplication.model.dto.CreditWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.Credit;
 import com.avitam.bankloanapplication.repository.CreditRepository;
@@ -9,6 +10,7 @@ import com.avitam.bankloanapplication.service.CreditService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +42,8 @@ public class CreditController extends BaseController {
         CreditDto creditDto = CollectionUtils.isNotEmpty(creditWsDto.getCreditDtoList()) ? creditWsDto.getCreditDtoList().get(0):new CreditDto();
         Credit credit = modelMapper.map(creditDto,Credit.class);
         Page<Credit> page = isSearchActive(credit) !=null ? creditRepository.findAll(Example.of(credit),pageable) :creditRepository.findAll(pageable);
-        creditWsDto.setCreditDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<CreditDto>>() {}.getType();
+        creditWsDto.setCreditDtoList(modelMapper.map(page.getContent(),listType));
         creditWsDto.setTotalPages(page.getTotalPages());
         creditWsDto.setTotalRecords(page.getTotalElements());
         return creditWsDto;
@@ -66,7 +70,8 @@ public class CreditController extends BaseController {
         CreditWsDto creditwsDto = new CreditWsDto();
         creditwsDto.setBaseUrl(ADMIN_CREDIT);
         Credit credit = creditRepository.findByRecordId(request.getRecordId());
-        creditwsDto.setCreditDtoList(modelMapper.map(credit,List.class));
+        Type listType = new TypeToken<List<CreditDto>>() {}.getType();
+        creditwsDto.setCreditDtoList(modelMapper.map(credit,listType));
         return creditwsDto;
     }
     @PostMapping(value = "/edit" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

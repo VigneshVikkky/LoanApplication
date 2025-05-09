@@ -1,5 +1,6 @@
 package com.avitam.bankloanapplication.web.controllers.admin.role;
 
+import com.avitam.bankloanapplication.model.dto.NotificationDto;
 import com.avitam.bankloanapplication.model.dto.RoleDto;
 import com.avitam.bankloanapplication.model.dto.RoleWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
@@ -42,7 +43,8 @@ public class RoleController extends BaseController {
         RoleDto roleDto = CollectionUtils.isNotEmpty(roleWsDto.getRoleDtoList()) ? roleWsDto.getRoleDtoList().get(0) : new RoleDto();
         Role role = modelMapper.map(roleWsDto, Role.class);
         Page<Role> page = isSearchActive(role) != null ? roleRepository.findAll(Example.of(role), pageable) : roleRepository.findAll(pageable);
-        roleWsDto.setRoleDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new org.modelmapper.TypeToken<List<RoleDto>>() {}.getType();
+        roleWsDto.setRoleDtoList(modelMapper.map(page.getContent(), listType));
         roleWsDto.setBaseUrl(ADMIN_ROLE);
         roleWsDto.setTotalPages(page.getTotalPages());
         roleWsDto.setTotalRecords(page.getTotalElements());

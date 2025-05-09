@@ -1,5 +1,6 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loanDetails;
 
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
@@ -11,12 +12,14 @@ import com.avitam.bankloanapplication.web.controllers.BaseController;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @RestController
@@ -37,7 +40,8 @@ public class LoanDetailsController extends BaseController {
         LoanDetailsDto loanDetailsDto = CollectionUtils.isNotEmpty(loanDetailsWsDto.getLoanDetailsDtos()) ? loanDetailsWsDto.getLoanDetailsDtos().get(0) : new LoanDetailsDto();
         LoanDetails loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
         Page<LoanDetails> page = isSearchActive(loanDetails) != null ? loanDetailsRepository.findAll(Example.of(loanDetails), pageable) : loanDetailsRepository.findAll(pageable);
-        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(page.getContent(), listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         loanDetailsWsDto.setTotalPages(page.getTotalPages());
         loanDetailsWsDto.setTotalRecords(page.getTotalElements());
@@ -65,7 +69,8 @@ public class LoanDetailsController extends BaseController {
     public LoanDetailsWsDto getLoanDetailsById() {
         LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
         List<LoanDetails> loans = loanDetailsRepository.findByStatus(true);
-        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loans, List.class));
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loans, listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsWsDto;
     }
@@ -83,7 +88,8 @@ public class LoanDetailsController extends BaseController {
     public LoanDetailsWsDto getByRecordId(@RequestParam String recordId) {
         LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
         List<LoanDetails> loanDetails = loanDetailsRepository.findByRecordIdAndStatus(recordId,true);
-        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loanDetails, List.class));
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loanDetails,listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsWsDto;
     }

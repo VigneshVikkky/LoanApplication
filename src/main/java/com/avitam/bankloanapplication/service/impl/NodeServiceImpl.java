@@ -1,6 +1,7 @@
 package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.core.service.CoreService;
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.NodeDto;
 import com.avitam.bankloanapplication.model.dto.NodeWsDto;
 import com.avitam.bankloanapplication.model.entity.*;
@@ -10,12 +11,14 @@ import com.avitam.bankloanapplication.service.NodeService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,7 +47,8 @@ public class NodeServiceImpl implements NodeService {
                 if (CollectionUtils.isNotEmpty(childNodes)) {
                     List<Node> childNodeList = childNodes.stream().filter(childNode -> BooleanUtils.isTrue(childNode.getStatus()))
                             .sorted(Comparator.comparing(nodes -> nodes.getDisplayPriority())).collect(Collectors.toList());
-                    nodeDto.setChildNodes(modelMapper.map(childNodeList, List.class));
+                    Type listType = new TypeToken<List<NodeDto>>() {}.getType();
+                    nodeDto.setChildNodes(modelMapper.map(childNodeList, listType));
                 }
                 allNodes.add(nodeDto);
             }
@@ -82,7 +86,8 @@ public class NodeServiceImpl implements NodeService {
         for (String key : parentChildNodes.keySet()) {
             NodeDto nodeDto = new NodeDto();
             nodeDto.setIdentifier(key);
-            nodeDto.setChildNodes(modelMapper.map(parentChildNodes.get(key), List.class));
+            Type listType = new TypeToken<List<NodeDto>>() {}.getType();
+            nodeDto.setChildNodes(modelMapper.map(parentChildNodes.get(key), listType));
             allNodes.add(nodeDto);
         }
         return allNodes;
@@ -119,7 +124,8 @@ public class NodeServiceImpl implements NodeService {
             nodeWsDto.setBaseUrl(ADMIN_INTERFACE);
 
         }
-        nodeWsDto.setNodeDtos(modelMapper.map(nodes,List.class));
+        Type listType = new TypeToken<List<NodeDto>>() {}.getType();
+        nodeWsDto.setNodeDtos(modelMapper.map(nodes,listType));
         return nodeWsDto;
     }
 

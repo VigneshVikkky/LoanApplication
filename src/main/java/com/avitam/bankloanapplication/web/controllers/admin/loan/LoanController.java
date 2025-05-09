@@ -42,7 +42,8 @@ public class LoanController extends BaseController {
         LoanDto loanDto = CollectionUtils.isNotEmpty(loanWsDto.getLoanDtoList()) ? loanWsDto.getLoanDtoList().get(0) : new LoanDto();
         Loan loan = modelMapper.map(loanDto, Loan.class);
         Page<Loan> page = isSearchActive(loan) != null ? loanRepository.findAll(Example.of(loan), pageable) : loanRepository.findAll(pageable);
-        loanWsDto.setLoanDtoList(modelMapper.map(page.getContent(), List.class));
+        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+        loanWsDto.setLoanDtoList(modelMapper.map(page.getContent(), listType));
         loanWsDto.setBaseUrl(ADMIN_LOAN);
         loanWsDto.setTotalPages(page.getTotalPages());
         loanWsDto.setTotalRecords(page.getTotalElements());
@@ -94,7 +95,8 @@ public class LoanController extends BaseController {
     public LoanWsDto getByLoanType(@RequestParam String loanType) {
         LoanWsDto loanWsDto = new LoanWsDto();
         List<Loan> loans = loanRepository.findByLoanTypeAndStatus(loanType, true);
-        loanWsDto.setLoanDtoList(modelMapper.map(loans, List.class));
+        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+        loanWsDto.setLoanDtoList(modelMapper.map(loans, listType));
         loanWsDto.setBaseUrl(ADMIN_LOAN);
         return loanWsDto;
     }
@@ -103,7 +105,8 @@ public class LoanController extends BaseController {
     public LoanWsDto getByRecordId(@RequestParam String recordId) {
         LoanWsDto loanWsDto = new LoanWsDto();
         List<Loan> loans = loanRepository.findByRecordIdAndStatus(recordId,true);
-        loanWsDto.setLoanDtoList(modelMapper.map(loans, List.class));
+        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+        loanWsDto.setLoanDtoList(modelMapper.map(loans, listType));
         loanWsDto.setBaseUrl(ADMIN_LOAN);
         return loanWsDto;
     }
