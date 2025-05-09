@@ -13,4 +13,6 @@ public class LoanApplication extends BaseEntity{
     private String customerId;
     private String notificationId;
     private String loanId;
+    private String loanStatus;
+
 }

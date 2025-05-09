@@ -25,4 +25,5 @@ public class LoanDetailsDto extends CommonDto{
     private double totalInterestAmount;
     private double totalInstalmentAmount;
     private double totalPayableAmount;
+    private String loanId;
 }

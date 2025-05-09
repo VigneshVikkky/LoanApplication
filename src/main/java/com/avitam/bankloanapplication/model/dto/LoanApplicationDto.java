@@ -16,5 +16,6 @@ public class LoanApplicationDto extends CommonDto{
     private String loanId;
     private CustomerDto customerDto;
     private String loanName;
+    private String loanStatus;
 
 }

@@ -24,4 +24,5 @@ public class LoanDetails extends BaseEntity {
     private double totalInterestAmount;
     private double totalInstalmentAmount;
     private double totalPayableAmount;
+    private String loanId;
 }

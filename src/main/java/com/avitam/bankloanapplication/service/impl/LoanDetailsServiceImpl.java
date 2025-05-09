@@ -2,10 +2,12 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
+import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
+import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
     @Autowired
     private LoanLimitRepository loanLimitRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -84,18 +90,20 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     public LoanDetails calculateLoanDetails(LoanDetails loanDetails) {
 
         List<LoanDetails> loanDetailsList = new ArrayList<>();
-        LoanLimit loanLimit = loanLimitRepository.findByRecordId(loanDetails.getLoanLimitId());
+        //LoanLimit loanLimit = loanLimitRepository.findByRecordId(loanDetails.getLoanLimitId());
 
-        double totalLoanAmount = loanLimit.getLoanLimitAmount();
-        double installment = totalLoanAmount / (loanLimit.getTenure() * 12);
-        double interestRate = (loanLimit.getInterestRate() / 100) / 12;
+        Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
+
+        double totalLoanAmount = loan.getDesiredLoan();
+        double installment = totalLoanAmount / (loan.getTenure());
+        double interestRate = (loan.getInterestRate());
         double interestAmount;
         double emi;
 
-        for (int i = 1; i <= loanLimit.getTenure() * 12; i++) {
+        for (int i = 1; i <= loan.getTenure(); i++) {
             LoanDetails loanDetails1 = new LoanDetails();
             loanDetails.setLoanAmount(totalLoanAmount);
-            interestAmount = totalLoanAmount * interestRate;
+            interestAmount = totalLoanAmount * interestRate/100;
             emi = installment + interestAmount;
             totalLoanAmount = totalLoanAmount - installment;
 

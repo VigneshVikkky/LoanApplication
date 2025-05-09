@@ -64,6 +64,38 @@ public class LoanApplicationController extends BaseController {
         return loanApplicationWsDto;
     }
 
+    @PostMapping("/getLoansByStatusAndId")
+    @ResponseBody
+    public LoanApplicationWsDto getLoansByStatusAndId(@RequestBody LoanApplicationDto loanApplicationDto) {
+        LoanApplicationWsDto loanApplicationWsDto = new LoanApplicationWsDto();
+        List<LoanApplication> loanApplicationList = loanApplicationRepository.findByCustomerIdAndLoanStatus(loanApplicationDto.getCustomerId(),loanApplicationDto.getLoanStatus());
+        loanApplicationWsDto.setLoanApplicationDtos(modelMapper.map(loanApplicationList, List.class));
+        loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
+        return loanApplicationWsDto;
+    }
+
+    @PostMapping("/getLoansByStatus")
+    @ResponseBody
+    public LoanApplicationWsDto getLoanStatus(@RequestBody LoanApplicationDto loanApplicationDto) {
+        LoanApplicationWsDto loanApplicationWsDto = new LoanApplicationWsDto();
+        List<LoanApplication> loanApplicationList = loanApplicationRepository.findByLoanStatus(loanApplicationDto.getLoanStatus());
+        loanApplicationWsDto.setLoanApplicationDtos(modelMapper.map(loanApplicationList, List.class));
+        loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
+        return loanApplicationWsDto;
+    }
+
+    @PostMapping("/updateLoansStatus")
+    @ResponseBody
+    public LoanApplicationWsDto updateLoansStatus(@RequestBody LoanApplicationDto loanApplicationDto) {
+        LoanApplicationWsDto loanApplicationWsDto = new LoanApplicationWsDto();
+        LoanApplication loanApplication = loanApplicationRepository.findByRecordId(loanApplicationDto.getRecordId());
+        loanApplication.setLoanStatus(loanApplicationDto.getLoanStatus());
+        loanApplicationRepository.save(loanApplication);
+        loanApplicationWsDto.setMessage("Loan status updated successfully!!");
+        loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
+        return loanApplicationWsDto;
+    }
+
     @PostMapping("/getedit")
     @ResponseBody
     public LoanApplicationWsDto editLoanApplication(@RequestBody LoanApplicationWsDto request) {
