@@ -9,7 +9,6 @@ import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.repository.*;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanScoreResult;
-import com.avitam.bankloanapplication.model.entity.LoanStatus;
 import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
@@ -24,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -42,8 +40,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private LoanRepository loanRepository;
     @Autowired
     private LoanScoreResultRepository loanScoreResultRepository;
-    @Autowired
-    private LoanStatusRepository loanStatusRepository;
     @Autowired
     private LoanLimitRepository loanLimitRepository;
 
@@ -71,22 +67,14 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             if (request.getRecordId() == null) {
                 loanApplication.setRecordId(String.valueOf(loanApplication.getId().getTimestamp()));
             }
+            loanApplication.setLoanStatus("Applied");
             loanApplicationRepository.save(loanApplication);
-            request.setBaseUrl(ADMIN_LOANAPPLICATION);
-
-            Customer customer = customerRepository.findByRecordId(loanApplicationDto.getCustomerId());
-            List<String> loanApplicationList = customer.getLoanApplicationId();
-            if (loanApplicationList == null) {
-                loanApplicationList = new ArrayList<>();
-            }
-            loanApplicationList.add(loanApplication.getRecordId());
-            customer.setLoanApplicationId(loanApplicationList);
-            customerRepository.save(customer);
             request.setBaseUrl(ADMIN_LOANAPPLICATION);
             request.setMessage("Data added Successfully");
             loanApplications.add(loanApplication);
         }
-        Type listType = new TypeToken<List<LoanApplicationDto>>() {}.getType();
+        Type listType = new TypeToken<List<LoanApplicationDto>>() {
+        }.getType();
         request.setLoanApplicationDtos(modelMapper.map(loanApplications, listType));
         return request;
     }
@@ -127,26 +115,11 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private LoanApplication finalizeLoanApplication(LoanApplicationDto applicationDto) {
 
-        Optional<Customer> customerOptional = Optional.ofNullable(customerRepository.findByRecordId(applicationDto.getCustomerId()));
-
-        for (String loanApplicationId : customerOptional.get().getLoanApplicationId()) {
-            LoanApplication loanApplication = loanApplicationRepository.findByRecordId(loanApplicationId);
-            if (loanApplication.getRecordId().equalsIgnoreCase(applicationDto.getRecordId())) {
-                verifyLoan(loanApplication);
-            }
-
+        LoanApplication loanApplication = loanApplicationRepository.findByRecordId(applicationDto.getRecordId());
+        if (loanApplication != null) {
+            verifyLoan(loanApplication);
         }
-        // List<LoanApplication> loanApplicationList = new ArrayList<>();
-        LoanApplication loanApplication = new LoanApplication();
-        for (String loanApplicationId : customerOptional.get().getLoanApplicationId()) {
-            if (loanApplicationId.equalsIgnoreCase(applicationDto.getRecordId())) {
-                loanApplication = loanApplicationRepository.findByRecordId(loanApplicationId);
-                if (loanApplication.getCustomerId().equalsIgnoreCase(customerOptional.get().getRecordId())) {
-                    //loanApplicationList.add(loanApplication);
-                    return loanApplication;
-                }
-            }
-        }
+
         // return loanApplicationList.stream().findAny().orElseThrow((() -> new InvalidLoanApplicationException(".")));
         return loanApplication;
 
@@ -168,7 +141,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private void verifyLoan(LoanApplication loanApplication) {
         String loanCustomer = loanApplication.getCustomerId();
 
-        Loan loanToUpdate = getNotResultedLoanApplicationOfCustomer(loanCustomer);
+        Loan loanToUpdate = getNotResultedLoanApplicationOfCustomer(loanApplication);
         if (loanToUpdate == null) return;
         log.info("Getting loan application for result");
 
@@ -223,20 +196,12 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         return loan;
     }
 
-    private Loan getNotResultedLoanApplicationOfCustomer(String customerId) {
+    private Loan getNotResultedLoanApplicationOfCustomer(LoanApplication loanApplication) {
 
-        Customer customer = customerRepository.findByRecordId(customerId);
-        List<Loan> loanList = new ArrayList<>();
-        for (String loanApplicationId : customer.getLoanApplicationId()) {
-            LoanApplication loanApplication = loanApplicationRepository.findByRecordId(loanApplicationId);
             String loanId = loanApplication.getLoanId();
             Loan loan = loanRepository.findByRecordId(loanId);
             LoanScoreResult loanScoreResult = loanScoreResultRepository.findByRecordId(loan.getLoanScoreResultId());
-            if (loanScoreResult.getName().equalsIgnoreCase("NOT_RESULTED")) {
-                loanList.add(loan);
-            }
-        }
-        return loanList.stream().findFirst().orElse(null);
+            return loan;
 
         /*var optionalLoan =
                 customer.getLoanApplicationId().stream()

@@ -30,8 +30,6 @@ public class Customer extends BaseEntity{
     private String profileImage;
     private Set<Role> roles;
     private Integer loanScore = 500;
-    private List<String> loanApplicationId;
-    private List<String> customerList;
     private String resetPasswordToken;
     private String employmentType;
     private String bankAccNumber;

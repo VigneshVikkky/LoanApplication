@@ -39,7 +39,7 @@ public class NotificationController extends BaseController {
     @PostMapping
     public NotificationWsDto getAllNotification(@RequestBody NotificationWsDto notificationwsDto){
         Pageable pageable=getPageable(notificationwsDto.getPage(),notificationwsDto.getSizePerPage(),notificationwsDto.getSortDirection(),notificationwsDto.getSortField());
-        CommonDto notificationDto = CollectionUtils.isNotEmpty(notificationwsDto.getNotificationDtoList()) ? notificationwsDto.getNotificationDtoList().get(0) : new LoanStatusDto();
+        CommonDto notificationDto = CollectionUtils.isNotEmpty(notificationwsDto.getNotificationDtoList()) ? notificationwsDto.getNotificationDtoList().get(0) : new NotificationDto();
         Notification notification = modelMapper.map(notificationwsDto, Notification.class);
         Page<Notification> page=isSearchActive(notification) !=null ? notificationRepository.findAll(Example.of(notification),pageable) : notificationRepository.findAll(pageable);
         Type listType = new TypeToken<List<NotificationDto>>() {}.getType();

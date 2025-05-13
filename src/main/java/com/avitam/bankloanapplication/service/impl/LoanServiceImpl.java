@@ -2,8 +2,6 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
-import com.avitam.bankloanapplication.model.entity.LoanScoreResult;
-import com.avitam.bankloanapplication.model.entity.LoanStatus;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.*;
 
@@ -35,9 +33,6 @@ public class LoanServiceImpl implements LoanService {
 
     @Autowired
     private LoanScoreResultRepository loanScoreResultRepository;
-
-    @Autowired
-    private LoanStatusRepository loanStatusRepository;
 
     public static final String ADMIN_lOAN = "/loans/loan";
 
