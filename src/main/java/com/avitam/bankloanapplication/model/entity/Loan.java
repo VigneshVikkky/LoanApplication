@@ -1,9 +1,12 @@
 package com.avitam.bankloanapplication.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -22,4 +25,7 @@ public class Loan extends BaseEntity{
    private String loanScoreResultId;
    private Integer creditMultiplier;
    private String customerId;
+   @JsonFormat(pattern = "dd-MM-yyyy")
+   private LocalDate sanctionDate;
+
 }

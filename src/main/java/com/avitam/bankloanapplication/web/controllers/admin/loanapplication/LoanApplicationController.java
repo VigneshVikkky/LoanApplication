@@ -7,6 +7,7 @@ import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.repository.UserRepository;
+import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.impl.LoanApplicationServiceImpl;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -37,7 +38,8 @@ public class LoanApplicationController extends BaseController {
     private LoanRepository loanRepository;
     @Autowired
     private LoanApplicationRepository loanApplicationRepository;
-
+    @Autowired
+    private LoanDetailsService loanDetailsService;
     @Autowired
     private LoanApplicationServiceImpl loanApplicationServiceImpl;
 
@@ -167,5 +169,11 @@ public class LoanApplicationController extends BaseController {
     @ResponseBody
     public List<SearchDto> getSearchAttributes() {
         return getGroupedParentAndChildAttributes(new LoanApplication());
+    }
+
+
+    @GetMapping("/emi-summary/{recordId}")
+    public List<LoanEmiSummaryDto> getEMISummary(@PathVariable String recordId) {
+        return loanDetailsService.getLoanEmiSummary(recordId);
     }
 }

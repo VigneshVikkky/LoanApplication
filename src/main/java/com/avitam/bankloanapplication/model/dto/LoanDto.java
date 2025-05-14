@@ -1,8 +1,11 @@
 package com.avitam.bankloanapplication.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -21,4 +24,6 @@ public class LoanDto extends CommonDto{
     private String loanScoreResultId;
     private Integer creditMultiplier;
     private String customerId;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate sanctionDate;
 }

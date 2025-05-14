@@ -3,6 +3,8 @@ package com.avitam.bankloanapplication.model.entity;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,5 +17,6 @@ public class LoanApplication extends BaseEntity{
     private String loanId;
     private String loanStatus;
     private String images;
+    private LocalDate sanctionDate;
 
 }

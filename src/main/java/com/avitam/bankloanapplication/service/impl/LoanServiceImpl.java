@@ -82,10 +82,6 @@ public class LoanServiceImpl implements LoanService {
 
     }
 
-
-
-
-
 //    //TODO: known issue:     "message": "Can not set java.util.Date field com.gulbalasalamov.bankloanapplication.model.entity.Loan.loanDate to java.lang.String",
 //    public void updateLoanPartially(Long loanId, Map<Object, Object> objectMap) {
 //        var loanById = findLoanById(loanId);

@@ -6,6 +6,7 @@ import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
+import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.LoanService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -33,6 +34,7 @@ public class LoanController extends BaseController {
     private ModelMapper modelMapper;
     @Autowired
     private LoanLimitRepository loanLimitRepository;
+
 
     private static final String ADMIN_LOAN = "/loans/loan";
 
@@ -123,5 +125,9 @@ public class LoanController extends BaseController {
     public List<SearchDto> getSearchAttributes() {
         return getGroupedParentAndChildAttributes(new Loan());
     }
+
+
+
+
 
 }

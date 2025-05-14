@@ -107,4 +107,11 @@ public class LoanDetailsController extends BaseController {
         return getGroupedParentAndChildAttributes(new Loan());
     }
 
+    @PostMapping("/getUptoDateEmi")
+    @ResponseBody
+    public LoanDetailsWsDto getUptoDateEmi(){
+      return  loanDetailsService.getUptoDateEmiDetails();
+
+    }
+
 }

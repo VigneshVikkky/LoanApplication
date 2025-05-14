@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,4 +21,5 @@ public class LoanApplicationDto extends CommonDto{
     private String loanName;
     private String loanStatus;
     private String images;
+    private LocalDate sanctionDate;
 }
