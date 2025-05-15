@@ -1,145 +1,3 @@
-//package com.avitam.bankloanapplication.service.impl;
-//
-//import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
-//import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
-//import com.avitam.bankloanapplication.model.entity.Loan;
-//import com.avitam.bankloanapplication.model.entity.LoanDetails;
-//import com.avitam.bankloanapplication.model.entity.LoanLimit;
-//import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
-//import com.avitam.bankloanapplication.repository.LoanLimitRepository;
-//import com.avitam.bankloanapplication.repository.LoanRepository;
-//import com.avitam.bankloanapplication.service.LoanDetailsService;
-//import org.modelmapper.ModelMapper;
-//import org.modelmapper.TypeToken;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.lang.reflect.Type;
-//import java.math.BigDecimal;
-//import java.util.ArrayList;
-//import java.util.Date;
-//import java.util.List;
-//
-//@Service
-//public class LoanDetailsServiceImpl implements LoanDetailsService {
-//
-//    @Autowired
-//    private LoanDetailsRepository loanDetailsRepository;
-//
-//    @Autowired
-//    private LoanLimitRepository loanLimitRepository;
-//
-//    @Autowired
-//    private LoanRepository loanRepository;
-//
-//    @Autowired
-//    private ModelMapper modelMapper;
-//
-//    public static final String ADMIN_LOANDETAILS = "/loans/loanDetails";
-//
-//    @Override
-//    public LoanDetailsWsDto createLoan(LoanDetailsWsDto request) {
-//        LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
-//        LoanDetails loanDetails = new LoanDetails();
-//        List<LoanDetailsDto> loanDetailsDtos = request.getLoanDetailsDtos();
-//        List<LoanDetails> loanDetailsList = new ArrayList<>();
-//        for (LoanDetailsDto loanDetailsDto : loanDetailsDtos) {
-//            if (loanDetailsDto.getRecordId() != null) {
-//                loanDetails = loanDetailsRepository.findByRecordId(loanDetailsDto.getRecordId());
-//                modelMapper.map(loanDetailsDto, loanDetails);
-//                loanDetailsRepository.save(loanDetails);
-//                request.setMessage("Data updated successfully");
-//            } else {
-//                loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
-//                loanDetails.setCreationTime(new Date());
-//                loanDetails.setStatus(true);
-//                calculateLoanDetails(loanDetails);
-//
-//                List<LoanDetails> loanDetailsList1 = loanDetails.getLoanDetailsList();
-//                double totalInterestAmount = 0.0;
-//                double totalInstalmentAmount = 0.0;
-//                double totalPayableAmount = 0.0;
-//                for (LoanDetails loanDetails1 : loanDetailsList1) {
-//                    totalInterestAmount += loanDetails1.getInterestAmount();
-//                    totalInstalmentAmount += loanDetails1.getInstalment();
-//                    totalPayableAmount += loanDetails1.getTotalPayable();
-//                }
-//
-//                loanDetails.setTotalInterestAmount(roundToTwoDecimal(totalInterestAmount));
-//                loanDetails.setTotalInstalmentAmount(roundToTwoDecimal(totalInstalmentAmount));
-//                loanDetails.setTotalPayableAmount(roundToTwoDecimal(totalPayableAmount));
-//
-//                loanDetailsRepository.save(loanDetails);
-//            }
-//            if (request.getRecordId() == null) {
-//                loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
-//            }
-//            loanDetailsRepository.save(loanDetails);
-//            loanDetailsList.add(loanDetails);
-//            request.setBaseUrl(ADMIN_LOANDETAILS);
-//            request.setMessage("Data added Successfully");
-//        }
-//
-//        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
-//        List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, listType);
-//        request.setLoanDetailsDtos(dtoList);
-//
-//        return request;
-//    }
-//
-//    public LoanDetails calculateLoanDetails(LoanDetails loanDetails) {
-//
-//        List<LoanDetails> loanDetailsList = new ArrayList<>();
-//        //LoanLimit loanLimit = loanLimitRepository.findByRecordId(loanDetails.getLoanLimitId());
-//
-//        Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
-//
-//        double totalLoanAmount = loan.getDesiredLoan();
-//        double installment = totalLoanAmount / (loan.getTenure());
-//        double interestRate = (loan.getInterestRate());
-//        double interestAmount;
-//        double emi;
-//
-//        for (int i = 1; i <= loan.getTenure(); i++) {
-//            LoanDetails loanDetails1 = new LoanDetails();
-//            loanDetails.setLoanAmount(totalLoanAmount);
-//            interestAmount = totalLoanAmount * interestRate/100;
-//            emi = installment + interestAmount;
-//            totalLoanAmount = totalLoanAmount - installment;
-//
-//            loanDetails1.setInterestAmount(roundToTwoDecimal(interestAmount));
-//            loanDetails1.setInstalment(roundToTwoDecimal(installment));
-//            loanDetails1.setTotalPayable(roundToTwoDecimal(emi));
-//
-//            loanDetailsList.add(loanDetails1);
-//        }
-//
-//        loanDetails.setLoanDetailsList(loanDetailsList);
-//        return loanDetails;
-//    }
-//
-//    public LoanDetails totalAmountCalculation(LoanDetails loanDetails) {
-//        double totalInterestAmount = 0.0;
-//        double totalInstalmentAmount = 0.0;
-//        double totalPayableAmount = 0.0;
-//
-//        for (LoanDetails loanDetails1 : loanDetails.getLoanDetailsList()) {
-//            totalInterestAmount += loanDetails1.getInterestAmount();
-//            totalInstalmentAmount += loanDetails1.getInstalment();
-//            totalPayableAmount += loanDetails1.getTotalPayable();
-//        }
-//
-//        loanDetails.setTotalInterestAmount(roundToTwoDecimal(totalInterestAmount));
-//        loanDetails.setTotalInstalmentAmount(roundToTwoDecimal(totalInstalmentAmount));
-//        loanDetails.setTotalPayableAmount(roundToTwoDecimal(totalPayableAmount));
-//
-//        return loanDetails;
-//    }
-//
-//    private double roundToTwoDecimal(double value) {
-//        return Math.round(value * 100.0) / 100.0;
-//    }
-//}
 package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
@@ -194,6 +52,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                 loanDetails.setCreationTime(new java.util.Date());
                 loanDetails.setStatus(true);
                 calculateLoanDetails(loanDetails);
+                totalAmountCalculation(loanDetails);
                 loanDetailsRepository.save(loanDetails);
                 request.setMessage("Data added successfully");
             }
@@ -205,58 +64,23 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             loanDetailsList.add(loanDetails);
         }
 
-        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {
+        }.getType();
         List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, listType);
         request.setLoanDetailsDtos(dtoList);
-       // List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, new org.modelmapper.TypeToken<List<LoanDetailsDto>>() {}.getType());
+        // List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, new org.modelmapper.TypeToken<List<LoanDetailsDto>>() {}.getType());
         //request.setLoanDetailsDtos(dtoList);
         request.setBaseUrl(ADMIN_LOANDETAILS);
 
         return request;
     }
-//
-//    public LoanDetails calculateLoanDetails(LoanDetails loanDetails) {
-//        Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
-//        double totalLoanAmount = loan.getDesiredLoan();
-//        double installment = totalLoanAmount / loan.getTenure();
-//        double interestRate = loan.getInterestRate();
-//        double interestAmount;
-//        double emi;
-//
-//        List<LoanDetails> loanDetailsList = new ArrayList<>();
-//        for (int i = 1; i <= loan.getTenure(); i++) {
-//            LoanDetails loanDetails1 = new LoanDetails();
-//            loanDetails1.setLoanAmount(totalLoanAmount); // Total principal at start of the month
-//            interestAmount = totalLoanAmount * interestRate / 100;
-//            emi = installment + interestAmount;
-//            totalLoanAmount = totalLoanAmount - installment;
-//
-//            loanDetails1.setInterestAmount(roundToTwoDecimal(interestAmount));
-//            loanDetails1.setInstalment(roundToTwoDecimal(installment));
-//            loanDetails1.setTotalPayable(roundToTwoDecimal(emi));
-//            loanDetails1.setDueDate(LocalDate.now().plusMonths(i));
-//            loanDetails1.setPaymentStatus("Unpaid");
-//
-//            // Debugging logs
-//            System.out.println("Due Date: " + loanDetails1.getDueDate());
-//            System.out.println("Payment Status: " + loanDetails1.getPaymentStatus());
-//
-//            loanDetailsRepository.save(loanDetails1);
-//            loanDetailsList.add(loanDetails1);
-//        }
-//
-//        loanDetails.setLoanDetailsList(loanDetailsList);
-//        return loanDetails;
-//    }
-
-
 
     public LoanDetails calculateLoanDetails(LoanDetails loanDetails) {
         Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
 
-        double totalLoanAmount=0.0;
+        double totalLoanAmount = 0.0;
 //        if(loanDetails.getRecordId()==null) {
-            totalLoanAmount = loan.getDesiredLoan();
+        totalLoanAmount = loan.getDesiredLoan();
 //        }
 //        else{
 //            LoanDetails loanDetails1 = loanDetailsRepository.findByRecordId(loanDetails.getRecordId());
@@ -278,8 +102,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
         if (sanctionDate.getDayOfMonth() > 5) {
             baseDate = baseDate.plusMonths(1);
-        }
-        else{
+        } else {
             baseDate = baseDate.plusMonths(0);
         }
 
@@ -296,7 +119,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
             totalLoanAmount = totalLoanAmount - installment;
 
-            LocalDate dueDate = baseDate.plusMonths(noOfMonths);
+            LocalDate dueDate = baseDate.plusMonths(i);
             //duedatesList.add(baseDate.plusMonths(i));
 
             detail.setLoanId(loan.getRecordId());
@@ -306,18 +129,19 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             //detail.setTotalPayable(roundToTwoDecimal(emi));
             detail.setDueDate(dueDate);
 
-            if(detail.getDueDate()==currentDate){
-                detail.setTotalPayable(roundToTwoDecimal(emi));
-                detail.setPaymentStatus("Paid");
+            if (i==noOfMonths-1) {
+                if (detail.getDueDate() == currentDate) {
+                    detail.setTotalPayable(roundToTwoDecimal(emi));
+                    detail.setPaymentStatus("Paid");
+                } else {
+                    int noOfDays = (int) ChronoUnit.DAYS.between(detail.getDueDate(), currentDate);
+                    detail.setTotalPayable(roundToTwoDecimal(emi) + (roundToTwoDecimal(emi) * 0.04 * noOfDays));
+                    detail.setPenalty(roundToTwoDecimal(emi) * 0.04 * noOfDays);
+                    detail.setPaymentStatus("Paid");
+                }
             }
-            else{
-                int noOfDays = (int) ChronoUnit.DAYS.between(detail.getDueDate(), currentDate);
-                detail.setTotalPayable(roundToTwoDecimal(emi) + (roundToTwoDecimal(emi)*0.04*noOfDays));
-                detail.setPaymentStatus("Paid");
-            }
-
             loanDetailsList.add(detail);
-       }
+        }
 
         loanDetails.setLoanDetailsList(loanDetailsList);
 //        loanDetails.setTotalPayable(roundToTwoDecimal(emi));
@@ -326,8 +150,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //        loanDetails.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
         return loanDetails;
     }
-
-
 
 
     @Override
@@ -352,10 +174,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         return null;
     }
 
-
-
-
-   /* public LoanDetails totalAmountCalculation(LoanDetails loanDetails) {
+    public LoanDetails totalAmountCalculation(LoanDetails loanDetails) {
         double totalInterestAmount = 0.0;
         double totalInstalmentAmount = 0.0;
         double totalPayableAmount = 0.0;
@@ -371,7 +190,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         loanDetails.setTotalPayableAmount(roundToTwoDecimal(totalPayableAmount));
 
         return loanDetails;
-    }*/
+    }
 
     private double roundToTwoDecimal(double value) {
         return Math.round(value * 100.0) / 100.0;

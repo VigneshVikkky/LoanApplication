@@ -29,9 +29,9 @@ public class LoanDetails extends BaseEntity {
     //private LocalDate loanSanctionedDate;
 
 
-//    private double totalInterestAmount;
-//    private double totalInstalmentAmount;
-//    private double totalPayableAmount;
+    private double totalInterestAmount;
+    private double totalInstalmentAmount;
+    private double totalPayableAmount;
 //    private int monthDuration;
 //    private double interestRate;
 
