@@ -92,13 +92,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         for (int i = 0; i < loan.getTenure(); i++) {
             LoanDetails detail = new LoanDetails();
 
-
             interestAmount = totalLoanAmount * interestRate / 100;
             emi = installment + interestAmount;
-
-
             totalLoanAmount = totalLoanAmount - installment;
-
 
             detail.setLoanId(loan.getRecordId());
             detail.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
@@ -108,7 +104,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             detail.setInterestRate(interestRate);
             detail.setLoanSanctionedDate(loan.getSanctionDate());
             //detail.setDueDate(dueDate);
-
 
             loanDetailsList.add(detail);
         }
@@ -143,36 +138,32 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     @Override
     public LoanDetailsDto getEmiStatusTillDate(LoanDetailsDto loanDetailsDto) {
 
-        double totalLoanAmount = 0.0;
+        double loanAmount = 0.0;
         double installment = 0.0;
         double interestRate = 0.0;
         double interestAmount;
         double emi;
-        LocalDate sanctionDate=null;
-        Loan loan=null;
-        LoanDetails loanDetails=null;
+        LocalDate sanctionDate = null;
+        Loan loan = null;
+        //LoanDetails loanDetails = null;
 
-        if(loanDetailsDto.getRecordId()==null) {
+       // if (loanDetailsDto.getRecordId() == null) {
             loan = loanRepository.findByRecordId(loanDetailsDto.getLoanId());
-            totalLoanAmount = loan.getDesiredLoan();
+            loanAmount = loan.getDesiredLoan();
             installment = loan.getDesiredLoan() / loan.getTenure();
             interestRate = loan.getInterestRate();
             sanctionDate = loan.getSanctionDate();
-        }
-        else{
-            loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
-            totalLoanAmount= loanDetails.getLoanAmount();
-            installment = loanDetails.getInstalment();
-            interestRate = loanDetails.getInterestRate();
-            sanctionDate = loanDetails.getLoanSanctionedDate();
-        }
-
-
-
+//            loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
+//            calculateLoanDetails(loanDetails);
+//        } else {
+//            loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
+//            loanAmount = loanDetails.getLoanAmount();
+//            installment = loanDetails.getInstalment();
+//            interestRate = loanDetails.getInterestRate();
+//            sanctionDate = loanDetails.getLoanSanctionedDate();
+//        }
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-
         LocalDate currentDate = LocalDate.now();
-
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         if (sanctionDate.getDayOfMonth() > 5) {
@@ -182,50 +173,44 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         }
 
         List<LoanDetails> loanDetailsList = new ArrayList<>();
+        LoanDetails detail = new LoanDetails();
 
-        for (int i = 0; i < noOfMonths; i++) {
-            LoanDetails detail = new LoanDetails();
-
-
-            interestAmount = totalLoanAmount * interestRate / 100;
+        for (int i = noOfMonths-1; i < noOfMonths; i++) {
+            interestAmount = loanAmount * interestRate / 100;
             emi = installment + interestAmount;
-
-
-            totalLoanAmount = totalLoanAmount - installment;
-
-            LocalDate dueDate = baseDate.plusMonths(i);
+            loanAmount = loanAmount - installment;
+            LocalDate dueDate = baseDate.plusMonths(noOfMonths-1);
 
             detail.setLoanId(loan.getRecordId());
-            detail.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
+            detail.setLoanAmount(roundToTwoDecimal(loanAmount));
             detail.setInstalment(roundToTwoDecimal(installment));
             detail.setInterestAmount(roundToTwoDecimal(interestAmount));
             detail.setTotalPayable(roundToTwoDecimal(emi));
             detail.setDueDate(dueDate);
 
-            if (i == noOfMonths - 1) {
-                if (detail.getDueDate() == currentDate) {
-                    detail.setTotalPayable(roundToTwoDecimal(emi));
-                    detail.setPaymentStatus("Paid");
-                } else {
-                    int noOfDays = (int) ChronoUnit.DAYS.between(detail.getDueDate(), currentDate);
-                    detail.setTotalPayable(roundToTwoDecimal(emi) + (roundToTwoDecimal(emi) * 0.04 * noOfDays));
-                    detail.setPenalty(roundToTwoDecimal(emi) * 0.04 * noOfDays);
-                    detail.setPaymentStatus("Paid");
-                }
+            if (baseDate == currentDate) {
+                detail.setTotalPayable(roundToTwoDecimal(emi));
+                detail.setPaymentStatus("Paid");
+            } else {
+                int noOfDays = (int) ChronoUnit.DAYS.between(dueDate, currentDate);
+                detail.setTotalPayable(roundToTwoDecimal(emi) + (roundToTwoDecimal(emi) * 0.04 * noOfDays));
+                detail.setPenalty(roundToTwoDecimal(emi) * 0.04 * noOfDays);
+                detail.setPaymentStatus("Paid");
             }
+
             loanDetailsList.add(detail);
         }
+        detail.setLoanDetailsList(loanDetailsList);
 
-        loanDetailsDto.setLoanDetailsList(loanDetailsList);
-        Type listType = new TypeToken<LoanDetails>() {}.getType();
-        LoanDetails loanDetails = modelMapper.map(loanDetailsDto, listType);
-        totalAmountCalculation(loanDetails);
-        loanDetailsRepository.save(loanDetails);
-        if (loanDetails.getRecordId() == null) {
-            loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
+        //Type listType = new TypeToken<LoanDetails>() {}.getType();
+        //loanDetails=modelMapper.map(loanDetailsDto, listType);
+        totalAmountCalculation(detail);
+        loanDetailsRepository.save(detail);
+        if (loanDetailsDto.getRecordId() == null) {
+            detail.setRecordId(String.valueOf(detail.getId().getTimestamp()));
         }
-        loanDetailsRepository.save(loanDetails);
-        modelMapper.map(loanDetails, loanDetailsDto);
+        loanDetailsRepository.save(detail);
+        modelMapper.map(detail, loanDetailsDto);
         return loanDetailsDto;
     }
 

@@ -66,6 +66,26 @@ public class LoanController extends BaseController {
         return loanDtoList;
     }
 
+
+
+  /*  @GetMapping("/getEligibleLoans")
+    public LoanWsDto getEligibleLoans(@RequestBody CustomerDto customerDto) {
+        LoanWsDto loanWsDto = new LoanWsDto();
+        List<LoanDto> loanDtoList = new ArrayList<>();
+
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerId());
+        if(loanLimit!=null){
+            List<Loan> loans = loanRepository.findAll();
+            Double loanLimitAmt = loanLimit.getLoanLimitAmount();
+            Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+            loanDtoList.addAll(modelMapper.map(loans.stream().filter(loan -> loanLimitAmt >
+                    loan.getDesiredLoan()).collect(Collectors.toList()), listType));
+        }
+
+        loanWsDto.setLoanDtoList(loanDtoList);
+        return loanWsDto;
+    }*/
+
     @PostMapping("/edit")
     public LoanWsDto createLoan(@RequestBody LoanWsDto request) {
         return loanService.createLoan(request);
