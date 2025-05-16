@@ -4,8 +4,10 @@ import com.avitam.bankloanapplication.core.service.CoreService;
 import com.avitam.bankloanapplication.exception.InvalidLoanApplicationException;
 import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
+import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.repository.*;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanScoreResult;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -255,4 +259,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
         return null;
     }
+
+
 }

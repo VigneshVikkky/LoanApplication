@@ -114,4 +114,12 @@ public class LoanDetailsController extends BaseController {
 
     }
 
+    @PostMapping("/getEmiStatusTillDate")
+    @ResponseBody
+    public LoanDetailsDto getEmiStatusTillDate(@RequestBody LoanDetailsDto loanDetailsDto) {
+
+        return loanDetailsService.getEmiStatusTillDate(loanDetailsDto);
+
+    }
+
 }

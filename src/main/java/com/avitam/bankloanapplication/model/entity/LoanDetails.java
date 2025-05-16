@@ -26,7 +26,8 @@ public class LoanDetails extends BaseEntity {
     private String paymentStatus;
     private double emiFromCustomer;
     private double penalty;
-    //private LocalDate loanSanctionedDate;
+    private double interestRate;
+    private LocalDate loanSanctionedDate;
 
 
     private double totalInterestAmount;

@@ -64,8 +64,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             loanDetailsList.add(loanDetails);
         }
 
-        Type listType = new TypeToken<List<LoanDetailsDto>>() {
-        }.getType();
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
         List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, listType);
         request.setLoanDetailsDtos(dtoList);
         // List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, new org.modelmapper.TypeToken<List<LoanDetailsDto>>() {}.getType());
@@ -86,19 +85,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         double interestAmount;
         double emi;
 
-        /*LocalDate sanctionDate = loan.getSanctionDate();
-
-        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-
-        LocalDate currentDate = LocalDate.now();
-
-        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-
-        if (sanctionDate.getDayOfMonth() > 5) {
-            baseDate = baseDate.plusMonths(1);
-        } else {
-            baseDate = baseDate.plusMonths(0);
-        }*/
 
         List<LoanDetails> loanDetailsList = new ArrayList<>();
         List<LocalDate> duedatesList = new ArrayList<>();
@@ -113,35 +99,21 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
             totalLoanAmount = totalLoanAmount - installment;
 
-            //LocalDate dueDate = baseDate.plusMonths(i);
-            //duedatesList.add(baseDate.plusMonths(i));
 
             detail.setLoanId(loan.getRecordId());
             detail.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
             detail.setInstalment(roundToTwoDecimal(installment));
             detail.setInterestAmount(roundToTwoDecimal(interestAmount));
             detail.setTotalPayable(roundToTwoDecimal(emi));
+            detail.setInterestRate(interestRate);
+            detail.setLoanSanctionedDate(loan.getSanctionDate());
             //detail.setDueDate(dueDate);
 
-            /*if (i==noOfMonths-1) {
-                if (detail.getDueDate() == currentDate) {
-                    detail.setTotalPayable(roundToTwoDecimal(emi));
-                    detail.setPaymentStatus("Paid");
-                } else {
-                    int noOfDays = (int) ChronoUnit.DAYS.between(detail.getDueDate(), currentDate);
-                    detail.setTotalPayable(roundToTwoDecimal(emi) + (roundToTwoDecimal(emi) * 0.04 * noOfDays));
-                    detail.setPenalty(roundToTwoDecimal(emi) * 0.04 * noOfDays);
-                    detail.setPaymentStatus("Paid");
-                }
-            }*/
+
             loanDetailsList.add(detail);
         }
 
         loanDetails.setLoanDetailsList(loanDetailsList);
-//        loanDetails.setTotalPayable(roundToTwoDecimal(emi));
-//        loanDetails.setInterestAmount(roundToTwoDecimal(interestAmount));
-//        loanDetails.setInstalment(roundToTwoDecimal(installment));
-//        loanDetails.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
         return loanDetails;
     }
 
@@ -168,6 +140,95 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         return null;
     }
 
+    @Override
+    public LoanDetailsDto getEmiStatusTillDate(LoanDetailsDto loanDetailsDto) {
+
+        double totalLoanAmount = 0.0;
+        double installment = 0.0;
+        double interestRate = 0.0;
+        double interestAmount;
+        double emi;
+        LocalDate sanctionDate=null;
+        Loan loan=null;
+        LoanDetails loanDetails=null;
+
+        if(loanDetailsDto.getRecordId()==null) {
+            loan = loanRepository.findByRecordId(loanDetailsDto.getLoanId());
+            totalLoanAmount = loan.getDesiredLoan();
+            installment = loan.getDesiredLoan() / loan.getTenure();
+            interestRate = loan.getInterestRate();
+            sanctionDate = loan.getSanctionDate();
+        }
+        else{
+            loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
+            totalLoanAmount= loanDetails.getLoanAmount();
+            installment = loanDetails.getInstalment();
+            interestRate = loanDetails.getInterestRate();
+            sanctionDate = loanDetails.getLoanSanctionedDate();
+        }
+
+
+
+        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+
+        LocalDate currentDate = LocalDate.now();
+
+        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
+
+        if (sanctionDate.getDayOfMonth() > 5) {
+            baseDate = baseDate.plusMonths(1);
+        } else {
+            baseDate = baseDate.plusMonths(0);
+        }
+
+        List<LoanDetails> loanDetailsList = new ArrayList<>();
+
+        for (int i = 0; i < noOfMonths; i++) {
+            LoanDetails detail = new LoanDetails();
+
+
+            interestAmount = totalLoanAmount * interestRate / 100;
+            emi = installment + interestAmount;
+
+
+            totalLoanAmount = totalLoanAmount - installment;
+
+            LocalDate dueDate = baseDate.plusMonths(i);
+
+            detail.setLoanId(loan.getRecordId());
+            detail.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
+            detail.setInstalment(roundToTwoDecimal(installment));
+            detail.setInterestAmount(roundToTwoDecimal(interestAmount));
+            detail.setTotalPayable(roundToTwoDecimal(emi));
+            detail.setDueDate(dueDate);
+
+            if (i == noOfMonths - 1) {
+                if (detail.getDueDate() == currentDate) {
+                    detail.setTotalPayable(roundToTwoDecimal(emi));
+                    detail.setPaymentStatus("Paid");
+                } else {
+                    int noOfDays = (int) ChronoUnit.DAYS.between(detail.getDueDate(), currentDate);
+                    detail.setTotalPayable(roundToTwoDecimal(emi) + (roundToTwoDecimal(emi) * 0.04 * noOfDays));
+                    detail.setPenalty(roundToTwoDecimal(emi) * 0.04 * noOfDays);
+                    detail.setPaymentStatus("Paid");
+                }
+            }
+            loanDetailsList.add(detail);
+        }
+
+        loanDetailsDto.setLoanDetailsList(loanDetailsList);
+        Type listType = new TypeToken<LoanDetails>() {}.getType();
+        LoanDetails loanDetails = modelMapper.map(loanDetailsDto, listType);
+        totalAmountCalculation(loanDetails);
+        loanDetailsRepository.save(loanDetails);
+        if (loanDetails.getRecordId() == null) {
+            loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
+        }
+        loanDetailsRepository.save(loanDetails);
+        modelMapper.map(loanDetails, loanDetailsDto);
+        return loanDetailsDto;
+    }
+
     public LoanDetails totalAmountCalculation(LoanDetails loanDetails) {
         double totalInterestAmount = 0.0;
         double totalInstalmentAmount = 0.0;
@@ -189,4 +250,10 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     private double roundToTwoDecimal(double value) {
         return Math.round(value * 100.0) / 100.0;
     }
+
+    //        loanDetails.setTotalPayable(roundToTwoDecimal(emi));
+//        loanDetails.setInterestAmount(roundToTwoDecimal(interestAmount));
+//        loanDetails.setInstalment(roundToTwoDecimal(installment));
+//        loanDetails.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
+
 }

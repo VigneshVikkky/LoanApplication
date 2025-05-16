@@ -5,6 +5,7 @@ import com.avitam.bankloanapplication.model.dto.*;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
+import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.repository.UserRepository;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
@@ -42,6 +43,9 @@ public class LoanApplicationController extends BaseController {
     private LoanDetailsService loanDetailsService;
     @Autowired
     private LoanApplicationServiceImpl loanApplicationServiceImpl;
+    @Autowired
+    private LoanDetailsRepository loanDetailsRepository;
+
 
     public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
 
@@ -176,4 +180,7 @@ public class LoanApplicationController extends BaseController {
     public List<LoanEmiSummaryDto> getEMISummary(@PathVariable String recordId) {
         return loanDetailsService.getLoanEmiSummary(recordId);
     }
+
+
+
 }
