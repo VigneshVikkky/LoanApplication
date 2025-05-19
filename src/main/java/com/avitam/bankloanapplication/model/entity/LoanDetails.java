@@ -1,5 +1,6 @@
 package com.avitam.bankloanapplication.model.entity;
 
+import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class LoanDetails extends BaseEntity {
     private double totalPayable;
     private String loanLimitId;
     private double loanAmount;
-    private List<LoanDetails> loanDetailsList;
+    private List<LoanDetailsDto> loanDetailsList;
     private String loanId;
     private LocalDate dueDate;
     private String paymentStatus;
