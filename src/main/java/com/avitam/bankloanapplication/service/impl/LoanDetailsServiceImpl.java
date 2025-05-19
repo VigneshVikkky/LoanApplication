@@ -148,6 +148,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         LocalDate sanctionDate ;
         Loan loan = loanRepository.findByRecordId(loanDetailsDto.getLoanId());
         LoanDetails loanDetails=new LoanDetails();
+        //LoanDetailsDto detail = new LoanDetailsDto();
+        List<LoanDetailsDto> loanDetailsList = new ArrayList<>();
 
         if (loanDetailsDto.getRecordId() == null) {
 
@@ -161,10 +163,11 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             installment = loanDetails.getInstalment();
             interestRate = loanDetails.getInterestRate();
             sanctionDate = loanDetails.getLoanSanctionedDate();
+            loanDetailsList = loanDetails.getLoanDetailsList();
         }
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        currentDate.plusMonths(1);
+        currentDate=currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         if (sanctionDate.getDayOfMonth() > 5) {
@@ -173,9 +176,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             baseDate = baseDate.plusMonths(0);
         }
 
-        List<LoanDetailsDto> loanDetailsList = new ArrayList<>();
+        //List<LoanDetailsDto> loanDetailsList = new ArrayList<>();
 
-        for (int i = noOfMonths-1; i < noOfMonths; i++) {
+        //for (int i = noOfMonths-1; i < noOfMonths; i++) {
             LoanDetailsDto detail = new LoanDetailsDto();
             interestAmount = loanAmount * interestRate / 100;
             emi = installment + interestAmount;
@@ -185,11 +188,12 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             detail.setLoanId(loanDetailsDto.getLoanId());
             detail.setLoanAmount(roundToTwoDecimal(loanAmount));
             detail.setInstalment(roundToTwoDecimal(installment));
+            detail.setInterestRate(interestRate);
             detail.setInterestAmount(roundToTwoDecimal(interestAmount));
             detail.setTotalPayable(roundToTwoDecimal(emi));
             detail.setDueDate(dueDate);
 
-            if (baseDate == currentDate) {
+            if (dueDate == currentDate) {
                 detail.setTotalPayable(roundToTwoDecimal(emi));
                 detail.setPaymentStatus("Paid");
             } else {
@@ -203,10 +207,11 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             loanDetails.setLoanAmount(detail.getLoanAmount());
             loanDetails.setInstalment(detail.getInstalment());
             loanDetails.setInterestAmount(detail.getInterestAmount());
+            loanDetails.setInterestRate(detail.getInterestRate());
             loanDetails.setTotalPayable(detail.getTotalPayable());
             loanDetails.setLoanSanctionedDate(loan.getSanctionDate());
             loanDetails.setDueDate(dueDate);
-        }
+        //}
         loanDetails.setLoanDetailsList(loanDetailsList);
         loanDetails.setLoanId(loanDetailsDto.getLoanId());
 
