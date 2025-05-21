@@ -106,19 +106,19 @@ public class LoanDetailsController extends BaseController {
         return getGroupedParentAndChildAttributes(new Loan());
     }
 
-    @PostMapping("/getUptoDateEmi")
-    @ResponseBody
-    public LoanDetailsWsDto getUptoDateEmi(){
-      return  loanDetailsService.getUptoDateEmiDetails();
+//    @PostMapping("/getUptoDateEmi")
+//    @ResponseBody
+//    public LoanDetailsWsDto getUptoDateEmi(){
+//      return  loanDetailsService.getUptoDateEmiDetails();
+//
+//    }
 
-    }
-
-    @PostMapping("/getEmiStatusTillDate")
-    @ResponseBody
-    public LoanDetailsDto getEmiStatusTillDate(@RequestBody LoanDetailsDto loanDetailsDto) {
-
-        return loanDetailsService.getEmiStatusTillDate(loanDetailsDto);
-
-    }
+//    @PostMapping("/getEmiStatusTillDate")
+//    @ResponseBody
+//    public LoanDetailsDto getEmiStatusTillDate(@RequestBody LoanDetailsDto loanDetailsDto) {
+//
+//        return loanDetailsService.getEmiStatusTillDate(loanDetailsDto);
+//
+//    }
 
 }

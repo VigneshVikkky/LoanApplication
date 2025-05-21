@@ -6,6 +6,7 @@ import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDto;
+import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.repository.*;
@@ -43,6 +44,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     @Autowired
     private LoanRepository loanRepository;
     @Autowired
+    private LoanDetailsRepository loanDetailsRepository;
+    @Autowired
     private LoanScoreResultRepository loanScoreResultRepository;
     @Autowired
     private LoanLimitRepository loanLimitRepository;
@@ -50,6 +53,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
 
 
+    @Override
     public LoanApplicationWsDto handleEdit(LoanApplicationWsDto request) {
         LoanApplication loanApplication = new LoanApplication();
         List<LoanApplicationDto> loanApplicationDtos = request.getLoanApplicationDtos();
@@ -81,6 +85,45 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         }.getType();
         request.setLoanApplicationDtos(modelMapper.map(loanApplications, listType));
         return request;
+    }
+
+    @Override
+    public LoanApplicationDto getEmiStatusTillDate(LoanApplicationDto loanApplicationDto) {
+
+        Loan loan = loanApplicationRepository.findByLoanId(loanApplicationDto.getLoanId());
+        LocalDate sanctionDate = loan.getSanctionDate();
+        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+        LocalDate currentDate = LocalDate.now();
+        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
+
+        /*if (sanctionDate.getDayOfMonth() > 5) {
+            baseDate = baseDate.plusMonths(1);
+        } else {
+            baseDate = baseDate.plusMonths(0);
+        }*/
+        LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
+
+        for(LoanEmiDetailDto loanEmiDetailDto: loanDetails.getLoanDetailsDtoList()) {
+
+            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
+                LocalDate dueDate = loanEmiDetailDto.getDueDate();
+                if (dueDate == currentDate) {
+                loanEmiDetailDto.setPaymentStatus("Paid");
+                //continue;
+                } else {
+                int noOfDays = (int) ChronoUnit.DAYS.between(dueDate, currentDate);
+                double totalPayable = loanEmiDetailDto.getTotalPayable();
+                loanEmiDetailDto.setTotalPayable(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays);
+                loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
+                loanEmiDetailDto.setPaymentStatus("Paid");
+                //continue;
+                }
+            }
+            continue;
+        }
+        loanDetails.setLoanDetailsDtoList(loanDetails.getLoanDetailsDtoList());
+        loanDetailsRepository.save(loanDetails);
+        return loanApplicationDto;
     }
 
 

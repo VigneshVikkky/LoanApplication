@@ -26,4 +26,5 @@ public class LoanDto extends CommonDto{
     private String customerId;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate sanctionDate;
+    private String loanDetailsId;
 }

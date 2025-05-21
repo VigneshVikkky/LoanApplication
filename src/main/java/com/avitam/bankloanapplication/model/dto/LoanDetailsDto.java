@@ -1,6 +1,5 @@
 package com.avitam.bankloanapplication.model.dto;
 
-import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,22 +11,21 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("loanDetails")
-public class LoanDetailsDto extends CommonDto{
+public class LoanDetailsDto extends CommonDto {
 
-     private double instalment;
-     private double interestAmount;
-     private double totalPayable;
-     private String loanLimitId;
-     private double loanAmount;
-     private List<LoanDetails> loanDetailsList;
-     private String loanId;
-     private LocalDate dueDate;
-     private String paymentStatus;
-     private double emiFromCustomer;
-     private double penalty;
-     private double interestRate;
-     private LocalDate loanSanctionedDate;
+    private double instalment;
+    private double interestAmount;
+    private double totalPayable;
+    private String loanLimitId;
+    private double loanAmount;
+    private List<LoanEmiDetailDto> loanDetailsList;
+    private String loanId;
+    private LocalDate dueDate;
+    private String paymentStatus;
+    private double emiFromCustomer;
+    private double penalty;
+    private double interestRate;
+    private LocalDate loanSanctionedDate;
 
 
     private double totalInterestAmount;

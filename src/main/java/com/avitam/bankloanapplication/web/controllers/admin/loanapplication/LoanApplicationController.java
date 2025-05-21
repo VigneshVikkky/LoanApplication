@@ -8,6 +8,7 @@ import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.repository.UserRepository;
+import com.avitam.bankloanapplication.service.LoanApplicationService;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.impl.LoanApplicationServiceImpl;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
@@ -41,6 +42,9 @@ public class LoanApplicationController extends BaseController {
     private LoanApplicationRepository loanApplicationRepository;
     @Autowired
     private LoanDetailsService loanDetailsService;
+    @Autowired
+    private LoanApplicationService loanApplicationService;
+
     @Autowired
     private LoanApplicationServiceImpl loanApplicationServiceImpl;
     @Autowired
@@ -137,7 +141,7 @@ public class LoanApplicationController extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     public LoanApplicationWsDto handleEdit(@RequestBody LoanApplicationWsDto request) {
-        return loanApplicationServiceImpl.handleEdit(request);
+        return loanApplicationService.handleEdit(request);
     }
 
     @GetMapping("/getLoan")
@@ -176,10 +180,18 @@ public class LoanApplicationController extends BaseController {
     }
 
 
-    @GetMapping("/emi-summary/{recordId}")
-    public List<LoanEmiSummaryDto> getEMISummary(@PathVariable String recordId) {
-        return loanDetailsService.getLoanEmiSummary(recordId);
+    @PostMapping("/getEmiStatusTillDate")
+    @ResponseBody
+    public LoanApplicationDto getEmiStatusTillDate(@RequestBody LoanApplicationDto loanApplicationDto) {
+
+        return loanApplicationService.getEmiStatusTillDate(loanApplicationDto);
+
     }
+
+//    @GetMapping("/emi-summary/{recordId}")
+//    public List<LoanEmiSummaryDto> getEMISummary(@PathVariable String recordId) {
+//        return loanDetailsService.getLoanEmiSummary(recordId);
+//    }
 
 
 

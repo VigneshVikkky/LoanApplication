@@ -1,12 +1,11 @@
 package com.avitam.bankloanapplication.model.entity;
 
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
+import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,26 +14,19 @@ import java.util.List;
 @NoArgsConstructor
 @Document("loanDetails")
 public class LoanDetails extends BaseEntity {
-
     private double instalment;
     private double interestAmount;
-    private double totalPayable;
     private String loanLimitId;
     private double loanAmount;
-    private List<LoanDetailsDto> loanDetailsList;
     private String loanId;
-    private LocalDate dueDate;
+    private double totalPayable;
+    private List<LoanEmiDetailDto> loanDetailsDtoList;
     private String paymentStatus;
     private double emiFromCustomer;
-    private double penalty;
     private double interestRate;
     private LocalDate loanSanctionedDate;
-
-
     private double totalInterestAmount;
     private double totalInstalmentAmount;
     private double totalPayableAmount;
-//    private int monthDuration;
-//    private double interestRate;
-
 }
+

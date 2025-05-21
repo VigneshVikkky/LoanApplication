@@ -3,16 +3,20 @@ package com.avitam.bankloanapplication.model.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("loanEmiDetail")
-public class LoanEmiDetailDto {
+
+public class LoanEmiDetailDto extends CommonDto  {
     private String month;
     private double instalment;
     private double interestAmount;
     private double totalPayable;
-    private String status;
+    private double penalty;
+    private String paymentStatus;
+    private LocalDate dueDate;
+
 }
