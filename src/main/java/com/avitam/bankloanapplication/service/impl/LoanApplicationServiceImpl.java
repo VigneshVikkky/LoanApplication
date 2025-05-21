@@ -90,10 +90,11 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     @Override
     public LoanApplicationDto getEmiStatusTillDate(LoanApplicationDto loanApplicationDto) {
 
-        Loan loan = loanApplicationRepository.findByLoanId(loanApplicationDto.getLoanId());
+        Loan loan = loanRepository.findByRecordId(loanApplicationDto.getLoanId());
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
+        currentDate=currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         /*if (sanctionDate.getDayOfMonth() > 5) {
@@ -109,17 +110,16 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 LocalDate dueDate = loanEmiDetailDto.getDueDate();
                 if (dueDate == currentDate) {
                 loanEmiDetailDto.setPaymentStatus("Paid");
-                //continue;
+                break;
                 } else {
                 int noOfDays = (int) ChronoUnit.DAYS.between(dueDate, currentDate);
                 double totalPayable = loanEmiDetailDto.getTotalPayable();
                 loanEmiDetailDto.setTotalPayable(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays);
                 loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
                 loanEmiDetailDto.setPaymentStatus("Paid");
-                //continue;
+                break;
                 }
             }
-            continue;
         }
         loanDetails.setLoanDetailsDtoList(loanDetails.getLoanDetailsDtoList());
         loanDetailsRepository.save(loanDetails);
