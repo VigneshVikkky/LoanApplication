@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 
 @Setter
@@ -27,4 +28,5 @@ public class LoanDto extends CommonDto{
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate sanctionDate;
     private String loanDetailsId;
+    private List<LoanDetailsDto> loanDetailsDtoList;
 }

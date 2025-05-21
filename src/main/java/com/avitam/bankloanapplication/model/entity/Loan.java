@@ -1,5 +1,6 @@
 package com.avitam.bankloanapplication.model.entity;
 
+import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -21,7 +22,8 @@ public class Loan extends BaseEntity{
    private BigDecimal loanEmi;
    private double interestRate;
    private Integer tenure;
-   private List<LoanEmiDetailDto> loanEmiDetailList;
+   private List<LoanDetailsDto> loanDetailsDtoList;
+
    private String loanDetailsId;
    private Double desiredLoan;
    private String images;
