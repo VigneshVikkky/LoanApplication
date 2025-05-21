@@ -94,7 +94,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        currentDate=currentDate.plusMonths(2);
+        currentDate=currentDate.plusMonths(3);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         /*if (sanctionDate.getDayOfMonth() > 5) {
@@ -114,7 +114,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 } else {
                 int noOfDays = (int) ChronoUnit.DAYS.between(dueDate, currentDate);
                 double totalPayable = loanEmiDetailDto.getTotalPayable();
-                loanEmiDetailDto.setTotalPayable(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays);
+                loanEmiDetailDto.setTotalPayable(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays));
                 loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
                 loanEmiDetailDto.setPaymentStatus("Paid");
                 break;
