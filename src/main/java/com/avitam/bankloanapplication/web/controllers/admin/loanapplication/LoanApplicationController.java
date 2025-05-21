@@ -180,14 +180,6 @@ public class LoanApplicationController extends BaseController {
     }
 
 
-    @PostMapping("/getEmiStatusTillDate")
-    @ResponseBody
-    public LoanApplicationDto getEmiStatusTillDate(@RequestBody LoanApplicationDto loanApplicationDto) {
-
-        return loanApplicationService.getEmiStatusTillDate(loanApplicationDto);
-
-    }
-
 //    @GetMapping("/emi-summary/{recordId}")
 //    public List<LoanEmiSummaryDto> getEMISummary(@PathVariable String recordId) {
 //        return loanDetailsService.getLoanEmiSummary(recordId);

@@ -1,7 +1,9 @@
 package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.LoanDto;
+import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
+import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.*;
 
@@ -11,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +25,9 @@ public class LoanServiceImpl implements LoanService {
 
     @Autowired
     private  LoanRepository loanRepository;
+
+    @Autowired
+    private  LoanDetailsRepository loanDetailsRepository;
 
     @Autowired
     private  CustomerRepository customerRepository;
@@ -80,6 +87,48 @@ public class LoanServiceImpl implements LoanService {
 
         return request;
 
+    }
+
+    @Override
+    public LoanDto getEmiStatusTillDate(LoanDto loanDto) {
+        Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
+        LocalDate sanctionDate = loan.getSanctionDate();
+        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+        LocalDate currentDate = LocalDate.now();
+        //currentDate=currentDate.plusMonths(3);
+        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
+        //LocalDate dueDate = null;
+
+        if (sanctionDate.getDayOfMonth() > 5) {
+            baseDate = baseDate.plusMonths(1);
+        } else {
+            baseDate = baseDate.plusMonths(0);
+        }
+        LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
+
+        for(LoanEmiDetailDto loanEmiDetailDto: loanDetails.getLoanDetailsDtoList()) {
+
+            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
+
+                if (baseDate == currentDate) {
+                    loanEmiDetailDto.setPaymentStatus("Paid");
+                    break;
+                } else {
+                    int noOfDays = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
+                    double totalPayable = loanEmiDetailDto.getTotalPayable();
+                    loanEmiDetailDto.setTotalPayable(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays));
+                    loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
+                    loanEmiDetailDto.setPaymentStatus("Paid");
+                    break;
+                }
+            }
+            else{
+                baseDate = baseDate.plusMonths(1);
+            }
+        }
+        loanDetails.setLoanDetailsDtoList(loanDetails.getLoanDetailsDtoList());
+        loanDetailsRepository.save(loanDetails);
+        return loanDto;
     }
 
 //    //TODO: known issue:     "message": "Can not set java.util.Date field com.gulbalasalamov.bankloanapplication.model.entity.Loan.loanDate to java.lang.String",

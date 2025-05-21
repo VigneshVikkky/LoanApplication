@@ -87,44 +87,44 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         return request;
     }
 
-    @Override
-    public LoanApplicationDto getEmiStatusTillDate(LoanApplicationDto loanApplicationDto) {
-
-        Loan loan = loanRepository.findByRecordId(loanApplicationDto.getLoanId());
-        LocalDate sanctionDate = loan.getSanctionDate();
-        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-        LocalDate currentDate = LocalDate.now();
-        currentDate=currentDate.plusMonths(3);
-        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-
-        /*if (sanctionDate.getDayOfMonth() > 5) {
-            baseDate = baseDate.plusMonths(1);
-        } else {
-            baseDate = baseDate.plusMonths(0);
-        }*/
-        LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
-
-        for(LoanEmiDetailDto loanEmiDetailDto: loanDetails.getLoanDetailsDtoList()) {
-
-            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
-                LocalDate dueDate = loanEmiDetailDto.getDueDate();
-                if (dueDate == currentDate) {
-                loanEmiDetailDto.setPaymentStatus("Paid");
-                break;
-                } else {
-                int noOfDays = (int) ChronoUnit.DAYS.between(dueDate, currentDate);
-                double totalPayable = loanEmiDetailDto.getTotalPayable();
-                loanEmiDetailDto.setTotalPayable(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays));
-                loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
-                loanEmiDetailDto.setPaymentStatus("Paid");
-                break;
-                }
-            }
-        }
-        loanDetails.setLoanDetailsDtoList(loanDetails.getLoanDetailsDtoList());
-        loanDetailsRepository.save(loanDetails);
-        return loanApplicationDto;
-    }
+//    @Override
+//    public LoanApplicationDto getEmiStatusTillDate(LoanApplicationDto loanApplicationDto) {
+//
+//        Loan loan = loanRepository.findByRecordId(loanApplicationDto.getLoanId());
+//        LocalDate sanctionDate = loan.getSanctionDate();
+//        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+//        LocalDate currentDate = LocalDate.now();
+//        currentDate=currentDate.plusMonths(3);
+//        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
+//
+//        /*if (sanctionDate.getDayOfMonth() > 5) {
+//            baseDate = baseDate.plusMonths(1);
+//        } else {
+//            baseDate = baseDate.plusMonths(0);
+//        }*/
+//        LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
+//
+//        for(LoanEmiDetailDto loanEmiDetailDto: loanDetails.getLoanDetailsDtoList()) {
+//
+//            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
+//                LocalDate dueDate = loanEmiDetailDto.getDueDate();
+//                if (dueDate == currentDate) {
+//                loanEmiDetailDto.setPaymentStatus("Paid");
+//                break;
+//                } else {
+//                int noOfDays = (int) ChronoUnit.DAYS.between(dueDate, currentDate);
+//                double totalPayable = loanEmiDetailDto.getTotalPayable();
+//                loanEmiDetailDto.setTotalPayable(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays));
+//                loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
+//                loanEmiDetailDto.setPaymentStatus("Paid");
+//                break;
+//                }
+//            }
+//        }
+//        loanDetails.setLoanDetailsDtoList(loanDetails.getLoanDetailsDtoList());
+//        loanDetailsRepository.save(loanDetails);
+//        return loanApplicationDto;
+//    }
 
 
     public LoanWsDto getLoanApplicationResult(LoanApplicationWsDto request) {

@@ -7,5 +7,5 @@ public interface LoanApplicationService {
 
     LoanApplicationWsDto handleEdit(LoanApplicationWsDto request);
 
-    LoanApplicationDto getEmiStatusTillDate(LoanApplicationDto loanApplicationDto);
+   // LoanApplicationDto getEmiStatusTillDate(LoanApplicationDto loanApplicationDto);
 }

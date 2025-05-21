@@ -125,7 +125,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
            // detail.setInterestRate(interestRate);
             detail.setPaymentStatus("Unpaid");
            // detail.setLoanSanctionedDate(loan.getSanctionDate());
-            detail.setDueDate(dueDate);
+            //detail.setDueDate(dueDate);
 
             loanDetailsDtoList.add(detail);
         }

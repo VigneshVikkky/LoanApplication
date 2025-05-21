@@ -146,6 +146,11 @@ public class LoanController extends BaseController {
         return getGroupedParentAndChildAttributes(new Loan());
     }
 
+    @PostMapping("/getEmiStatusTillDate")
+    @ResponseBody
+    public LoanDto getEmiStatusTillDate(@RequestBody LoanDto loanDto) {
+        return loanService.getEmiStatusTillDate(loanDto);
+    }
 
 
 
