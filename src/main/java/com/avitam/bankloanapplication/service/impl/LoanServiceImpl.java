@@ -95,18 +95,18 @@ public class LoanServiceImpl implements LoanService {
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        //currentDate=currentDate.plusMonths(3);
+        currentDate=currentDate.plusMonths(4);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
         //LocalDate dueDate = null;
 
         if (sanctionDate.getDayOfMonth() > 5) {
-            baseDate = baseDate.plusMonths(1);
+            baseDate = baseDate.plusMonths(4);
         } else {
             baseDate = baseDate.plusMonths(0);
         }
-        LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
+        //LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
 
-        for(LoanEmiDetailDto loanEmiDetailDto: loanDetails.getLoanDetailsDtoList()) {
+        for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
 
             if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
 
@@ -116,19 +116,24 @@ public class LoanServiceImpl implements LoanService {
                 } else {
                     int noOfDays = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
                     double totalPayable = loanEmiDetailDto.getTotalPayable();
-                    loanEmiDetailDto.setTotalPayable(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays));
-                    loanEmiDetailDto.setPenalty(loanEmiDetailDto.getTotalPayable()-totalPayable);
+                    loanEmiDetailDto.setTotalPayable(roundToTwoDecimal(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays)));
+                    loanEmiDetailDto.setPenalty(roundToTwoDecimal(loanEmiDetailDto.getTotalPayable()-totalPayable));
                     loanEmiDetailDto.setPaymentStatus("Paid");
                     break;
                 }
             }
-            else{
+           /* else{
                 baseDate = baseDate.plusMonths(1);
-            }
+            }*/
         }
-        loanDetails.setLoanDetailsDtoList(loanDetails.getLoanDetailsDtoList());
-        loanDetailsRepository.save(loanDetails);
+        loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
+        loanRepository.save(loan);
+        modelMapper.map(loan, loanDto);
         return loanDto;
+    }
+
+    private double roundToTwoDecimal(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 
 //    //TODO: known issue:     "message": "Can not set java.util.Date field com.gulbalasalamov.bankloanapplication.model.entity.Loan.loanDate to java.lang.String",
