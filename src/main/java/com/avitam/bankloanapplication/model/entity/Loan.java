@@ -22,7 +22,7 @@ public class Loan extends BaseEntity{
    private BigDecimal loanEmi;
    private double interestRate;
    private Integer tenure;
-   private List<LoanDetailsDto> loanDetailsDtoList;
+   private List<LoanEmiDetailDto> loanEmiDetailDtoList;
 
    private String loanDetailsId;
    private Double desiredLoan;

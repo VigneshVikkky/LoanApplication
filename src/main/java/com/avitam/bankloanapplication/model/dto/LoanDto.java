@@ -28,5 +28,5 @@ public class LoanDto extends CommonDto{
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate sanctionDate;
     private String loanDetailsId;
-    private List<LoanDetailsDto> loanDetailsDtoList;
+    private List<LoanEmiDetailDto> loanEmiDetailDtoList;
 }

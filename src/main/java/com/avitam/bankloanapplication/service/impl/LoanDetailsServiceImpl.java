@@ -46,6 +46,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             if (loanDetailsDto.getRecordId() != null) {
                 loanDetails = loanDetailsRepository.findByRecordId(loanDetailsDto.getRecordId());
                 calculateLoanDetails(loanDetails);
+                totalAmountCalculation(loanDetails);
                 modelMapper.map(loanDetailsDto, loanDetails);
                 loanDetailsRepository.save(loanDetails);
                 request.setMessage("Data updated successfully");
@@ -63,6 +64,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                 loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
             }
             loanDetailsRepository.save(loanDetails);
+            Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
+            loan.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
+            loanRepository.save(loan);
             loanDetailsList.add(loanDetails);
         }
 
