@@ -93,24 +93,28 @@ public class LoanServiceImpl implements LoanService {
     public LoanDto getEmiStatusTillDate(LoanDto loanDto) {
         Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
         LocalDate sanctionDate = loan.getSanctionDate();
-        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+        //LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        currentDate=currentDate.plusMonths(4);
+        LocalDate baseDate = currentDate.withDayOfMonth(5);
+        //currentDate=currentDate.plusMonths(3);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-        //LocalDate dueDate = null;
+        currentDate = currentDate.plusDays(14);
 
         if (sanctionDate.getDayOfMonth() > 5) {
-            baseDate = baseDate.plusMonths(4);
+            baseDate = baseDate.plusMonths(noOfMonths+1);
         } else {
             baseDate = baseDate.plusMonths(0);
         }
         //LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
 
+        //int monthCount=0;
+        LocalDate dueDate=baseDate;
         for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
 
+            //dueDate = baseDate.plusMonths(monthCount);
             if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
 
-                if (baseDate == currentDate) {
+                if (currentDate.isBefore(dueDate)) {
                     loanEmiDetailDto.setPaymentStatus("Paid");
                     break;
                 } else {
@@ -122,6 +126,8 @@ public class LoanServiceImpl implements LoanService {
                     break;
                 }
             }
+            //monthCount++;
+            //dueDate = baseDate.plusMonths(monthCount);
            /* else{
                 baseDate = baseDate.plusMonths(1);
             }*/
