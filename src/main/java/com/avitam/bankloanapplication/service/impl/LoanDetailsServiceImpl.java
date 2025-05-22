@@ -70,7 +70,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             loanDetailsList.add(loanDetails);
         }
 
-        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {
+        }.getType();
         List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, listType);
         request.setLoanDetailsDtos(dtoList);
         // List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, new org.modelmapper.TypeToken<List<LoanDetailsDto>>() {}.getType());
@@ -93,7 +94,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         double emi;
 
 
-       List<LoanEmiDetailDto> loanDetailsDtoList = new ArrayList<>();
+        List<LoanEmiDetailDto> loanDetailsDtoList = new ArrayList<>();
         List<LocalDate> duedatesList = new ArrayList<>();
 
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
@@ -116,15 +117,15 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             totalLoanAmount = totalLoanAmount - installment;
             LocalDate dueDate = baseDate.plusMonths(i);
 
-           // detail.setLoanId(loan.getRecordId());
+            // detail.setLoanId(loan.getRecordId());
             //detail.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
             detail.setInstalment(roundToTwoDecimal(installment));
             detail.setInterestAmount(roundToTwoDecimal(interestAmount));
             detail.setTotalPayable(roundToTwoDecimal(emi));
             detail.setPenalty(0);
-           // detail.setInterestRate(interestRate);
+            // detail.setInterestRate(interestRate);
             detail.setPaymentStatus("Unpaid");
-           // detail.setLoanSanctionedDate(loan.getSanctionDate());
+            // detail.setLoanSanctionedDate(loan.getSanctionDate());
             //detail.setDueDate(dueDate);
 
             loanDetailsDtoList.add(detail);
@@ -265,10 +266,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //        modelMapper.map(loanDetails, loanDetailsDto);
 //        return loanDetailsDto;
 //    }
-
-
-
-
 
 
     //        loanDetails.setTotalPayable(roundToTwoDecimal(emi));

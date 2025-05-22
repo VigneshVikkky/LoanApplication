@@ -19,7 +19,7 @@ public class BaseEntity {
     private String name;
     private String creator;
     private Boolean status;
-    @Id
+
     private String recordId;
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date creationTime;

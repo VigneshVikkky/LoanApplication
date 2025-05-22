@@ -24,13 +24,13 @@ public class LoanServiceImpl implements LoanService {
 
 
     @Autowired
-    private  LoanRepository loanRepository;
+    private LoanRepository loanRepository;
 
     @Autowired
-    private  LoanDetailsRepository loanDetailsRepository;
+    private LoanDetailsRepository loanDetailsRepository;
 
     @Autowired
-    private  CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -45,12 +45,12 @@ public class LoanServiceImpl implements LoanService {
 
     public LoanWsDto createLoan(LoanWsDto request) {
         Loan loan = new Loan();
-        List<LoanDto> loanDtos=request.getLoanDtoList();
-        List<Loan> loans=new ArrayList<>();
-        for(LoanDto loanDto:loanDtos) {
+        List<LoanDto> loanDtos = request.getLoanDtoList();
+        List<Loan> loans = new ArrayList<>();
+        for (LoanDto loanDto : loanDtos) {
             if (loanDto.getRecordId() != null) {
                 loan = loanRepository.findByRecordId(loanDto.getRecordId());
-                if(loanDto.getLoanType()!=null) {
+                if (loanDto.getLoanType() != null) {
                     LoanType loanType = loanTypeRepository.findByRecordId(loanDto.getLoanType());
                     loan.setLoanType(loanType.getName());
                 }
@@ -64,13 +64,9 @@ public class LoanServiceImpl implements LoanService {
                 loan.setCreationTime(new Date());
                 LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
                 String loanTypeName = loanType.getName();
-               // LoanStatus loanStatus = loanStatusRepository.findByRecordId(loan.getLoanStatusId());
-                //String loanStatusVar = loanStatus.getName();
-               // LoanScoreResult loanScoreResult = loanScoreResultRepository.findByRecordId(loan.getLoanScoreResultId());
-                //String loanResult=loanScoreResult.getName();
+
                 loan.setLoanType(loanTypeName);
-                //loan.setLoanStatus(loanStatusVar);
-                //loan.setLoanScoreResult(loanResult);
+
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
             }
@@ -83,7 +79,7 @@ public class LoanServiceImpl implements LoanService {
 
             request.setMessage("Data added Successfully");
         }
-        request.setLoanDtoList(modelMapper.map(loans,List.class));
+        request.setLoanDtoList(modelMapper.map(loans, List.class));
 
         return request;
 
@@ -93,44 +89,30 @@ public class LoanServiceImpl implements LoanService {
     public LoanDto getEmiStatusTillDate(LoanDto loanDto) {
         Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
         LocalDate sanctionDate = loan.getSanctionDate();
-        //LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
         LocalDate baseDate = currentDate.withDayOfMonth(5);
-        //currentDate=currentDate.plusMonths(3);
+        currentDate = currentDate.plusMonths(3);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
         currentDate = currentDate.plusDays(14);
 
         if (sanctionDate.getDayOfMonth() > 5) {
-            baseDate = baseDate.plusMonths(noOfMonths+1);
+            baseDate = baseDate.plusMonths(noOfMonths + 1);
         } else {
             baseDate = baseDate.plusMonths(0);
         }
-        //LoanDetails loanDetails = loanDetailsRepository.findByRecordId(loan.getLoanDetailsId());
 
-        //int monthCount=0;
-        LocalDate dueDate=baseDate;
-        for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
-
-            //dueDate = baseDate.plusMonths(monthCount);
-            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")){
-
-                if (currentDate.isBefore(dueDate)) {
-                    loanEmiDetailDto.setPaymentStatus("Paid");
-                    break;
-                } else {
+        for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
+            if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
+                if (currentDate.isAfter(baseDate)) {
                     int noOfDays = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
                     double totalPayable = loanEmiDetailDto.getTotalPayable();
-                    loanEmiDetailDto.setTotalPayable(roundToTwoDecimal(totalPayable+(loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays)));
-                    loanEmiDetailDto.setPenalty(roundToTwoDecimal(loanEmiDetailDto.getTotalPayable()-totalPayable));
-                    loanEmiDetailDto.setPaymentStatus("Paid");
+                    loanEmiDetailDto.setTotalPayable(roundToTwoDecimal(totalPayable + (loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays)));
+                    loanEmiDetailDto.setPenalty(roundToTwoDecimal(loanEmiDetailDto.getTotalPayable() - totalPayable));
                     break;
                 }
+                break;
             }
-            //monthCount++;
-            //dueDate = baseDate.plusMonths(monthCount);
-           /* else{
-                baseDate = baseDate.plusMonths(1);
-            }*/
+
         }
         loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
         loanRepository.save(loan);
@@ -167,7 +149,7 @@ public class LoanServiceImpl implements LoanService {
 //                    loanRepository.save(updatedLoan);
 //                }
 //        );
-    }
+}
 
 
 
