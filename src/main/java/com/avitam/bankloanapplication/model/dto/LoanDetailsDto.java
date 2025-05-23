@@ -18,7 +18,7 @@ public class LoanDetailsDto extends CommonDto {
     private double totalPayable;
     private String loanLimitId;
     private double loanAmount;
-    private List<LoanEmiDetailDto> loanDetailsList;
+    private List<LoanEmiDetailDto> loanDetailsDtoList;
     private String loanId;
     private LocalDate dueDate;
     private String paymentStatus;
