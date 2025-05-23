@@ -29,4 +29,8 @@ public class LoanDto extends CommonDto{
     private LocalDate sanctionDate;
     private String loanDetailsId;
     private List<LoanEmiDetailDto> loanEmiDetailDtoList;
+    private double totalInterestAmount;
+    private double totalInstalmentAmount;
+    private double totalPayableAmount;
+    private double totalPenalty;
 }

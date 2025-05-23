@@ -33,5 +33,9 @@ public class Loan extends BaseEntity{
    private String customerId;
    @JsonFormat(pattern = "dd-MM-yyyy")
    private LocalDate sanctionDate;
+   private double totalInterestAmount;
+   private double totalInstalmentAmount;
+   private double totalPayableAmount;
+   private double totalPenalty;
 
 }
