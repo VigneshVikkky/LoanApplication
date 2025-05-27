@@ -47,8 +47,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                 loanDetails = loanDetailsRepository.findByRecordId(loanDetailsDto.getRecordId());
                 calculateLoanDetails(loanDetails);
                 totalAmountCalculation(loanDetails);
-                modelMapper.map(loanDetailsDto, loanDetails);
                 loanDetailsRepository.save(loanDetails);
+                modelMapper.map(loanDetailsDto, loanDetails);
+
                 request.setMessage("Data updated successfully");
             } else {
                 loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);

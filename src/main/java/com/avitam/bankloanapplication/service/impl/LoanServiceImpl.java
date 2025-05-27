@@ -92,7 +92,7 @@ public class LoanServiceImpl implements LoanService {
         LocalDate currentDate = LocalDate.now();
         LocalDate baseDate = currentDate.withDayOfMonth(5);
        // LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-        currentDate = currentDate.plusMonths(2);
+        currentDate = currentDate.plusMonths(1);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
         currentDate = currentDate.plusDays(14);
 
