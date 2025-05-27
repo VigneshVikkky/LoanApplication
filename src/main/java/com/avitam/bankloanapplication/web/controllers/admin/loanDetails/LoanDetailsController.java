@@ -84,14 +84,25 @@ public class LoanDetailsController extends BaseController {
     }*/
 
     @GetMapping("/getByLoanRecordId")
-    public LoanDetailsWsDto getByRecordId(@RequestParam String recordId) {
+    public LoanDetailsWsDto getByRecordId(@RequestBody LoanDetailsDto loanDetailsDto) {
         LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
-        List<LoanDetails> loanDetails = loanDetailsRepository.findByRecordIdAndStatus(recordId,true);
+        List<LoanDetails> loanDetails = loanDetailsRepository.findByRecordIdAndStatus(loanDetailsDto.getRecordId(),true);
         Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
         loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loanDetails,listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsWsDto;
     }
+
+    /*@PostMapping("/getByLoanId")
+   // @ResponseBody
+    public LoanDetailsDto getByLoanId(@RequestBody LoanDetailsDto loanDetailsDto) {
+       // LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
+       LoanDetails loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
+        Type listType = new TypeToken<LoanDetailsDto>() {}.getType();
+        loanDetailsDto = modelMapper.map(loanDetails,listType);
+        loanDetailsDto.setBaseUrl(ADMIN_LOANDETAILS);
+        return loanDetailsDto;
+    }*/
 
 //    //TODO: need enum-string fix in LoanService
 //    @PatchMapping("/update/{loanId}")

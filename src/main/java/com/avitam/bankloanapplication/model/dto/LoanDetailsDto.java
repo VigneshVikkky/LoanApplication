@@ -26,8 +26,6 @@ public class LoanDetailsDto extends CommonDto {
     private double penalty;
     private double interestRate;
     private LocalDate loanSanctionedDate;
-
-
     private double totalInterestAmount;
     private double totalInstalmentAmount;
     private double totalPayableAmount;
