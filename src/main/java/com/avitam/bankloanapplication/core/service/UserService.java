@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserService {
 
 
-    void save(UserDto request);
+    UserDto save(UserDto request);
     List<User> getAll();
 
     void delete(String username);

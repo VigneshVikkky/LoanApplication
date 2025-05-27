@@ -44,27 +44,28 @@ public class UserServiceImpl implements UserService {
     RoleRepository roleRepository;
 
     @Override
-    public void save(UserDto request) {
-        User customer;
+    public UserDto save(UserDto request) {
+        User user;
         if (request.getRecordId() != null) {
-            customer = userRepository.findByRecordId(request.getRecordId());
-            modelMapper.map(request, customer);
+            user = userRepository.findByRecordId(request.getRecordId());
+            modelMapper.map(request, user);
             request.setMessage("Data updated successfully");
         } else {
-            customer = modelMapper.map(request, User.class);
-            customer.setCreationTime(new Date());
-            userRepository.save(customer);
+            user = modelMapper.map(request, User.class);
+            user.setCreationTime(new Date());
+            userRepository.save(user);
         }
-        if (StringUtils.isNotEmpty(customer.getPassword())) {
-            customer.setPassword(bCryptPasswordEncoder.encode(customer.getPassword()));
+        if (StringUtils.isNotEmpty(user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        userRepository.save(customer);
+        userRepository.save(user);
         if (request.getRecordId() == null) {
-            customer.setRecordId(String.valueOf(customer.getId().getTimestamp()));
+            user.setRecordId(String.valueOf(user.getId().getTimestamp()));
         }
-        userRepository.save(customer);
-        request = (modelMapper.map(customer, UserDto.class));
+        userRepository.save(user);
+        request = (modelMapper.map(user, UserDto.class));
         request.setBaseUrl(ADMIN_USER);
+        return request;
     }
 
     @Override
