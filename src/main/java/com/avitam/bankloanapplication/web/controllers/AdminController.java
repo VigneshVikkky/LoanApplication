@@ -74,7 +74,7 @@ public class AdminController extends BaseController{
         return customerWsDto;
     }
 
-    @PostMapping("/getedit")
+    /*@PostMapping("/getedit")
     @ResponseBody
     public CustomerWsDto editLoanApplication(@RequestBody CustomerWsDto request) {
         CustomerWsDto customerWsDto = new CustomerWsDto();
@@ -86,7 +86,23 @@ public class AdminController extends BaseController{
         customerWsDto.setCustomerDtoList(modelMapper.map(customers,listType));
         customerWsDto.setBaseUrl(ADMIN_USER);
         return customerWsDto;
+    }*/
+
+    @PostMapping("/getedit")
+    @ResponseBody
+    public UserWsDto editLoanApplication(@RequestBody UserWsDto request) {
+        UserWsDto userWsDto = new UserWsDto();
+        List<User> users=new ArrayList<>();
+        for(UserDto userDto:request.getUserDtoList()) {
+            users.add(userRepository.findByRecordId(userDto.getRecordId()));
+        }
+        Type listType = new org.modelmapper.TypeToken<List<UserDto>>() {}.getType();
+        userWsDto.setUserDtoList(modelMapper.map(users,listType));
+        userWsDto.setBaseUrl(ADMIN_USER);
+        return userWsDto;
     }
+
+
 
     @PostMapping("/edit")
     @ResponseBody
