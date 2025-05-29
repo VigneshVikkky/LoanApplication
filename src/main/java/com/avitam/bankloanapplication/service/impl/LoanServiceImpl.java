@@ -107,6 +107,7 @@ public class LoanServiceImpl implements LoanService {
         double totalPayableAmount;
         double totalPenalty;
 
+
         for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
             if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
                 if (currentDate.isAfter(baseDate)) {
@@ -119,11 +120,14 @@ public class LoanServiceImpl implements LoanService {
                     loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
                     loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
                     loan.setTotalPenalty(loanEmiDetailDto.getPenalty()+loan.getTotalPenalty());
+                    loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
+
                     break;
                 }
                 loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
                 loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
                 loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
+                loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
                 loanEmiDetailDto.setDueDate(baseDate);
                 break;
             }
@@ -133,6 +137,9 @@ public class LoanServiceImpl implements LoanService {
         modelMapper.map(loan, loanDto);
         return loanDto;
     }
+
+
+
 
     private double roundToTwoDecimal(double value) {
         return Math.round(value * 100.0) / 100.0;
