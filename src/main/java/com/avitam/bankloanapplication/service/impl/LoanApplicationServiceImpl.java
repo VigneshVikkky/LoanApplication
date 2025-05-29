@@ -2,19 +2,9 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.core.service.CoreService;
 import com.avitam.bankloanapplication.exception.InvalidLoanApplicationException;
-import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
-import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
-import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
-import com.avitam.bankloanapplication.model.dto.LoanWsDto;
-import com.avitam.bankloanapplication.model.entity.LoanDetails;
+import com.avitam.bankloanapplication.model.dto.*;
+import com.avitam.bankloanapplication.model.entity.*;
 import com.avitam.bankloanapplication.repository.*;
-import com.avitam.bankloanapplication.model.entity.LoanLimit;
-import com.avitam.bankloanapplication.model.entity.LoanScoreResult;
-import com.avitam.bankloanapplication.model.entity.Customer;
-import com.avitam.bankloanapplication.model.entity.Loan;
-import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -49,6 +39,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private LoanScoreResultRepository loanScoreResultRepository;
     @Autowired
     private LoanLimitRepository loanLimitRepository;
+    @Autowired
+    private LoanTypeRepository loanTypeRepository;
 
     public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
 
@@ -63,6 +55,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
             if (loanApplicationDto.getRecordId() != null) {
                 loanApplication = loanApplicationRepository.findByRecordId(loanApplicationDto.getRecordId());
+                getLoanType(loanApplication);
                 modelMapper.map(loanApplicationDto, loanApplication);
                 loanApplicationRepository.save(loanApplication);
                 request.setMessage("Data updated successfully");
@@ -70,6 +63,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 loanApplication = modelMapper.map(loanApplicationDto, LoanApplication.class);
                 loanApplication.setStatus(true);
                 loanApplication.setCreationTime(new Date());
+                getLoanType(loanApplication);
                 loanApplicationRepository.save(loanApplication);
             }
             if (request.getRecordId() == null) {
@@ -85,6 +79,15 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         }.getType();
         request.setLoanApplicationDtos(modelMapper.map(loanApplications, listType));
         return request;
+    }
+
+    public LoanApplication getLoanType(LoanApplication loanApplication){
+
+        Loan loan = loanRepository.findByRecordId(loanApplication.getLoanId());
+        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
+        LoanTypeDto loanTypeDto = modelMapper.map(loanType, LoanTypeDto.class);
+        loanApplication.setLoanTypeDto(loanTypeDto);
+        return loanApplication;
     }
 
 //    @Override

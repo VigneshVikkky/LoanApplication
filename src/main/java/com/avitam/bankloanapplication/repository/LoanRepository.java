@@ -2,6 +2,7 @@ package com.avitam.bankloanapplication.repository;
 
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanDetails;
+import com.avitam.bankloanapplication.model.entity.LoanType;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +23,6 @@ public interface LoanRepository extends MongoRepository<Loan, String> {
     List<Loan> findByRecordIdAndStatus(String recordId, boolean status);
 
     LoanDetails findByLoanDetailsId(String loanDetailsId);
+
+    LoanType findByLoanType(String loanType);
 }

@@ -52,7 +52,7 @@ public class LoanServiceImpl implements LoanService {
                 loan = loanRepository.findByRecordId(loanDto.getRecordId());
                 if (loanDto.getLoanType() != null) {
                     LoanType loanType = loanTypeRepository.findByRecordId(loanDto.getLoanType());
-                    loan.setLoanType(loanType.getName());
+                    loan.setLoanType(loanType.getRecordId());
                 }
 
                 modelMapper.map(loanDto, loan);
@@ -63,7 +63,7 @@ public class LoanServiceImpl implements LoanService {
                 loan.setStatus(true);
                 loan.setCreationTime(new Date());
                 LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
-                String loanTypeName = loanType.getName();
+                String loanTypeName = loanType.getRecordId();
 
                 loan.setLoanType(loanTypeName);
 
@@ -92,9 +92,9 @@ public class LoanServiceImpl implements LoanService {
         LocalDate currentDate = LocalDate.now();
         LocalDate baseDate = currentDate.withDayOfMonth(5);
        // LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-        currentDate = currentDate.plusMonths(1);
+       // currentDate = currentDate.plusMonths(1);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-        currentDate = currentDate.plusDays(14);
+     //   currentDate = currentDate.plusDays(14);
 
         if (sanctionDate.getDayOfMonth() > 5) {
             baseDate = baseDate.plusMonths(noOfMonths + 1);
@@ -133,6 +133,7 @@ public class LoanServiceImpl implements LoanService {
             }
         }
         loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
+        checkLoanStatus(loan);
         loanRepository.save(loan);
         modelMapper.map(loan, loanDto);
         return loanDto;
@@ -140,6 +141,23 @@ public class LoanServiceImpl implements LoanService {
 
 
 
+
+    public Loan checkLoanStatus(Loan loan){
+
+        int paidCount=0;
+        for(LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()){
+            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")){
+                paidCount++;
+            }
+        }
+        if(loan.getTenure()==paidCount){
+            loan.setLoanStatus("Inactive");
+        }
+        else{
+            loan.setLoanStatus("Active");
+        }
+        return loan;
+    }
 
     private double roundToTwoDecimal(double value) {
         return Math.round(value * 100.0) / 100.0;
