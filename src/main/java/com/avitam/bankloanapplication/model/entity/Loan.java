@@ -2,6 +2,7 @@ package com.avitam.bankloanapplication.model.entity;
 
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
+import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +20,7 @@ import java.util.List;
 public class Loan extends BaseEntity{
 
    private String loanType;
+   private LoanTypeDto loanTypeDto;
    private BigDecimal loanEmi;
    private double interestRate;
    private Integer tenure;

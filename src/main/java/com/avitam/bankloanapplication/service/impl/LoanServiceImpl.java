@@ -2,6 +2,7 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
+import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.model.entity.LoanType;
@@ -50,11 +51,6 @@ public class LoanServiceImpl implements LoanService {
         for (LoanDto loanDto : loanDtos) {
             if (loanDto.getRecordId() != null) {
                 loan = loanRepository.findByRecordId(loanDto.getRecordId());
-                if (loanDto.getLoanType() != null) {
-                    LoanType loanType = loanTypeRepository.findByRecordId(loanDto.getLoanType());
-                    loan.setLoanType(loanType.getRecordId());
-                }
-
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
                 request.setMessage("Data updated successfully");
@@ -62,17 +58,14 @@ public class LoanServiceImpl implements LoanService {
                 loan = modelMapper.map(loanDto, Loan.class);
                 loan.setStatus(true);
                 loan.setCreationTime(new Date());
-                LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
-                String loanTypeName = loanType.getRecordId();
-
-                loan.setLoanType(loanTypeName);
-
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
             }
             if (request.getRecordId() == null) {
                 loan.setRecordId(String.valueOf(loan.getId().getTimestamp()));
             }
+            getLoanType(loan);
+            checkLoanStatus(loan);
             loanRepository.save(loan);
             loans.add(loan);
             loanDto.setBaseUrl(ADMIN_lOAN);
@@ -140,8 +133,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
 
-
-
     public Loan checkLoanStatus(Loan loan){
 
         int paidCount=0;
@@ -156,6 +147,16 @@ public class LoanServiceImpl implements LoanService {
         else{
             loan.setLoanStatus("Active");
         }
+        return loan;
+    }
+
+    public Loan getLoanType(Loan loan){
+
+        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
+        loan.setLoanType(loanType.getRecordId());
+        LoanTypeDto loanTypeDto = modelMapper.map(loanType, LoanTypeDto.class);
+        loan.setLoanTypeDto(loanTypeDto);
+
         return loan;
     }
 

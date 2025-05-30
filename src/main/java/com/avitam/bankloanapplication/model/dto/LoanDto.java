@@ -16,6 +16,7 @@ import java.util.List;
 @ToString
 public class LoanDto extends CommonDto{
     private String loanType;
+    private LoanTypeDto loanTypeDto;
     private BigDecimal loanEmi;
     private BigDecimal interestRate;
     private Integer tenure;

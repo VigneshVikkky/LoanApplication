@@ -66,6 +66,17 @@ public class LoanController extends BaseController {
         return loanDtoList;
     }
 
+    @PostMapping("/getCustomerLoanStatus")
+    public List<LoanDto> getCustomerLoanStatus(@RequestBody LoanDto loanDto) {
+        List<LoanDto> loanDtoList = new ArrayList<>();
+
+        List<Loan> loanList = loanRepository.findByCustomerIdAndLoanStatus(loanDto.getCustomerId(), loanDto.getLoanStatus());
+        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+        loanDtoList.addAll(modelMapper.map(loanList, listType));
+
+        return loanDtoList;
+    }
+
 
 
   /*  @GetMapping("/getEligibleLoans")

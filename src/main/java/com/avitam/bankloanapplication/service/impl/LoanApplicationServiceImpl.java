@@ -69,7 +69,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             if (request.getRecordId() == null) {
                 loanApplication.setRecordId(String.valueOf(loanApplication.getId().getTimestamp()));
             }
-            loanApplication.setLoanStatus("Applied");
+            //loanApplication.setLoanStatus("Applied");
             loanApplicationRepository.save(loanApplication);
             request.setBaseUrl(ADMIN_LOANAPPLICATION);
             request.setMessage("Data added Successfully");
