@@ -27,4 +27,6 @@ public interface LoanRepository extends MongoRepository<Loan, String> {
     LoanType findByLoanType(String loanType);
 
     List<Loan> findByCustomerIdAndLoanStatus(String customerId, String loanStatus);
+
+    List<Loan> findByCustomerId(String customerId);
 }
