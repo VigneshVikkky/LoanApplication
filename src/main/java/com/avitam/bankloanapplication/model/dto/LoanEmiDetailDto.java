@@ -18,5 +18,7 @@ public class LoanEmiDetailDto extends CommonDto  {
     private double penalty;
     private String paymentStatus;
     private LocalDate dueDate;
+    private LocalDate loanPaidDate;
+
 
 }

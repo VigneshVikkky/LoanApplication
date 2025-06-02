@@ -109,7 +109,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             baseDate = baseDate.plusMonths(0);
         }
 
-
         for (int i = 0; i < loan.getTenure(); i++) {
             LoanEmiDetailDto detail = new LoanEmiDetailDto();
 
@@ -118,19 +117,18 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             totalLoanAmount = totalLoanAmount - installment;
             LocalDate dueDate = baseDate.plusMonths(i);
 
-            // detail.setLoanId(loan.getRecordId());
-            //detail.setLoanAmount(roundToTwoDecimal(totalLoanAmount));
             detail.setInstalment(roundToTwoDecimal(installment));
             detail.setInterestAmount(roundToTwoDecimal(interestAmount));
             detail.setTotalPayable(roundToTwoDecimal(emi));
             detail.setPenalty(0);
-            // detail.setInterestRate(interestRate);
             detail.setPaymentStatus("Unpaid");
-            // detail.setLoanSanctionedDate(loan.getSanctionDate());
             detail.setDueDate(dueDate);
+            detail.setLoanPaidDate(null);
+            detail.setRecordId(String.valueOf(i));
 
             loanDetailsDtoList.add(detail);
         }
+
 
         loanDetails.setLoanDetailsDtoList(loanDetailsDtoList);
         return loanDetails;

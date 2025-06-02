@@ -83,11 +83,12 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate currentDate = LocalDate.now();
-        LocalDate baseDate = currentDate.withDayOfMonth(5);
-       // LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-       // currentDate = currentDate.plusMonths(1);
+        //LocalDate baseDate = currentDate.withDayOfMonth(5);
+        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+       // currentDate = currentDate.plusMonths(3);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-     //   currentDate = currentDate.plusDays(14);
+        currentDate = currentDate.plusDays(15);
+
 
         if (sanctionDate.getDayOfMonth() > 5) {
             baseDate = baseDate.plusMonths(noOfMonths + 1);
@@ -101,36 +102,44 @@ public class LoanServiceImpl implements LoanService {
         double totalPenalty;
 
 
-        for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
-            if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
-                if (currentDate.isAfter(baseDate)) {
-                    int noOfDays = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
-                    double totalPayable = loanEmiDetailDto.getTotalPayable();
-                    loanEmiDetailDto.setTotalPayable(roundToTwoDecimal(totalPayable + (loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays)));
-                    loanEmiDetailDto.setPenalty(roundToTwoDecimal(loanEmiDetailDto.getTotalPayable() - totalPayable));
+
+
+            for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
+                if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
+
                     loanEmiDetailDto.setDueDate(baseDate);
-                    loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
-                    loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
-                    loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
-                    loan.setTotalPenalty(loanEmiDetailDto.getPenalty()+loan.getTotalPenalty());
-                    loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
+
+                    double instalment = loanEmiDetailDto.getInstalment();
+                    double interest = loanEmiDetailDto.getInterestAmount();
+                    double baseAmount = instalment + interest;
+
+                    double penalty = 0.0;
+
+                    if (currentDate.isAfter(baseDate)) {
+                        int daysLate = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
+                        penalty = roundToTwoDecimal(baseAmount * 0.05 * daysLate);
+                    }
+
+                    double totalPayable = roundToTwoDecimal(baseAmount + penalty);
+                    loanEmiDetailDto.setPenalty(penalty);
+                    loanEmiDetailDto.setTotalPayable(totalPayable);
+
+                    loan.setTotalPayableAmount(totalPayable + loan.getTotalPayableAmount());
+                    loan.setTotalInterestAmount(interest + loan.getTotalInterestAmount());
+                    loan.setTotalInstalmentAmount(instalment + loan.getTotalInstalmentAmount());
+                    loan.setTotalPenalty(penalty + loan.getTotalPenalty());
+                    loan.setPendingInstallmentAmount(loan.getDesiredLoan() - loan.getTotalInstalmentAmount());
 
                     break;
                 }
-                loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
-                loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
-                loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
-                loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
-                loanEmiDetailDto.setDueDate(baseDate);
-                break;
             }
+
+
+            loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
+            loanRepository.save(loan);
+            modelMapper.map(loan, loanDto);
+            return loanDto;
         }
-        loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
-        checkLoanStatus(loan);
-        loanRepository.save(loan);
-        modelMapper.map(loan, loanDto);
-        return loanDto;
-    }
 
 
     public Loan checkLoanStatus(Loan loan){
