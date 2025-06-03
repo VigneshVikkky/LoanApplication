@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +67,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             if (request.getRecordId() == null) {
                 loanApplication.setRecordId(String.valueOf(loanApplication.getId().getTimestamp()));
             }
+            getCustomer(loanApplication);
             //loanApplication.setLoanStatus("Applied");
             loanApplicationRepository.save(loanApplication);
             request.setBaseUrl(ADMIN_LOANAPPLICATION);
@@ -81,13 +80,22 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         return request;
     }
 
-    public LoanApplication getLoanType(LoanApplication loanApplication){
+    public void getLoanType(LoanApplication loanApplication){
 
         Loan loan = loanRepository.findByRecordId(loanApplication.getLoanId());
         LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
-        LoanTypeDto loanTypeDto = modelMapper.map(loanType, LoanTypeDto.class);
+        Type listType = new TypeToken<LoanTypeDto>() {
+        }.getType();
+        LoanTypeDto loanTypeDto = modelMapper.map(loanType, listType);
         loanApplication.setLoanTypeDto(loanTypeDto);
-        return loanApplication;
+    }
+
+    public void getCustomer(LoanApplication loanApplication){
+        Customer customer = customerRepository.findByRecordId(loanApplication.getCustomerId());
+        Type listType = new TypeToken<CustomerDto>() {
+        }.getType();
+        CustomerDto customerDto = modelMapper.map(customer, listType);
+        loanApplication.setCustomerDto(customerDto);
     }
 
 //    @Override
