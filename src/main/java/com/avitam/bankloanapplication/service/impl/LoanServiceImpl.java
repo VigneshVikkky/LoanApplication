@@ -51,6 +51,13 @@ public class LoanServiceImpl implements LoanService {
         for (LoanDto loanDto : loanDtos) {
             if (loanDto.getRecordId() != null) {
                 loan = loanRepository.findByRecordId(loanDto.getRecordId());
+                for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()){
+                    for(LoanEmiDetailDto loanEmiDetailDto1:loanDto.getLoanEmiDetailDtoList()) {
+                        if (loanEmiDetailDto.getRecordId().equalsIgnoreCase(loanEmiDetailDto1.getRecordId())){
+                            loanEmiDetailDto.setPaymentStatus(loanEmiDetailDto1.getPaymentStatus());
+                        }
+                    }
+                }
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
                 request.setMessage("Data updated successfully");
@@ -78,6 +85,7 @@ public class LoanServiceImpl implements LoanService {
 
     }
 
+
     @Override
     public LoanDto getEmiStatusTillDate(LoanDto loanDto) {
         Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
@@ -85,9 +93,9 @@ public class LoanServiceImpl implements LoanService {
         LocalDate currentDate = LocalDate.now();
         //LocalDate baseDate = currentDate.withDayOfMonth(5);
        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-       currentDate = currentDate.plusMonths(2);
+      // currentDate = currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-       currentDate = currentDate.plusDays(14);
+       //currentDate = currentDate.plusDays(14);
 
         if (sanctionDate.getDayOfMonth() > 5) {
             baseDate = baseDate.plusMonths(noOfMonths + 1);
@@ -125,7 +133,7 @@ public class LoanServiceImpl implements LoanService {
             loopCount++;
         }
 
-            for(int i=0; i<loopCount;i++){
+            for(int i=0; i<loopCount-1;i++){
                 LoanEmiDetailDto loanEmiDetailDto = loan.getLoanEmiDetailDtoList().get(i);
                 totalPayableAmount=totalPayableAmount+loanEmiDetailDto.getTotalPayable();
                 loan.setTotalPayableAmount(totalPayableAmount);
