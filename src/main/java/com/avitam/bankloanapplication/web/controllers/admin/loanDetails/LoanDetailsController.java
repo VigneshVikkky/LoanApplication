@@ -83,7 +83,7 @@ public class LoanDetailsController extends BaseController {
         return loanWsDto;
     }*/
 
-    @GetMapping("/getByLoanRecordId")
+    @PostMapping("/getByLoanRecordId")
     public LoanDetailsWsDto getByRecordId(@RequestBody LoanDetailsDto loanDetailsDto) {
         LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
         List<LoanDetails> loanDetails = loanDetailsRepository.findByRecordIdAndStatus(loanDetailsDto.getRecordId(),true);
@@ -93,8 +93,7 @@ public class LoanDetailsController extends BaseController {
         return loanDetailsWsDto;
     }
 
-    /*@PostMapping("/getByLoanId")
-   // @ResponseBody
+    @PostMapping("/getByLoanId")
     public LoanDetailsDto getByLoanId(@RequestBody LoanDetailsDto loanDetailsDto) {
        // LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
        LoanDetails loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
@@ -102,7 +101,7 @@ public class LoanDetailsController extends BaseController {
         loanDetailsDto = modelMapper.map(loanDetails,listType);
         loanDetailsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsDto;
-    }*/
+    }
 
 //    //TODO: need enum-string fix in LoanService
 //    @PatchMapping("/update/{loanId}")

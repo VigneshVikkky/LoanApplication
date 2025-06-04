@@ -57,7 +57,7 @@ public class CustomerController extends BaseController {
         customerWsDto.setBaseUrl(ADMIN_CUSTOMER);
         return customerWsDto;
     }
-    @GetMapping("/getByRecordId")
+   /* @GetMapping("/getByRecordId")
     @ResponseBody
     public CustomerWsDto getByRecordId(@RequestParam String recordId) {
         CustomerWsDto customerWsDto = new CustomerWsDto();
@@ -66,6 +66,15 @@ public class CustomerController extends BaseController {
         customerWsDto.setCustomerDtoList(modelMapper.map(customers, listType));
         customerWsDto.setBaseUrl(ADMIN_CUSTOMER);
         return customerWsDto;
+    }*/
+
+
+    @PostMapping("/getByRecordId")
+    public CustomerDto getByRecordId(@RequestBody CustomerDto customerDto) {
+        Customer customer = customerRepository.findByRecordId(customerDto.getRecordId());
+        Type listType = new TypeToken<CustomerDto>() {}.getType();
+        customerDto=modelMapper.map(customer, listType);
+        return customerDto;
     }
 
     @PostMapping("/edit")

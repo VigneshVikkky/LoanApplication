@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerWsDto handleEdit(CustomerDto customerDto) {
         CustomerWsDto customerWsDto = new CustomerWsDto();
         Customer customer = new Customer();
-        List<Customer> customers = new ArrayList<>();
+        List<Customer> customerList = new ArrayList<>();
         if (customerDto.getRecordId() != null) {
             customer = customerRepository.findByRecordId(customerDto.getRecordId());
             modelMapper.map(customerDto, customer);
@@ -54,9 +54,10 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setRecordId(String.valueOf(customer.getId().getTimestamp()));
         }
         customerRepository.save(customer);
-        customers.add(customer);
+        customerList.add(customer);
         customerDto.setBaseUrl(ADMIN_CUSTOMER);
         customerDto.setMessage("Data added Successfully");
+        customerWsDto.setCustomerDtoList(modelMapper.map(customerList, List.class));
         return customerWsDto;
     }
 

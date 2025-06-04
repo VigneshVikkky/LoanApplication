@@ -16,6 +16,7 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private String address;
+    private String gender;
     private String referenceContacts;
     private String panNumber;
     private String aadhaarNumber;

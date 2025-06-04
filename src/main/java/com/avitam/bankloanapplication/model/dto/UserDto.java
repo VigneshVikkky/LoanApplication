@@ -14,6 +14,7 @@ public class UserDto extends CommonDto {
     private String username;
     private String email;
     private String password;
+    private String gender;
     private String address;
     private String referenceContacts;
     private String panNumber;

@@ -23,4 +23,5 @@ public class LoanApplicationDto extends CommonDto{
     private String images;
     private LocalDate sanctionDate;
     private LoanTypeDto loanTypeDto;
+
 }

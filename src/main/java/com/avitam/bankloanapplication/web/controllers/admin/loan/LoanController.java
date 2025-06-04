@@ -141,14 +141,22 @@ public class LoanController extends BaseController {
         return loanWsDto;
     }
 
-    @GetMapping("/getByLoanRecordId")
-    public LoanWsDto getByRecordId(@RequestParam String recordId) {
-        LoanWsDto loanWsDto = new LoanWsDto();
-        List<Loan> loans = loanRepository.findByRecordIdAndStatus(recordId,true);
-        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
-        loanWsDto.setLoanDtoList(modelMapper.map(loans, listType));
-        loanWsDto.setBaseUrl(ADMIN_LOAN);
-        return loanWsDto;
+//    @PostMapping("/getByLoanRecordId")
+//    public LoanWsDto getByRecordId(@RequestBody String recordId) {
+//        LoanWsDto loanWsDto = new LoanWsDto();
+//        List<Loan> loans = loanRepository.findByRecordIdAndStatus(recordId,true);
+//        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+//        loanWsDto.setLoanDtoList(modelMapper.map(loans, listType));
+//        loanWsDto.setBaseUrl(ADMIN_LOAN);
+//        return loanWsDto;
+//    }
+
+    @PostMapping("/getByLoanRecordId")
+    public LoanDto getByRecordId(@RequestBody LoanDto loanDto) {
+        Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
+        Type listType = new TypeToken<LoanDto>() {}.getType();
+        loanDto=modelMapper.map(loan, listType);
+        return loanDto;
     }
 
 //    //TODO: need enum-string fix in LoanService
