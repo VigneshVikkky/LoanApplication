@@ -85,9 +85,9 @@ public class LoanServiceImpl implements LoanService {
         LocalDate currentDate = LocalDate.now();
         //LocalDate baseDate = currentDate.withDayOfMonth(5);
        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-       currentDate = currentDate.plusMonths(1);
+       currentDate = currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-        currentDate = currentDate.plusDays(14);
+       currentDate = currentDate.plusDays(14);
 
         if (sanctionDate.getDayOfMonth() > 5) {
             baseDate = baseDate.plusMonths(noOfMonths + 1);
@@ -95,39 +95,11 @@ public class LoanServiceImpl implements LoanService {
             baseDate = baseDate.plusMonths(0);
         }
 
-        double totalInterestAmount;
-        double totalInstalmentAmount;
-        double totalPayableAmount;
-        double totalPenalty;
-
-
-//        for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
-//            if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
-//                if (currentDate.isAfter(baseDate)) {
-//                    int noOfDays = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
-//                    double totalPayable = loanEmiDetailDto.getTotalPayable();
-//                   // loanEmiDetailDto.setPenalty(0);
-//                    //loanEmiDetailDto.setTotalPayable(loanEmiDetailDto.getInstalment()+loanEmiDetailDto.getInterestAmount());
-//                    loanEmiDetailDto.setTotalPayable(roundToTwoDecimal(totalPayable + (loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays)));
-//                    loanEmiDetailDto.setPenalty(roundToTwoDecimal(loanEmiDetailDto.getTotalPayable() - totalPayable));
-//                    loanEmiDetailDto.setDueDate(baseDate);
-//                    loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
-//                    loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
-//                    loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
-//                    loan.setTotalPenalty(loanEmiDetailDto.getPenalty()+loan.getTotalPenalty());
-//                    loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
-//
-//                    break;
-//                }
-//                loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
-//                loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
-//                loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
-//                loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
-//                loanEmiDetailDto.setDueDate(baseDate);
-//                break;
-//            }
-//        }
-
+        double totalInterestAmount=0.0;
+        double totalInstalmentAmount=0.0;
+        double totalPayableAmount=0.0;
+        double totalPenalty=0.0;
+        int loopCount=0;
         for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
             if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
 
@@ -147,17 +119,39 @@ public class LoanServiceImpl implements LoanService {
                 double totalPayable = roundToTwoDecimal(baseAmount + penalty);
                 loanEmiDetailDto.setPenalty(penalty);
                 loanEmiDetailDto.setTotalPayable(totalPayable);
-
-                loan.setTotalPayableAmount(totalPayable + loan.getTotalPayableAmount());
-                loan.setTotalInterestAmount(interest + loan.getTotalInterestAmount());
-                loan.setTotalInstalmentAmount(instalment + loan.getTotalInstalmentAmount());
-                loan.setTotalPenalty(penalty + loan.getTotalPenalty());
-                loan.setPendingInstallmentAmount(loan.getDesiredLoan() - loan.getTotalInstalmentAmount());
-
+                loopCount++;
                 break;
             }
+            loopCount++;
         }
+
+            for(int i=0; i<loopCount;i++){
+                LoanEmiDetailDto loanEmiDetailDto = loan.getLoanEmiDetailDtoList().get(i);
+                totalPayableAmount=totalPayableAmount+loanEmiDetailDto.getTotalPayable();
+                loan.setTotalPayableAmount(totalPayableAmount);
+                totalInterestAmount=totalInterestAmount+loanEmiDetailDto.getInterestAmount();
+                loan.setTotalInterestAmount(totalInterestAmount);
+                totalInstalmentAmount=totalInstalmentAmount+loanEmiDetailDto.getInstalment();
+                loan.setTotalInstalmentAmount(totalInstalmentAmount);
+                totalPenalty=totalPenalty+loanEmiDetailDto.getPenalty();
+                loan.setTotalPenalty(totalPenalty);
+            }
+
         loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
+
+//        for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
+//            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")) {
+//                totalPayableAmount=totalPayableAmount+loanEmiDetailDto.getTotalPayable();
+//                loan.setTotalPayableAmount(totalPayableAmount);
+//                totalInterestAmount=totalInterestAmount+loanEmiDetailDto.getInterestAmount();
+//                loan.setTotalInterestAmount(totalInterestAmount);
+//                totalInstalmentAmount=totalInstalmentAmount+loanEmiDetailDto.getInstalment();
+//                loan.setTotalInstalmentAmount(totalInstalmentAmount);
+//                totalPenalty=totalPenalty+loanEmiDetailDto.getPenalty();
+//                loan.setTotalPenalty(totalPenalty);
+//            }
+//        }
+        loan.setPendingInstallmentAmount(loan.getDesiredLoan() - loan.getTotalInstalmentAmount());
         loanRepository.save(loan);
         modelMapper.map(loan, loanDto);
         return loanDto;
@@ -223,6 +217,34 @@ public class LoanServiceImpl implements LoanService {
 }
 
 
+
+
+//        for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
+//            if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
+//                if (currentDate.isAfter(baseDate)) {
+//                    int noOfDays = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
+//                    double totalPayable = loanEmiDetailDto.getTotalPayable();
+//                   // loanEmiDetailDto.setPenalty(0);
+//                    //loanEmiDetailDto.setTotalPayable(loanEmiDetailDto.getInstalment()+loanEmiDetailDto.getInterestAmount());
+//                    loanEmiDetailDto.setTotalPayable(roundToTwoDecimal(totalPayable + (loanEmiDetailDto.getTotalPayable() * 0.04 * noOfDays)));
+//                    loanEmiDetailDto.setPenalty(roundToTwoDecimal(loanEmiDetailDto.getTotalPayable() - totalPayable));
+//                    loanEmiDetailDto.setDueDate(baseDate);
+//                    loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
+//                    loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
+//                    loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
+//                    loan.setTotalPenalty(loanEmiDetailDto.getPenalty()+loan.getTotalPenalty());
+//                    loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
+//
+//                    break;
+//                }
+//                loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable()+loan.getTotalPayableAmount());
+//                loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount()+loan.getTotalInterestAmount());
+//                loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment()+loan.getTotalInstalmentAmount());
+//                loan.setPendingInstallmentAmount(loan.getDesiredLoan()-loan.getTotalInstalmentAmount());
+//                loanEmiDetailDto.setDueDate(baseDate);
+//                break;
+//            }
+//        }
 
 
 
