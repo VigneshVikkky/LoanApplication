@@ -44,7 +44,7 @@ public class AdminController extends BaseController{
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("")
+    @PostMapping
     @ResponseBody
     public CustomerWsDto getAllUsers(@RequestBody CustomerWsDto customerWsDto) {
         Pageable pageable=getPageable(customerWsDto.getPage(),customerWsDto.getSizePerPage(),customerWsDto.getSortDirection(),customerWsDto.getSortField());
