@@ -85,9 +85,9 @@ public class LoanServiceImpl implements LoanService {
         LocalDate currentDate = LocalDate.now();
         //LocalDate baseDate = currentDate.withDayOfMonth(5);
        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-       currentDate = currentDate.plusMonths(1);
+       currentDate = currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-        currentDate = currentDate.plusDays(14);
+       currentDate = currentDate.plusDays(14);
 
         if (sanctionDate.getDayOfMonth() > 5) {
             baseDate = baseDate.plusMonths(noOfMonths + 1);
@@ -95,6 +95,11 @@ public class LoanServiceImpl implements LoanService {
             baseDate = baseDate.plusMonths(0);
         }
 
+        double totalInterestAmount=0.0;
+        double totalInstalmentAmount=0.0;
+        double totalPayableAmount=0.0;
+        double totalPenalty=0.0;
+        int loopCount=0;
         for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
             if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
 
@@ -114,23 +119,38 @@ public class LoanServiceImpl implements LoanService {
                 double totalPayable = roundToTwoDecimal(baseAmount + penalty);
                 loanEmiDetailDto.setPenalty(penalty);
                 loanEmiDetailDto.setTotalPayable(totalPayable);
+                loopCount++;
                 break;
             }
+            loopCount++;
         }
-        loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
-        double totalInterestAmount=0.0;
-        double totalInstalmentAmount=0.0;
-        double totalPayableAmount=0.0;
-        double totalPenalty=0.0;
 
-        for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
-            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")) {
-                loan.setTotalPayableAmount(loanEmiDetailDto.getTotalPayable() + loan.getTotalPayableAmount());
-                loan.setTotalInterestAmount(loanEmiDetailDto.getInterestAmount() + loan.getTotalInterestAmount());
-                loan.setTotalInstalmentAmount(loanEmiDetailDto.getInstalment() + loan.getTotalInstalmentAmount());
-                loan.setTotalPenalty(loanEmiDetailDto.getPenalty() + loan.getTotalPenalty());
+            for(int i=0; i<loopCount;i++){
+                LoanEmiDetailDto loanEmiDetailDto = loan.getLoanEmiDetailDtoList().get(i);
+                totalPayableAmount=totalPayableAmount+loanEmiDetailDto.getTotalPayable();
+                loan.setTotalPayableAmount(totalPayableAmount);
+                totalInterestAmount=totalInterestAmount+loanEmiDetailDto.getInterestAmount();
+                loan.setTotalInterestAmount(totalInterestAmount);
+                totalInstalmentAmount=totalInstalmentAmount+loanEmiDetailDto.getInstalment();
+                loan.setTotalInstalmentAmount(totalInstalmentAmount);
+                totalPenalty=totalPenalty+loanEmiDetailDto.getPenalty();
+                loan.setTotalPenalty(totalPenalty);
             }
-        }
+
+        loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
+
+//        for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
+//            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")) {
+//                totalPayableAmount=totalPayableAmount+loanEmiDetailDto.getTotalPayable();
+//                loan.setTotalPayableAmount(totalPayableAmount);
+//                totalInterestAmount=totalInterestAmount+loanEmiDetailDto.getInterestAmount();
+//                loan.setTotalInterestAmount(totalInterestAmount);
+//                totalInstalmentAmount=totalInstalmentAmount+loanEmiDetailDto.getInstalment();
+//                loan.setTotalInstalmentAmount(totalInstalmentAmount);
+//                totalPenalty=totalPenalty+loanEmiDetailDto.getPenalty();
+//                loan.setTotalPenalty(totalPenalty);
+//            }
+//        }
         loan.setPendingInstallmentAmount(loan.getDesiredLoan() - loan.getTotalInstalmentAmount());
         loanRepository.save(loan);
         modelMapper.map(loan, loanDto);
