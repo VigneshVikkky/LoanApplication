@@ -1,11 +1,14 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loan;
 
 import com.avitam.bankloanapplication.model.dto.*;
+import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanType;
+import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
+import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.LoanService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
@@ -34,6 +37,10 @@ public class LoanController extends BaseController {
     private ModelMapper modelMapper;
     @Autowired
     private LoanLimitRepository loanLimitRepository;
+    @Autowired
+    private LoanTypeRepository loanTypeRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
 
     private static final String ADMIN_LOAN = "/loans/loan";
@@ -55,7 +62,7 @@ public class LoanController extends BaseController {
     @PostMapping("/getEligibleLoans")
     public List<LoanDto> getEligibleLoans(@RequestBody LoanDto loanDto) {
         List<LoanDto> loanDtoList = new ArrayList<>();
-        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerId());
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerDto().getRecordId());
         if(loanLimit!=null){
             List<Loan> loans = loanRepository.findByLoanTypeAndStatus(loanDto.getLoanType(), true);
             Double loanLimitAmt = loanLimit.getLoanLimitAmount();
@@ -154,7 +161,15 @@ public class LoanController extends BaseController {
     @PostMapping("/getByLoanRecordId")
     public LoanDto getByRecordId(@RequestBody LoanDto loanDto) {
         Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
+        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
+        Customer customer = customerRepository.findByRecordId(loan.getCustomerId());
         Type listType = new TypeToken<LoanDto>() {}.getType();
+        Type listType1 = new TypeToken<LoanTypeDto>() {}.getType();
+        Type listType2 = new TypeToken<CustomerDto>() {}.getType();
+        LoanTypeDto loanTypeDto = modelMapper.map(loanType, listType1);
+        loan.setLoanTypeDto(loanTypeDto);
+        CustomerDto customerDto = modelMapper.map(customer, listType2);
+        loan.setCustomerDto(customerDto);
         loanDto=modelMapper.map(loan, listType);
         return loanDto;
     }

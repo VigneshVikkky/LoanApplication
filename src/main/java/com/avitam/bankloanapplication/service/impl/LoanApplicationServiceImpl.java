@@ -83,7 +83,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     public void getLoanType(LoanApplication loanApplication){
 
         Loan loan = loanRepository.findByRecordId(loanApplication.getLoanId());
-        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
+        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanTypeDto().getRecordId());
         Type listType = new TypeToken<LoanTypeDto>() {
         }.getType();
         LoanTypeDto loanTypeDto = modelMapper.map(loanType, listType);

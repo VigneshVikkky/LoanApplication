@@ -1,10 +1,7 @@
 package com.avitam.bankloanapplication.service.impl;
 
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
-import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
-import com.avitam.bankloanapplication.model.dto.LoanWsDto;
-import com.avitam.bankloanapplication.model.entity.LoanDetails;
+import com.avitam.bankloanapplication.model.dto.*;
+import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.*;
 
@@ -71,7 +68,8 @@ public class LoanServiceImpl implements LoanService {
             if (request.getRecordId() == null) {
                 loan.setRecordId(String.valueOf(loan.getId().getTimestamp()));
             }
-            getLoanType(loan);
+            //getLoanType(loan);
+            //getCustomer(loan);
             checkLoanStatus(loan);
             loanRepository.save(loan);
             loans.add(loan);
@@ -166,7 +164,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
 
-    public Loan checkLoanStatus(Loan loan){
+    public void checkLoanStatus(Loan loan){
 
         int paidCount=0;
         for(LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()){
@@ -180,17 +178,22 @@ public class LoanServiceImpl implements LoanService {
         else{
             loan.setLoanStatus("Active");
         }
-        return loan;
     }
 
-    public Loan getLoanType(Loan loan){
+    public void getLoanType(Loan loan){
 
-        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
-        loan.setLoanType(loanType.getRecordId());
+        LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanTypeDto().getRecordId());
+        //loan.setLoanType(loanType.getRecordId());
         LoanTypeDto loanTypeDto = modelMapper.map(loanType, LoanTypeDto.class);
         loan.setLoanTypeDto(loanTypeDto);
 
-        return loan;
+    }
+
+    public void getCustomer(Loan loan){
+
+        Customer customer = customerRepository.findByRecordId(loan.getCustomerDto().getRecordId());
+        CustomerDto customerDto = modelMapper.map(customer, CustomerDto.class);
+        loan.setCustomerDto(customerDto);
     }
 
     private double roundToTwoDecimal(double value) {

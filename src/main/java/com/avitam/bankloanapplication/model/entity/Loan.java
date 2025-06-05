@@ -1,5 +1,6 @@
 package com.avitam.bankloanapplication.model.entity;
 
+import com.avitam.bankloanapplication.model.dto.CustomerDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
@@ -33,6 +34,7 @@ public class Loan extends BaseEntity{
    private String loanScoreResultId;
    private Integer creditMultiplier;
    private String customerId;
+   private CustomerDto customerDto;
    @JsonFormat(pattern = "dd-MM-yyyy")
    private LocalDate sanctionDate;
    private double totalInterestAmount;
