@@ -12,4 +12,6 @@ public interface LoanService {
 
 
     LoanDto getEmiStatusTillDate(LoanDto loanDto);
+
+    LoanDto updatePaymentStatus(LoanDto loanDto);
 }

@@ -48,13 +48,6 @@ public class LoanServiceImpl implements LoanService {
         for (LoanDto loanDto : loanDtos) {
             if (loanDto.getRecordId() != null) {
                 loan = loanRepository.findByRecordId(loanDto.getRecordId());
-                for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()){
-                    for(LoanEmiDetailDto loanEmiDetailDto1:loanDto.getLoanEmiDetailDtoList()) {
-                        if (loanEmiDetailDto.getRecordId().equalsIgnoreCase(loanEmiDetailDto1.getRecordId())){
-                            loanEmiDetailDto.setPaymentStatus(loanEmiDetailDto1.getPaymentStatus());
-                        }
-                    }
-                }
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
                 request.setMessage("Data updated successfully");
@@ -163,6 +156,69 @@ public class LoanServiceImpl implements LoanService {
         return loanDto;
     }
 
+    public LoanDto updatePaymentStatus(LoanDto loanDto) {
+
+        Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
+
+            for(LoanEmiDetailDto loanEmiDetail: loan.getLoanEmiDetailDtoList()) {
+                LoanEmiDetailDto loanEmiDetailDto1 = loanDto.getLoanEmiDetailDtoList().get(0);
+                if (loanEmiDetail.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
+                    if (loanEmiDetailDto1.getRecordId().equalsIgnoreCase(loanEmiDetail.getRecordId())) {
+                        loanEmiDetail.setPaymentStatus(loanEmiDetailDto1.getPaymentStatus());
+                        loanEmiDetail.setRecordId(loanEmiDetailDto1.getRecordId());
+                        break;
+                    }
+                }
+            }
+            modelMapper.map(loan, loanDto);
+            loanRepository.save(loan);
+
+       return loanDto;
+    }
+
+//        for(int i=0; i<loan.getTenure(); i++) {
+//            LoanEmiDetailDto loanEmiDetailDto = loan.getLoanEmiDetailDtoList().get(i);
+//            for (int j = 0; j < loanDto.getLoanEmiDetailDtoList().size(); j++) {
+//                LoanEmiDetailDto loanEmiDetailDto1 = loanDto.getLoanEmiDetailDtoList().get(j);
+//                if(loanEmiDetailDto.getRecordId().equalsIgnoreCase(loanEmiDetailDto1.getRecordId())){
+//                    loanEmiDetailDto.setPaymentStatus(loanEmiDetailDto1.getPaymentStatus());
+//                }
+//            }
+//        }
+//        for(LoanEmiDetailDto loanEmiDetailDto1:loanDto.getLoanEmiDetailDtoList()) {
+//            for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
+//                if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Unpaid")) {
+//                    if (loanEmiDetailDto1.getRecordId().equalsIgnoreCase(loanEmiDetailDto.getRecordId())) {
+//                        loanEmiDetailDto.setPaymentStatus(loanEmiDetailDto1.getPaymentStatus());
+//                        loanEmiDetailDto.setRecordId(loanEmiDetailDto1.getRecordId());
+//                        loanEmiDetailDto1.setTotalPayable(loanEmiDetailDto.getTotalPayable());
+//                        loanEmiDetailDto1.setInstalment(loanEmiDetailDto.getInstalment());
+//                        loanEmiDetailDto1.setInterestAmount(loanEmiDetailDto.getInterestAmount());
+//                        loanEmiDetailDto1.setPenalty(loanEmiDetailDto.getPenalty());
+//                        loanEmiDetailDto1.setDueDate(loanEmiDetailDto.getDueDate());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+
+    //        for (int i = 0; i < loan.getTenure(); i++) {
+//            LoanEmiDetailDto loanEmiDetailDto = loanDto.getLoanEmiDetailDtoList().get(0);
+//            int j = Integer.parseInt(loanEmiDetailDto.getRecordId());
+//            if (i == j) {
+//                LoanEmiDetailDto loanEmiDetailDto1 = loan.getLoanEmiDetailDtoList().get(i);
+//                loanEmiDetailDto1.setPaymentStatus(loanEmiDetailDto.getPaymentStatus());
+//                loanEmiDetailDto1.setRecordId(loanEmiDetailDto.getRecordId());
+//                break;
+//            }
+//            //loan.setLoanEmiDetailDtoList(loanEmiDetailDto1);
+//        }
+
+    //                        loanEmiDetailDto1.setTotalPayable(loanEmiDetail.getTotalPayable());
+//                        loanEmiDetailDto1.setInstalment(loanEmiDetail.getInstalment());
+//                        loanEmiDetailDto1.setInterestAmount(loanEmiDetail.getInterestAmount());
+//                        loanEmiDetailDto1.setPenalty(loanEmiDetail.getPenalty());
+//                        loanEmiDetailDto1.setDueDate(loanEmiDetail.getDueDate());
 
     public void checkLoanStatus(Loan loan){
 

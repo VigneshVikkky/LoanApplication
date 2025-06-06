@@ -193,7 +193,11 @@ public class LoanController extends BaseController {
         return loanService.getEmiStatusTillDate(loanDto);
     }
 
-
+    @PostMapping("/updatePaymentStatus")
+    @ResponseBody
+    public LoanDto updatePaymentStatus(@RequestBody LoanDto loanDto) {
+        return loanService.updatePaymentStatus(loanDto);
+    }
 
 
 }
