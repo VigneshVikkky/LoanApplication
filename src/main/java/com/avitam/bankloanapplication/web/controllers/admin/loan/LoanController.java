@@ -74,21 +74,31 @@ public class LoanController extends BaseController {
     }
 
     @PostMapping("/getCustomerLoanStatus")
-    public List<LoanDto> getCustomerLoanStatus(@RequestBody LoanDto loanDto) {
-        List<LoanDto> loanDtoList = new ArrayList<>();
+    public CustomerLoanStatusResponseDto getCustomerLoanStatus(@RequestBody LoanDto loanDto) {
+        CustomerLoanStatusResponseDto response = new CustomerLoanStatusResponseDto();
 
-        if(loanDto.getLoanStatus()==null){
-            List<Loan> loanList = loanRepository.findByCustomerId(loanDto.getCustomerId());
-            Type listType = new TypeToken<List<LoanDto>>() {}.getType();
-            loanDtoList.addAll(modelMapper.map(loanList, listType));
+        List<Loan> loanList;
+        if (loanDto.getLoanStatus() == null) {
+            loanList = loanRepository.findByCustomerId(loanDto.getCustomerId());
+        } else {
+            loanList = loanRepository.findByCustomerIdAndLoanStatus(loanDto.getCustomerId(), loanDto.getLoanStatus());
         }
-        else {
-            List<Loan> loanList = loanRepository.findByCustomerIdAndLoanStatus(loanDto.getCustomerId(), loanDto.getLoanStatus());
-            Type listType = new TypeToken<List<LoanDto>>() {
-            }.getType();
-            loanDtoList.addAll(modelMapper.map(loanList, listType));
-        }
-        return loanDtoList;
+
+        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+        List<LoanDto> loanDtoList = modelMapper.map(loanList, listType);
+
+       // double totalDesiredLoan = loanService.getTotalDesiredLoanByCustomerRecordId(loanDto.getCustomerId());
+
+        response.setLoans(loanDtoList);
+     //   response.setTotalDesiredLoan(totalDesiredLoan);
+
+        return response;
+    }
+
+
+    @PostMapping("/totalDesiredLoan")
+    public LoanWsDto getTotalDesiredLoan(@RequestBody LoanDto request) {
+        return loanService.getTotalDesiredLoanByCustomerRecordId(request.getCustomerId());
     }
 
 
@@ -199,5 +209,15 @@ public class LoanController extends BaseController {
         return loanService.updatePaymentStatus(loanDto);
     }
 
+    @PostMapping("/getPaymentHistory")
+    @ResponseBody
+    public LoanDto getPaymentHistory(@RequestBody LoanDto loanDto) {
+        return loanDto;
+    }
 
 }
+
+
+
+
+

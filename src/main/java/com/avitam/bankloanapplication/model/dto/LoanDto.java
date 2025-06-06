@@ -37,5 +37,6 @@ public class LoanDto extends CommonDto{
     private double totalPenalty;
     private String loanStatus;
     private double pendingInstallmentAmount;
+    private double  totalDesiredLoan;
    // private double pendingPayableAmount;
 }

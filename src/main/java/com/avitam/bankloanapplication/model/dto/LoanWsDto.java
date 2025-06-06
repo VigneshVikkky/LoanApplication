@@ -14,4 +14,6 @@ import java.util.List;
 public class LoanWsDto extends CommonWsDto{
 
     private List<LoanDto> loanDtoList;
+
+    private double totalDesiredLoan;
 }

@@ -256,6 +256,24 @@ public class LoanServiceImpl implements LoanService {
         return Math.round(value * 100.0) / 100.0;
     }
 
+    @Override
+    public LoanWsDto getTotalDesiredLoanByCustomerRecordId(String customerRecordId) {
+
+        LoanWsDto loanWsDto = new LoanWsDto();
+        List<Loan> loans = loanRepository.findByCustomerId(customerRecordId);
+
+        double total = 0;
+        for (Loan loan : loans) {
+            if ("Active".equalsIgnoreCase(loan.getLoanStatus())) {
+                total += loan.getDesiredLoan();
+            }
+        }
+        loanWsDto.setTotalDesiredLoan(total);
+        return loanWsDto;
+    }
+
+
+
 //    //TODO: known issue:     "message": "Can not set java.util.Date field com.gulbalasalamov.bankloanapplication.model.entity.Loan.loanDate to java.lang.String",
 //    public void updateLoanPartially(Long loanId, Map<Object, Object> objectMap) {
 //        var loanById = findLoanById(loanId);
