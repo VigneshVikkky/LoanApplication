@@ -229,7 +229,7 @@ public class LoanServiceImpl implements LoanService {
             }
         }
         if(loan.getTenure()==paidCount){
-            loan.setLoanStatus("Inactive");
+            loan.setLoanStatus("Completed");
         }
         else{
             loan.setLoanStatus("Active");
