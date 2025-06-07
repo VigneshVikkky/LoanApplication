@@ -73,27 +73,24 @@ public class LoanController extends BaseController {
         return loanDtoList;
     }
 
-    @PostMapping("/getCustomerLoanStatus")
-    public CustomerLoanStatusResponseDto getCustomerLoanStatus(@RequestBody LoanDto loanDto) {
-        CustomerLoanStatusResponseDto response = new CustomerLoanStatusResponseDto();
+   @PostMapping("/getCustomerLoanStatus")
+    public List<LoanDto> getCustomerLoanStatus(@RequestBody LoanDto loanDto) {
+        List<LoanDto> loanDtoList = new ArrayList<>();
 
-        List<Loan> loanList;
-        if (loanDto.getLoanStatus() == null) {
-            loanList = loanRepository.findByCustomerId(loanDto.getCustomerId());
-        } else {
-            loanList = loanRepository.findByCustomerIdAndLoanStatus(loanDto.getCustomerId(), loanDto.getLoanStatus());
+        if(loanDto.getLoanStatus()==null){
+            List<Loan> loanList = loanRepository.findByCustomerId(loanDto.getCustomerId());
+            Type listType = new TypeToken<List<LoanDto>>() {}.getType();
+            loanDtoList.addAll(modelMapper.map(loanList, listType));
         }
-
-        Type listType = new TypeToken<List<LoanDto>>() {}.getType();
-        List<LoanDto> loanDtoList = modelMapper.map(loanList, listType);
-
-       // double totalDesiredLoan = loanService.getTotalDesiredLoanByCustomerRecordId(loanDto.getCustomerId());
-
-        response.setLoans(loanDtoList);
-     //   response.setTotalDesiredLoan(totalDesiredLoan);
-
-        return response;
+        else {
+            List<Loan> loanList = loanRepository.findByCustomerIdAndLoanStatus(loanDto.getCustomerId(), loanDto.getLoanStatus());
+            Type listType = new TypeToken<List<LoanDto>>() {
+            }.getType();
+            loanDtoList.addAll(modelMapper.map(loanList, listType));
+        }
+        return loanDtoList;
     }
+
 
 
     @PostMapping("/totalDesiredLoan")
