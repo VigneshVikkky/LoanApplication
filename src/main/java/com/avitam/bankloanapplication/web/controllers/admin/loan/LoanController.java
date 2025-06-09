@@ -98,6 +98,14 @@ public class LoanController extends BaseController {
         return loanService.getTotalDesiredLoanByCustomerRecordId(request);
     }
 
+    @PostMapping("/customerPaymentHistory")
+    @ResponseBody
+    public LoanDto customerPaymentHistory(@RequestBody LoanDto loanDto) {
+
+
+        return loanDto;
+    }
+
 
 
   /*  @GetMapping("/getEligibleLoans")

@@ -1,6 +1,8 @@
 package com.avitam.bankloanapplication.model.entity;
 
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
+import com.avitam.bankloanapplication.model.dto.PaymentDetailsDto;
+import com.avitam.bankloanapplication.model.dto.PaymentHistoryDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +12,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Setter
 @Getter
 @ToString
-@Document("PaymentHistory")
+@Document("paymentHistory")
 public class PaymentHistory extends BaseEntity{
 
-
     private Loan loan;
-    private String paidStatus;
-    private int monthlyIndex;
-    private LoanEmiDetailDto loanEmiDetailDto;
+    private List<PaymentDetailsDto> paymentDetailsDtoList;
 
 }

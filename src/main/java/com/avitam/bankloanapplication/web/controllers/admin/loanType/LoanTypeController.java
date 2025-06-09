@@ -57,7 +57,7 @@ public class LoanTypeController extends BaseController {
     @PostMapping("/getEligibleLoanTypes")
     public List<LoanTypeDto> getEligibleLoans(@RequestBody LoanDto loanDto) {
         List<LoanTypeDto> loanTypeDtoList = new ArrayList<>();
-        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerDto().getRecordId());
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerId());
         if(loanLimit!=null){
             List<LoanType> loanTypeList = loanTypeRepository.findAll();
             for(LoanType loanType : loanTypeList){

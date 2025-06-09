@@ -1,13 +1,6 @@
 package com.avitam.bankloanapplication.web.controllers.admin.paymentHistory;
 
-import com.avitam.bankloanapplication.model.dto.CustomerDto;
-import com.avitam.bankloanapplication.model.dto.CustomerLoanStatusResponseDto;
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
-import com.avitam.bankloanapplication.model.dto.LoanWsDto;
-import com.avitam.bankloanapplication.model.dto.PaymentHistoryDto;
-import com.avitam.bankloanapplication.model.dto.PaymentHistoryWsDto;
-import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.dto.*;
 import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;

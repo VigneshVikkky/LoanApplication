@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -15,11 +16,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class PaymentHistoryDto extends CommonDto{
 
-
-    private LoanDto loanDto;
-    private String paidStatus;
-    private int monthlyIndex;
-    private LoanEmiDetailDto loanEmiDetailDto;
-
-
+    private Loan loan;
+    private List<PaymentDetailsDto> paymentDetailsDtoList;
 }

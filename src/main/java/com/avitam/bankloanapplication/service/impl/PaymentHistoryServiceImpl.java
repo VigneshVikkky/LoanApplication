@@ -1,6 +1,7 @@
 package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
+import com.avitam.bankloanapplication.model.dto.PaymentDetailsDto;
 import com.avitam.bankloanapplication.model.dto.PaymentHistoryDto;
 import com.avitam.bankloanapplication.model.dto.PaymentHistoryWsDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
@@ -37,11 +38,14 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
     public PaymentHistoryWsDto createPaymentHistory(PaymentHistoryWsDto request) {
         PaymentHistory paymentHistory = new PaymentHistory();
         List<PaymentHistoryDto> paymentHistoryDtoList = request.getPaymentHistoryDtoList();
+        List<PaymentHistoryDto> paymentHistoryDtos = new ArrayList<>();
+
         List<PaymentHistory> paymentHistoryList = new ArrayList<>();
         for (PaymentHistoryDto paymentHistoryDto : paymentHistoryDtoList) {
             if (paymentHistoryDto.getRecordId() != null) {
                 paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
                 modelMapper.map(paymentHistoryDto, paymentHistory);
+                getLoanByLoanId(paymentHistoryDto);
                 paymentHistoryRepository.save(paymentHistory);
                 request.setMessage("Data updated successfully");
             } else {
@@ -49,14 +53,15 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
                 paymentHistory.setStatus(true);
                 paymentHistory.setCreationTime(new Date());
                 modelMapper.map(paymentHistoryDto, paymentHistory);
+                getLoanByLoanId(paymentHistoryDto);
                 paymentHistoryRepository.save(paymentHistory);
             }
             if (request.getRecordId() == null) {
                 paymentHistory.setRecordId(String.valueOf(paymentHistory.getId().getTimestamp()));
             }
-            //getLoanType(loan);
-            //getCustomer(loan);
-            // checkPaymentHistoryStatus(paymentHistory);
+
+            paymentHistoryDtos.add(paymentHistoryDto);
+            modelMapper.map(paymentHistoryDto, paymentHistory);
             paymentHistoryRepository.save(paymentHistory);
             paymentHistoryList.add(paymentHistory);
             paymentHistoryDto.setBaseUrl(ADMIN_PAYMENTHISTORY);
@@ -68,16 +73,33 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
         return request;
     }
 
+    public void getLoanByLoanId(PaymentHistoryDto paymentHistoryDto) {
 
-    public void getLoanByLoanId(PaymentHistoryDto paymentHistoryDto, int monthlyIndex) {
-        Loan loan = loanRepository.findByRecordId(paymentHistoryDto.getLoanDto().getRecordId());
-        for (LoanEmiDetailDto loanEmiDetailDto:loan.getLoanEmiDetailDtoList()){
+        Loan loan = loanRepository.findByRecordId(paymentHistoryDto.getLoan().getRecordId());
+        List<PaymentDetailsDto> paymentDetailsDtoList;
+        if(paymentHistoryDto.getRecordId()== null){
+            paymentDetailsDtoList=new ArrayList<>();
+        }
+        else{
+            PaymentHistory paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
+            paymentDetailsDtoList = paymentHistory.getPaymentDetailsDtoList();
+        }
+        PaymentDetailsDto paymentDetailsDto1 = new PaymentDetailsDto();
+        for(PaymentDetailsDto paymentDetailsDto : paymentHistoryDto.getPaymentDetailsDtoList()){
+        for (LoanEmiDetailDto loanEmiDetailDto:loan.getLoanEmiDetailDtoList()) {
             int month = Integer.parseInt(loanEmiDetailDto.getRecordId());
-            if (monthlyIndex==month){
-
-
+            if (paymentDetailsDto.getMonthlyIndex() == month) {
+                paymentDetailsDto1.setLoanEmiDetailDto(loanEmiDetailDto);
+                paymentDetailsDto1.setPaidStatus(paymentDetailsDto.getPaidStatus());
+                paymentDetailsDto1.setMonthlyIndex(paymentDetailsDto.getMonthlyIndex());
+                break;
             }
         }
+            paymentDetailsDtoList.add(paymentDetailsDto1);
+        }
+        paymentHistoryDto.setPaymentDetailsDtoList(paymentDetailsDtoList);
 
     }
+
+
 }
