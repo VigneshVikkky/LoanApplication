@@ -94,8 +94,8 @@ public class LoanController extends BaseController {
 
 
     @PostMapping("/totalDesiredLoan")
-    public LoanWsDto getTotalDesiredLoan(@RequestBody LoanDto request) {
-        return loanService.getTotalDesiredLoanByCustomerRecordId(request.getCustomerId());
+    public LoanWsDto getTotalDesiredLoan(@RequestBody LoanWsDto request) {
+        return loanService.getTotalDesiredLoanByCustomerRecordId(request);
     }
 
 

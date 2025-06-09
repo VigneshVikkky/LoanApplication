@@ -16,7 +16,7 @@ public interface LoanService {
     LoanDto updatePaymentStatus(LoanDto loanDto);
 
 
-    LoanWsDto getTotalDesiredLoanByCustomerRecordId(String customerRecordId);
+    LoanWsDto getTotalDesiredLoanByCustomerRecordId(LoanWsDto request);
     }
 
 

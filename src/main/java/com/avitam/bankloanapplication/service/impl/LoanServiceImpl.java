@@ -256,19 +256,21 @@ public class LoanServiceImpl implements LoanService {
         return Math.round(value * 100.0) / 100.0;
     }
 
+
     @Override
-    public LoanWsDto getTotalDesiredLoanByCustomerRecordId(String customerRecordId) {
-
+    public LoanWsDto getTotalDesiredLoanByCustomerRecordId(LoanWsDto request) {
         LoanWsDto loanWsDto = new LoanWsDto();
-        List<Loan> loans = loanRepository.findByCustomerId(customerRecordId);
-
-        double total = 0;
-        for (Loan loan : loans) {
-            if ("Active".equalsIgnoreCase(loan.getLoanStatus())) {
+        List<LoanDto> loanDtos = new ArrayList<>();
+        for(LoanDto loanDto : request.getLoanDtoList()) {
+            List<Loan> loans = loanRepository.findByCustomerIdAndLoanStatus(loanDto.getCustomerId(),"Active");
+            double total = 0;
+            for (Loan loan : loans) {
                 total += loan.getDesiredLoan();
+                    loanDto.setDesiredLoan(total);
             }
+            loanDtos.add(loanDto);
         }
-        loanWsDto.setTotalDesiredLoan(total);
+        loanWsDto.setLoanDtoList(loanDtos);
         return loanWsDto;
     }
 
