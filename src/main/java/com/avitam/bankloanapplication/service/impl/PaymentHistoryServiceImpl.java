@@ -42,8 +42,11 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
         List<PaymentHistory> paymentHistoryList = new ArrayList<>();
         for (PaymentHistoryDto paymentHistoryDto : paymentHistoryDtoList) {
-            if (paymentHistoryDto.getRecordId() != null) {
-                paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
+            boolean exists = paymentHistoryRepository.existsByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
+            //if (paymentHistoryDto.getRecordId() != null) {
+                if (exists) {
+                //paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
+                paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
                 modelMapper.map(paymentHistoryDto, paymentHistory);
                 getLoanByLoanId(paymentHistoryDto);
                 paymentHistoryRepository.save(paymentHistory);
@@ -77,11 +80,19 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
         Loan loan = loanRepository.findByRecordId(paymentHistoryDto.getLoan().getRecordId());
         List<PaymentDetailsDto> paymentDetailsDtoList;
-        if(paymentHistoryDto.getRecordId()== null){
+//        if(paymentHistoryDto.getRecordId()== null){
+//            paymentDetailsDtoList=new ArrayList<>();
+//        }
+//        else{
+//            PaymentHistory paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
+//            paymentDetailsDtoList = paymentHistory.getPaymentDetailsDtoList();
+//        }
+
+        if(paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId()) == null){
             paymentDetailsDtoList=new ArrayList<>();
         }
         else{
-            PaymentHistory paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
+            PaymentHistory paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
             paymentDetailsDtoList = paymentHistory.getPaymentDetailsDtoList();
         }
         PaymentDetailsDto paymentDetailsDto1 = new PaymentDetailsDto();

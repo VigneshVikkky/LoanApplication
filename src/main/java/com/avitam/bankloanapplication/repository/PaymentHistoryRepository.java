@@ -11,4 +11,10 @@ public interface PaymentHistoryRepository  extends MongoRepository<PaymentHistor
     List<PaymentHistory> findByStatus(boolean b);
 
     PaymentHistory findByRecordId(String recordId);
+
+    PaymentHistory findByLoanId(String recordId);
+
+    PaymentHistory findByLoan_RecordId(String recordId);
+
+    boolean existsByLoan_RecordId(String recordId);
 }
