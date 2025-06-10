@@ -67,6 +67,15 @@ public class PaymentHistoryController extends BaseController {
         return paymentHistoryWsDto;
     }
 
+    @PostMapping("/getPaymentHistoryByLoanId")
+    public PaymentHistoryDto getPaymentHistoryByLoanId(@RequestBody PaymentHistoryDto paymentHistoryDto){
+
+        PaymentHistory paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
+        Type listType = new TypeToken<PaymentHistoryDto>() {}.getType();
+        paymentHistoryDto = modelMapper.map(paymentHistory, listType);
+        return paymentHistoryDto;
+    }
+
 
     @PostMapping("/edit")
     public PaymentHistoryWsDto createPaymentHistory(@RequestBody PaymentHistoryWsDto request) {
