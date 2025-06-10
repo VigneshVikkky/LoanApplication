@@ -84,12 +84,20 @@ public class LoanServiceImpl implements LoanService {
         LocalDate currentDate = LocalDate.now();
         //LocalDate baseDate = currentDate.withDayOfMonth(5);
        LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-      // currentDate = currentDate.plusMonths(2);
-        int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
-       //currentDate = currentDate.plusDays(14);
+       currentDate = currentDate.plusMonths(2);
+        //int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
+        currentDate = currentDate.plusDays(15);
+        //int noOfMonths = (int) ChronoUnit.MONTHS.between(sanctionDate, currentDate);
+
+        int noOfMonths = 0;
+        for(LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()){
+            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")){
+                noOfMonths++;
+            }
+        }
 
         if (sanctionDate.getDayOfMonth() > 5) {
-            baseDate = baseDate.plusMonths(noOfMonths + 1);
+            baseDate = baseDate.plusMonths(noOfMonths+1);
         } else {
             baseDate = baseDate.plusMonths(0);
         }
