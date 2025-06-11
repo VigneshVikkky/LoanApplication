@@ -49,6 +49,8 @@ public class PaymentHistoryController extends BaseController {
     private LoanTypeRepository loanTypeRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private LoanRepository loanRepository;
 
 
     private static final String ADMIN_PAYMENTHISTORY = "/loans/paymentHistory";
@@ -72,6 +74,8 @@ public class PaymentHistoryController extends BaseController {
 
         PaymentHistory paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
         Type listType = new TypeToken<PaymentHistoryDto>() {}.getType();
+        Loan loan = loanRepository.findByRecordId(paymentHistory.getLoan().getRecordId());
+        paymentHistory.setLoan(loan);
         paymentHistoryDto = modelMapper.map(paymentHistory, listType);
         return paymentHistoryDto;
     }
