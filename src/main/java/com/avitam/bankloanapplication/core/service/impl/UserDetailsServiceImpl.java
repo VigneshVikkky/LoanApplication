@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String inputString) {
-        User user = userRepository.findByUsername(inputString);
+        User user = userRepository.findByEmail(inputString);
         Customer customer1 = customerRepository.findByPhone(inputString);
         Customer customer2 = customerRepository.findByEmail(inputString);
 
