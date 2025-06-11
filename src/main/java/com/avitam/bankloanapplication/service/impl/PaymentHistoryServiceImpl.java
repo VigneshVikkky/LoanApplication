@@ -103,6 +103,7 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
                 paymentDetailsDto1.setLoanEmiDetailDto(loanEmiDetailDto);
                 paymentDetailsDto1.setPaidStatus(paymentDetailsDto.getPaidStatus());
                 paymentDetailsDto1.setMonthlyIndex(paymentDetailsDto.getMonthlyIndex());
+                paymentDetailsDto1.setTransactionId(paymentDetailsDto.getTransactionId());
                 break;
             }
         }

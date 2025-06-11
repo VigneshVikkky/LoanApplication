@@ -15,4 +15,5 @@ public class PaymentDetailsDto extends CommonDto{
     private String paidStatus;
     private int monthlyIndex;
     private LoanEmiDetailDto loanEmiDetailDto;
+    private String transactionId;
 }
