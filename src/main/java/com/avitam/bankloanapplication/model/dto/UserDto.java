@@ -32,7 +32,5 @@ public class UserDto extends CommonDto {
     private String residenceType;
     private String workExperience;
     private String currentEMI;
-
-
 }
 

@@ -10,4 +10,5 @@ public interface OtpRepository extends GenericImportRepository<OTP> {
     OTP findByRecordId(String recordId);
 
     void deleteByRecordId(String recordId);
+    OTP findByUserId(String userId);
 }
