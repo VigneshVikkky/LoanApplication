@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                             try {
                                 requests
                                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm", "/admin/email/**", "/admin/mobile/send-otp", "/admin/mobile/validate-otp", "/admin/mobile/save-username", "/admin/role", "/admin/role/get", "admin/user/checkReferral").permitAll()
+                                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm", "/admin/otp/**", "/admin/mobile/send-otp", "/admin/mobile/validate-otp", "/admin/mobile/save-username", "/admin/role", "/admin/role/get", "admin/user/checkReferral").permitAll()
                                         .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                             } catch (Exception e) {
                                 throw new RuntimeException();
@@ -77,7 +77,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("/**", "http://localhost:3000")); // Allow the specific origin
+        configuration.setAllowedOrigins(Arrays.asList("/**", "http://localhost:4100")); // Allow the specific origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); // Allow credentials if needed
