@@ -294,22 +294,22 @@ public class CustomerOTPServiceImpl implements CustomerOTPService {
             Customer existingUser = customerRepository.findByPhone(mobileNumber);
             if (existingUser == null) {
                 // Save the email in the database if not present
-                Customer newUser = new Customer();
-                newUser.setPhone(mobileNumber);
-                newUser.setStatus(true);
-                customerRepository.save(newUser);
-                if (newUser.getRecordId() == null) {
-                    newUser.setRecordId(String.valueOf(newUser.getId().getTimestamp()));
+                existingUser = new Customer();
+                existingUser.setPhone(mobileNumber);
+                existingUser.setStatus(true);
+                customerRepository.save(existingUser);
+                if (existingUser.getRecordId() == null) {
+                    existingUser.setRecordId(String.valueOf(existingUser.getId().getTimestamp()));
                 }
-                customerRepository.save(newUser);
-                customerDto = modelMapper.map(newUser, CustomerDto.class);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(mobileNumber);
-                customerDto.setToken(jwtUtility.generateToken(userDetails));
+                customerRepository.save(existingUser);
                 customerDto.setNew(true);
-                customerDtoList.add(customerDto);
             }
+            customerDto = modelMapper.map(existingUser, CustomerDto.class);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(mobileNumber);
+            customerDto.setToken(jwtUtility.generateToken(userDetails));
             customerWsDto.setSuccess(true);
             customerWsDto.setMessage("OTP validated successfully.");
+            customerDtoList.add(customerDto);
         } else {
             customerWsDto.setSuccess(false);
             customerWsDto.setMessage("OTP is invalid or has expired.");
