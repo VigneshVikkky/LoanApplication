@@ -37,8 +37,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
         }
+//        if (user2 != null) {
+//            return new org.springframework.security.core.userdetails.User(user2.getUsername(), user2.getPassword(), grantedAuthorities);
+//        }
 
         if (customer1 != null) {
             return new CustomUserDetails(

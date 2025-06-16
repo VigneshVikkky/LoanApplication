@@ -214,11 +214,12 @@ public class LoanController extends BaseController {
         return loanService.updatePaymentStatus(loanDto);
     }
 
-    @PostMapping("/getPaymentHistory")
-    @ResponseBody
-    public LoanDto getPaymentHistory(@RequestBody LoanDto loanDto) {
-        return loanDto;
-    }
+//    @PostMapping("/getPaymentHistory")
+//    @ResponseBody
+//    public LoanDto getPaymentHistory(@RequestBody LoanDto loanDto) {
+//        return loanDto;
+//    }
+
 
 }
 

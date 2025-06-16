@@ -17,6 +17,6 @@ public interface LoanService {
 
 
     LoanWsDto getTotalDesiredLoanByCustomerRecordId(LoanWsDto request);
-    }
+}
 
 

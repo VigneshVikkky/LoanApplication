@@ -43,6 +43,7 @@ public class Loan extends BaseEntity{
    private double totalPenalty;
    private String loanStatus;
    private double pendingInstallmentAmount;
-//   private double paidInstallmentAmount;
+   private double loanClosingCharges;
+   private boolean foreClosing=false;
 
 }
