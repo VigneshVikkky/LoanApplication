@@ -49,15 +49,17 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                 totalAmountCalculation(loanDetails);
                 loanDetailsRepository.save(loanDetails);
                 modelMapper.map(loanDetailsDto, loanDetails);
-
                 request.setMessage("Data updated successfully");
             } else {
-                loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
-                loanDetails.setCreationTime(new Date());
-                loanDetails.setStatus(true);
-                calculateLoanDetails(loanDetails);
-                totalAmountCalculation(loanDetails);
-                loanDetailsRepository.save(loanDetails);
+                loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
+                if (loanDetails == null) {
+                    loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
+                    loanDetails.setCreationTime(new Date());
+                    loanDetails.setStatus(true);
+                    calculateLoanDetails(loanDetails);
+                    totalAmountCalculation(loanDetails);
+                    loanDetailsRepository.save(loanDetails);
+                }
                 request.setMessage("Data added successfully");
             }
 

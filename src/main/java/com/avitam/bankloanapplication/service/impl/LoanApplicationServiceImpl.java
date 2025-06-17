@@ -50,7 +50,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         List<LoanApplication> loanApplications = new ArrayList<>();
 
         for (LoanApplicationDto loanApplicationDto : loanApplicationDtos) {
-
             if (loanApplicationDto.getRecordId() != null) {
                 loanApplication = loanApplicationRepository.findByRecordId(loanApplicationDto.getRecordId());
                 getLoanType(loanApplication);
@@ -60,6 +59,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             } else {
                 loanApplication = modelMapper.map(loanApplicationDto, LoanApplication.class);
                 loanApplication.setStatus(true);
+                loanApplication.setLoanStatus("Applied");
                 loanApplication.setCreationTime(new Date());
                 getLoanType(loanApplication);
                 loanApplicationRepository.save(loanApplication);
