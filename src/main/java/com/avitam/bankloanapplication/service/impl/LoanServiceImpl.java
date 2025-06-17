@@ -61,9 +61,12 @@ public class LoanServiceImpl implements LoanService {
             if (request.getRecordId() == null) {
                 loan.setRecordId(String.valueOf(loan.getId().getTimestamp()));
             }
+            else{
+                checkLoanStatus(loan);
+            }
             //getLoanType(loan);
             //getCustomer(loan);
-            checkLoanStatus(loan);
+
             loanRepository.save(loan);
             loans.add(loan);
             loanDto.setBaseUrl(ADMIN_lOAN);

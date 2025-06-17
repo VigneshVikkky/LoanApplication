@@ -26,7 +26,6 @@ public class Loan extends BaseEntity{
    private double interestRate;
    private Integer tenure;
    private List<LoanEmiDetailDto> loanEmiDetailDtoList;
-
    private String loanDetailsId;
    private Double desiredLoan;
    private String images;
@@ -45,5 +44,6 @@ public class Loan extends BaseEntity{
    private double pendingInstallmentAmount;
    private double foreClosingCharges;
    private boolean foreClosing=false;
+
 
 }

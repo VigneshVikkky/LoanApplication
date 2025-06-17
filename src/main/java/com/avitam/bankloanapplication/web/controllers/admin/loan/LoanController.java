@@ -57,12 +57,13 @@ public class LoanController extends BaseController {
         loanWsDto.setTotalPages(page.getTotalPages());
         loanWsDto.setTotalRecords(page.getTotalElements());
         return loanWsDto;
+
     }
 
     @PostMapping("/getEligibleLoans")
     public List<LoanDto> getEligibleLoans(@RequestBody LoanDto loanDto) {
         List<LoanDto> loanDtoList = new ArrayList<>();
-        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerDto().getRecordId());
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(loanDto.getCustomerId());
         if(loanLimit!=null){
             List<Loan> loans = loanRepository.findByLoanTypeAndStatus(loanDto.getLoanType(), true);
             Double loanLimitAmt = loanLimit.getLoanLimitAmount();
