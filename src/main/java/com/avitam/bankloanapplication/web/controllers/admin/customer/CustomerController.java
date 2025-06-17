@@ -1,7 +1,9 @@
 package com.avitam.bankloanapplication.web.controllers.admin.customer;
 
 import com.avitam.bankloanapplication.core.service.CoreService;
-import com.avitam.bankloanapplication.model.dto.*;
+import com.avitam.bankloanapplication.model.dto.CustomerDto;
+import com.avitam.bankloanapplication.model.dto.CustomerWsDto;
+import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.service.impl.CustomerServiceImpl;
@@ -13,8 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -22,6 +27,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/customer")
 public class CustomerController extends BaseController {
+    public static final String ADMIN_CUSTOMER = "/admin/customer";
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -31,8 +37,6 @@ public class CustomerController extends BaseController {
     @Autowired
     private CustomerServiceImpl customerService;
 
-    public static final String ADMIN_CUSTOMER = "/admin/customer";
-
     @PostMapping
     public CustomerWsDto getAllCustomers(@RequestBody CustomerWsDto customerWsDto) {
 
@@ -40,7 +44,8 @@ public class CustomerController extends BaseController {
         CustomerDto customerDto = CollectionUtils.isNotEmpty(customerWsDto.getCustomerDtoList()) ? customerWsDto.getCustomerDtoList().get(0) : new CustomerDto();
         Customer customer = modelMapper.map(customerDto, Customer.class);
         Page<Customer> page = isSearchActive(customer) != null ? customerRepository.findAll(Example.of(customer), pageable) : customerRepository.findAll(pageable);
-        Type listType = new TypeToken<List<CustomerDto>>() {}.getType();
+        Type listType = new TypeToken<List<CustomerDto>>() {
+        }.getType();
         customerWsDto.setCustomerDtoList(modelMapper.map(page.getContent(), listType));
         customerWsDto.setTotalPages(page.getTotalPages());
         customerWsDto.setTotalRecords(page.getTotalElements());
@@ -52,7 +57,8 @@ public class CustomerController extends BaseController {
     public CustomerWsDto getActiveCustomerList() {
         CustomerWsDto customerWsDto = new CustomerWsDto();
         List<Customer> customers = customerRepository.findByStatus(true);
-        Type listType = new TypeToken<List<CustomerDto>>() {}.getType();
+        Type listType = new TypeToken<List<CustomerDto>>() {
+        }.getType();
         customerWsDto.setCustomerDtoList(modelMapper.map(customers, listType));
         customerWsDto.setBaseUrl(ADMIN_CUSTOMER);
         return customerWsDto;
@@ -72,8 +78,9 @@ public class CustomerController extends BaseController {
     @PostMapping("/getByRecordId")
     public CustomerDto getByRecordId(@RequestBody CustomerDto customerDto) {
         Customer customer = customerRepository.findByRecordId(customerDto.getRecordId());
-        Type listType = new TypeToken<CustomerDto>() {}.getType();
-        customerDto=modelMapper.map(customer, listType);
+        Type listType = new TypeToken<CustomerDto>() {
+        }.getType();
+        customerDto = modelMapper.map(customer, listType);
         return customerDto;
     }
 

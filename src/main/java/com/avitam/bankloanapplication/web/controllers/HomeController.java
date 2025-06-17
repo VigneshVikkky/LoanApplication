@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,7 +28,7 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
-//    @Autowired
+    //    @Autowired
 //    private MailService mailService;
     @Autowired
     private Environment env;
@@ -38,7 +37,7 @@ public class HomeController {
     @GetMapping("/home")
     @ResponseBody
     public ModelAndView home(HttpSession session, Model model) {
-       // model.addAttribute("nodes", userService.isAdminRole() ? nodeService.getAllNodes() : nodeService.getNodesForRoles());
+        // model.addAttribute("nodes", userService.isAdminRole() ? nodeService.getAllNodes() : nodeService.getNodesForRoles());
         String currentUserSession = (String) session.getAttribute("currentUserSession");
         UUID uuid = UUID.randomUUID();
         model.addAttribute("currentUserSession", StringUtils.isNotEmpty(currentUserSession) ? currentUserSession : uuid.toString());

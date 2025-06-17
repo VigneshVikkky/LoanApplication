@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface PaymentHistoryRepository  extends MongoRepository<PaymentHistory, String> {
+public interface PaymentHistoryRepository extends MongoRepository<PaymentHistory, String> {
     void deleteByRecordId(String recordId);
 
     List<PaymentHistory> findByStatus(boolean b);

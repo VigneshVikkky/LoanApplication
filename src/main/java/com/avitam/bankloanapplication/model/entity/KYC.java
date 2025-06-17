@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @NoArgsConstructor
 @Document("KYC")
-public class KYC extends BaseEntity{
+public class KYC extends BaseEntity {
     private String customerId;
 
     private String panNumber;

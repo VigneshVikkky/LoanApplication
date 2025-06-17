@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-public class KYCWsDto extends CommonWsDto{
+public class KYCWsDto extends CommonWsDto {
     private List<KYCDto> kycDtoList;
 }

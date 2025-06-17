@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class PaymentDetailsDto extends CommonDto{
+public class PaymentDetailsDto extends CommonDto {
 
     private LoanDto loanDto;
     private String paidStatus;

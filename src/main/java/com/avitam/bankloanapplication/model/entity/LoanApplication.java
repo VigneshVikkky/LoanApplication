@@ -2,7 +2,10 @@ package com.avitam.bankloanapplication.model.entity;
 
 import com.avitam.bankloanapplication.model.dto.CustomerDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -12,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Document("loan_application")
-public class LoanApplication extends BaseEntity{
+public class LoanApplication extends BaseEntity {
 
     private String customerId;
     private String notificationId;

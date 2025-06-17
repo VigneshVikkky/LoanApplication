@@ -1,7 +1,10 @@
 package com.avitam.bankloanapplication.model.dto;
 
 import com.avitam.bankloanapplication.model.entity.Role;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Set;

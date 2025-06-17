@@ -11,12 +11,12 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Document("VerificationToken")
-public class VerificationToken  {
+public class VerificationToken {
 
+    public User user;
     private int id;
     private String userId;
     private String token;
     private int status;
-    public User user;
     private Date ExpiryDate;
 }

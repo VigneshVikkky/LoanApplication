@@ -1,17 +1,15 @@
 package com.avitam.bankloanapplication.web.controllers.admin.paymentHistory;
 
-import com.avitam.bankloanapplication.model.dto.*;
-import com.avitam.bankloanapplication.model.entity.Customer;
+import com.avitam.bankloanapplication.model.dto.PaymentHistoryDto;
+import com.avitam.bankloanapplication.model.dto.PaymentHistoryWsDto;
+import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
-import com.avitam.bankloanapplication.model.entity.LoanLimit;
-import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.model.entity.PaymentHistory;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
 import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.repository.PaymentHistoryRepository;
-import com.avitam.bankloanapplication.service.LoanService;
 import com.avitam.bankloanapplication.service.PaymentHistoryService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -25,18 +23,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/loans/paymentHistory")
 public class PaymentHistoryController extends BaseController {
+    private static final String ADMIN_PAYMENTHISTORY = "/loans/paymentHistory";
     @Autowired
     private PaymentHistoryService paymentHistoryService;
     @Autowired
@@ -52,16 +48,14 @@ public class PaymentHistoryController extends BaseController {
     @Autowired
     private LoanRepository loanRepository;
 
-
-    private static final String ADMIN_PAYMENTHISTORY = "/loans/paymentHistory";
-
     @PostMapping
     public PaymentHistoryWsDto getAllPaymentHistory(@RequestBody PaymentHistoryWsDto paymentHistoryWsDto) {
         Pageable pageable = getPageable(paymentHistoryWsDto.getPage(), paymentHistoryWsDto.getSizePerPage(), paymentHistoryWsDto.getSortDirection(), paymentHistoryWsDto.getSortField());
         PaymentHistoryDto paymentHistoryDto = CollectionUtils.isNotEmpty(paymentHistoryWsDto.getPaymentHistoryDtoList()) ? paymentHistoryWsDto.getPaymentHistoryDtoList().get(0) : new PaymentHistoryDto();
         PaymentHistory paymentHistory = modelMapper.map(paymentHistoryDto, PaymentHistory.class);
         Page<PaymentHistory> page = isSearchActive(paymentHistory) != null ? paymentHistoryRepository.findAll(Example.of(paymentHistory), pageable) : paymentHistoryRepository.findAll(pageable);
-        Type listType = new TypeToken<List<PaymentHistoryDto>>() {}.getType();
+        Type listType = new TypeToken<List<PaymentHistoryDto>>() {
+        }.getType();
         paymentHistoryWsDto.setPaymentHistoryDtoList(modelMapper.map(page.getContent(), listType));
         paymentHistoryWsDto.setBaseUrl(ADMIN_PAYMENTHISTORY);
         paymentHistoryWsDto.setTotalPages(page.getTotalPages());
@@ -70,10 +64,11 @@ public class PaymentHistoryController extends BaseController {
     }
 
     @PostMapping("/getPaymentHistoryByLoanId")
-    public PaymentHistoryDto getPaymentHistoryByLoanId(@RequestBody PaymentHistoryDto paymentHistoryDto){
+    public PaymentHistoryDto getPaymentHistoryByLoanId(@RequestBody PaymentHistoryDto paymentHistoryDto) {
 
         PaymentHistory paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
-        Type listType = new TypeToken<PaymentHistoryDto>() {}.getType();
+        Type listType = new TypeToken<PaymentHistoryDto>() {
+        }.getType();
         Loan loan = loanRepository.findByRecordId(paymentHistory.getLoan().getRecordId());
         paymentHistory.setLoan(loan);
         paymentHistoryDto = modelMapper.map(paymentHistory, listType);
@@ -102,7 +97,8 @@ public class PaymentHistoryController extends BaseController {
     public PaymentHistoryWsDto getPaymentHistoryById() {
         PaymentHistoryWsDto paymentHistoryWsDto = new PaymentHistoryWsDto();
         List<PaymentHistory> paymentHistoryList = paymentHistoryRepository.findByStatus(true);
-        Type listType = new TypeToken<List<PaymentHistoryDto>>() {}.getType();
+        Type listType = new TypeToken<List<PaymentHistoryDto>>() {
+        }.getType();
         paymentHistoryWsDto.setPaymentHistoryDtoList(modelMapper.map(paymentHistoryList, listType));
         paymentHistoryWsDto.setBaseUrl(ADMIN_PAYMENTHISTORY);
         return paymentHistoryWsDto;

@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("WebsiteSettingRepository")
-public interface WebsiteSettingRepository extends MongoRepository<WebsiteSetting,String> {
+public interface WebsiteSettingRepository extends MongoRepository<WebsiteSetting, String> {
     Object findByStatusOrderById(boolean b);
 
 

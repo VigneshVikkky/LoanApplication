@@ -1,13 +1,15 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loanapplication;
 
-import com.avitam.bankloanapplication.core.service.CoreService;
-import com.avitam.bankloanapplication.model.dto.*;
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
+import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDto;
+import com.avitam.bankloanapplication.model.dto.LoanWsDto;
+import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
-import com.avitam.bankloanapplication.repository.UserRepository;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.impl.LoanApplicationServiceImpl;
@@ -20,18 +22,21 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/loans/loanApplication")
 public class LoanApplicationController extends BaseController {
 
+    public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -44,14 +49,10 @@ public class LoanApplicationController extends BaseController {
     private LoanDetailsService loanDetailsService;
     @Autowired
     private LoanApplicationService loanApplicationService;
-
     @Autowired
     private LoanApplicationServiceImpl loanApplicationServiceImpl;
     @Autowired
     private LoanDetailsRepository loanDetailsRepository;
-
-
-    public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
 
     @PostMapping
     @ResponseBody

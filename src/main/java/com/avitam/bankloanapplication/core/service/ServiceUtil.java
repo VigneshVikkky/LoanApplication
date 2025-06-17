@@ -58,7 +58,7 @@ public class ServiceUtil implements HotFolderConstants {
             put("32", AVAILABILITY_DOCUMENTS);
         }
     };
-    private static Logger logger = LoggerFactory.getLogger(ServiceUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceUtil.class);
     Logger LOG = LoggerFactory.getLogger(ServiceUtil.class);
 
     public static Set<String> getSupportedFileFormats() {

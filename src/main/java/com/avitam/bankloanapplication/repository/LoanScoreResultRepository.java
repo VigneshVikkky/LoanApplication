@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface LoanScoreResultRepository extends MongoRepository<LoanScoreResult,String> {
+public interface LoanScoreResultRepository extends MongoRepository<LoanScoreResult, String> {
     void deleteByRecordId(String id);
 
     LoanScoreResult findByRecordId(String RecordId);

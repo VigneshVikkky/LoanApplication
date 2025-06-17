@@ -13,9 +13,9 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Document("Role")
-public class Role extends BaseEntity{
+public class Role extends BaseEntity {
 
+    public String authority;
     private Set<Node> permissions;
-    public String authority ;
 
 }

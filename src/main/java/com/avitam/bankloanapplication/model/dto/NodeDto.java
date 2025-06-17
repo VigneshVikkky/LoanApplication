@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @ToString
 @NoArgsConstructor
-public class NodeDto extends CommonDto{
+public class NodeDto extends CommonDto {
 
     private String path;
     private Set<Role> roles;

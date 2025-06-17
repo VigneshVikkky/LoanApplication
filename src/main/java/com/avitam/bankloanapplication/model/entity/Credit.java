@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Setter
@@ -12,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @ToString
 @Document("Credit")
-public class Credit extends BaseEntity{
+public class Credit extends BaseEntity {
     private Integer creditScore;
     private String photo;
 

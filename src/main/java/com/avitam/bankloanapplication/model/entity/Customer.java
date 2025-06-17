@@ -1,10 +1,11 @@
 package com.avitam.bankloanapplication.model.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -13,7 +14,7 @@ import java.util.Set;
 @ToString
 @Document("customer")
 
-public class Customer extends BaseEntity{
+public class Customer extends BaseEntity {
 
     private String fullName;
     private Double monthlyIncome;

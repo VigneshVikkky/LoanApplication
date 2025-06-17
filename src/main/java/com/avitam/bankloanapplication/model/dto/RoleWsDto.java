@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-public class RoleWsDto extends CommonWsDto{
+public class RoleWsDto extends CommonWsDto {
     private List<RoleDto> roleDtoList;
 }

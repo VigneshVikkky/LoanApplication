@@ -5,7 +5,6 @@ import com.avitam.bankloanapplication.model.dto.UserDto;
 import com.avitam.bankloanapplication.model.entity.Role;
 import com.avitam.bankloanapplication.model.entity.User;
 import com.avitam.bankloanapplication.model.entity.VerificationToken;
-import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.RoleRepository;
 import com.avitam.bankloanapplication.repository.UserRepository;
 import com.avitam.bankloanapplication.repository.VerificationTokenRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +29,8 @@ public class UserServiceImpl implements UserService {
     public static final String TOKEN_EXPIRED = "expired";
     public static final String TOKEN_VALID = "valid";
     public static final String ADMIN_USER = "/admin/user";
-
+    @Autowired
+    RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -40,8 +39,6 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
     @Autowired
     private VerificationTokenRepository tokenRepository;
-    @Autowired
-    RoleRepository roleRepository;
 
     @Override
     public UserDto save(UserDto request) {

@@ -3,18 +3,21 @@ package com.avitam.bankloanapplication.service.impl;
 import com.avitam.bankloanapplication.core.service.CoreService;
 import com.avitam.bankloanapplication.model.dto.CustomerDto;
 import com.avitam.bankloanapplication.model.dto.CustomerWsDto;
-import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.model.entity.Customer;
+import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
+    public static final String ADMIN_CUSTOMER = "/admin/customer";
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -23,8 +26,6 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public static final String ADMIN_CUSTOMER = "/admin/customer";
 
     public Customer findByRecordId(String recordId) {
         return customerRepository.findByRecordId(recordId);

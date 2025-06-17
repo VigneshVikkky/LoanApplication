@@ -21,7 +21,7 @@ public interface CustomerRepository extends MongoRepository<Customer, String> {
 
     List<Customer> findByStatus(boolean b);
 
-    List<Customer> findByRecordId(String recordId ,boolean b);
+    List<Customer> findByRecordId(String recordId, boolean b);
 
     Customer findByFullName(String username);
 }

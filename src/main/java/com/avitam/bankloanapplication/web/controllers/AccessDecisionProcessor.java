@@ -1,7 +1,6 @@
 package com.avitam.bankloanapplication.web.controllers;
 
 
-import com.avitam.bankloanapplication.model.entity.Node;
 import com.avitam.bankloanapplication.model.entity.Role;
 import com.avitam.bankloanapplication.model.entity.User;
 import com.avitam.bankloanapplication.repository.UserRepository;
@@ -12,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.FilterInvocation;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvocation> {
@@ -28,8 +26,7 @@ public class AccessDecisionProcessor implements AccessDecisionVoter<FilterInvoca
         //Get the current request URI
         String requestUrl = object.getRequestUrl();
 
-        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            org.springframework.security.core.userdetails.User principalObject = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User principalObject) {
             User currentUser = userRepository.findByEmail(principalObject.getUsername());
             Set<Role> roles = currentUser.getRoles();
             /*List<Node> nodes = (List<Node>) getNodesForRoles(roles);

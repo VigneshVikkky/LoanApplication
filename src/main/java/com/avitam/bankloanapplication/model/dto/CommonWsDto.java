@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class CommonWsDto extends PaginationDto{
+public class CommonWsDto extends PaginationDto {
 
     private String baseUrl;
     private String recordId;

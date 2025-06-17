@@ -1,9 +1,9 @@
 package com.avitam.bankloanapplication.model;
 
 public enum LoanLimit {
-    LOWER(10000.00,5000.00),
-    HIGHER(20000.00,5000.00),
-    SPECIAL(0.00,0.00);
+    LOWER(10000.00, 5000.00),
+    HIGHER(20000.00, 5000.00),
+    SPECIAL(0.00, 0.00);
 
     private Double loanLimitAmount;
     private Double incomeLimit;

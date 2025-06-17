@@ -7,11 +7,11 @@ import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.OTP;
 import com.avitam.bankloanapplication.model.entity.WebsiteSetting;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
+import com.avitam.bankloanapplication.repository.OtpRepository;
 import com.avitam.bankloanapplication.repository.WebsiteSettingRepository;
 import com.avitam.bankloanapplication.service.CustomerOTPService;
 import com.avitam.bankloanapplication.service.CustomerService;
 import com.avitam.bankloanapplication.tokenGeneration.JWTUtility;
-import com.avitam.bankloanapplication.repository.OtpRepository;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -33,14 +33,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CustomerOTPServiceImpl implements CustomerOTPService {

@@ -3,7 +3,6 @@ package com.avitam.bankloanapplication.service.impl;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
-import com.avitam.bankloanapplication.model.dto.LoanEmiSummaryDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
@@ -16,26 +15,21 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LoanDetailsServiceImpl implements LoanDetailsService {
 
+    public static final String ADMIN_LOANDETAILS = "/loans/loanDetails";
     @Autowired
     private LoanDetailsRepository loanDetailsRepository;
-
     @Autowired
     private LoanRepository loanRepository;
-
     @Autowired
     private ModelMapper modelMapper;
-
-    public static final String ADMIN_LOANDETAILS = "/loans/loanDetails";
 
     @Override
     public LoanDetailsWsDto createLoan(LoanDetailsWsDto request) {

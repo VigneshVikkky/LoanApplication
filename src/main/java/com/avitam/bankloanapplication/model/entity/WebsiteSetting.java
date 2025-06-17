@@ -10,7 +10,7 @@ import org.bson.types.Binary;
 @Setter
 @NoArgsConstructor
 @ToString
-public class WebsiteSetting extends BaseEntity{
+public class WebsiteSetting extends BaseEntity {
     private Binary logo;
     private Binary favicon;
     private String sportsApiUrl;

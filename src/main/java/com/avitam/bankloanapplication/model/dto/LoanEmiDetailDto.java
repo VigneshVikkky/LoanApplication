@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 
-public class LoanEmiDetailDto extends CommonDto  {
+public class LoanEmiDetailDto extends CommonDto {
     private String month;
     private double instalment;
     private double interestAmount;

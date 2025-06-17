@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @ToString
-public class CommonDto extends PaginationDto{
+public class CommonDto extends PaginationDto {
     private ObjectId id;
     private String name;
     private String recordId;

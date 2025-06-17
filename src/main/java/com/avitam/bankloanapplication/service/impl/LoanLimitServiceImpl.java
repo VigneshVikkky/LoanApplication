@@ -4,7 +4,6 @@ import com.avitam.bankloanapplication.model.dto.LoanLimitDto;
 import com.avitam.bankloanapplication.model.dto.LoanLimitWsDto;
 import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
-import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
 import com.avitam.bankloanapplication.repository.LoanTypeRepository;
@@ -13,10 +12,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class LoanLimitServiceImpl implements LoanLimitService {
+    private static final String ADMIN_LOANLIMIT = "/loans/loanLimit";
     @Autowired
     private LoanLimitRepository loanLimitRepository;
     @Autowired
@@ -25,7 +27,6 @@ public class LoanLimitServiceImpl implements LoanLimitService {
     private LoanTypeRepository loanTypeRepository;
     @Autowired
     private ModelMapper modelMapper;
-    private static final String ADMIN_LOANLIMIT = "/loans/loanLimit";
     private double emi;
 
     public LoanLimitWsDto editLoanLimit(LoanLimitDto loanLimitDto) {

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -15,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class RoleDto extends CommonDto {
 
+    public String authority;
     private Set<Node> permissions;
-    public String authority ;
 
 }

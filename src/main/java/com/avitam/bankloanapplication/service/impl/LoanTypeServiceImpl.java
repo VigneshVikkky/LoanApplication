@@ -1,6 +1,5 @@
 package com.avitam.bankloanapplication.service.impl;
 
-import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeWsDto;
 import com.avitam.bankloanapplication.model.entity.LoanType;
@@ -28,10 +27,10 @@ public class LoanTypeServiceImpl implements LoanTypeService {
 
     public LoanTypeWsDto handleEdit(LoanTypeWsDto request) {
         LoanTypeWsDto loanTypeWsDto = new LoanTypeWsDto();
-        LoanType loanType=new LoanType();
+        LoanType loanType = new LoanType();
         List<LoanTypeDto> loanTypeDtoList = request.getLoanTypeDtoList();
         List<LoanType> loanTypes = new ArrayList<>();
-        for(LoanTypeDto loan: loanTypeDtoList) {
+        for (LoanTypeDto loan : loanTypeDtoList) {
 
             if (loan.getRecordId() != null) {
                 loanType = loanTypeRepository.findByRecordId(loan.getRecordId());
@@ -52,8 +51,9 @@ public class LoanTypeServiceImpl implements LoanTypeService {
             request.setBaseUrl(ADMIN_LOANTYPE);
             request.setMessage("Data added Successfully");
         }
-        Type listType = new TypeToken<List<LoanTypeDto>>() {}.getType();
-        request.setLoanTypeDtoList(modelMapper.map(loanTypes,listType));
+        Type listType = new TypeToken<List<LoanTypeDto>>() {
+        }.getType();
+        request.setLoanTypeDtoList(modelMapper.map(loanTypes, listType));
         return request;
     }
 }

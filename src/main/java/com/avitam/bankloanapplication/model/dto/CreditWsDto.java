@@ -11,8 +11,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-public class CreditWsDto extends CommonWsDto{
-    List<CreditDto>creditDtoList;
+public class CreditWsDto extends CommonWsDto {
+    List<CreditDto> creditDtoList;
 
 
 }

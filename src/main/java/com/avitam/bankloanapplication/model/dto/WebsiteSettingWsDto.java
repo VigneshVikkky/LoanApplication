@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-public class WebsiteSettingWsDto extends CommonWsDto{
+public class WebsiteSettingWsDto extends CommonWsDto {
     List<WebsiteSettingDto> webSiteSettingDtoList;
 
 }

@@ -20,31 +20,27 @@ import java.util.List;
 
 @Service
 public class KycServiceImpl implements KycService {
+    private static final String ADMIN_KYC = "/admin/Kyc";
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private CoreService coreService;
-
     @Autowired
     private KYCRepository kycRepository;
-
-    private static final String ADMIN_KYC="/admin/Kyc";
 
     @Override
     public KYCWsDto handelEdit(KYCWsDto request) {
         KYC kyc = new KYC();
         List<KYCDto> kycDtos = request.getKycDtoList();
         List<KYC> kycs = new ArrayList<>();
-        for (KYCDto kycDto :kycDtos){
-            if (kycDto.getRecordId() != null){
+        for (KYCDto kycDto : kycDtos) {
+            if (kycDto.getRecordId() != null) {
                 kyc = kycRepository.findByRecordId(kycDto.getRecordId());
-                modelMapper.map(kycDto,kyc);
+                modelMapper.map(kycDto, kyc);
                 kycRepository.save(kyc);
                 request.setMessage("Data updated successfully");
-            }
-            else {
-                kyc= modelMapper.map(kycDto,KYC.class);
+            } else {
+                kyc = modelMapper.map(kycDto, KYC.class);
                 kyc.setCreationTime(new Date());
                 kyc.setStatus(true);
                 if (kycDto.getImage() != null && !kycDto.getImage().isEmpty()) {
@@ -60,7 +56,7 @@ public class KycServiceImpl implements KycService {
                 request.setMessage("Data added successfully");
             }
 
-            if (request.getRecordId()== null){
+            if (request.getRecordId() == null) {
                 kyc.setRecordId(String.valueOf(kyc.getId().getTimestamp()));
             }
             kycRepository.save(kyc);
@@ -69,7 +65,8 @@ public class KycServiceImpl implements KycService {
 
 
         }
-        Type listType = new TypeToken<List<KYCDto>>() {}.getType();
+        Type listType = new TypeToken<List<KYCDto>>() {
+        }.getType();
         request.setKycDtoList(modelMapper.map(kycs, listType));
         return request;
     }

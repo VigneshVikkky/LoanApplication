@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @NoArgsConstructor
 @ToString
-public class KYCDto extends CommonDto{
+public class KYCDto extends CommonDto {
     private String customerId;
 
     private String panNumber;

@@ -24,6 +24,7 @@ public class ReflectionDataService {
 
     /**
      * returns all class names from the given package
+     *
      * @param packageName
      * @return
      */
@@ -37,6 +38,7 @@ public class ReflectionDataService {
 
     /**
      * returns all public method names in the given class
+     *
      * @param className
      * @return
      */
@@ -45,7 +47,7 @@ public class ReflectionDataService {
 
         try {
             // Load the class by its name
-            Class<?> clazz = Class.forName("avitam.fantasy11.qa.pages.abstractpages."+ className);
+            Class<?> clazz = Class.forName("avitam.fantasy11.qa.pages.abstractpages." + className);
 
             // Get all declared methods of the class
             Method[] methods = clazz.getDeclaredMethods();
@@ -66,6 +68,7 @@ public class ReflectionDataService {
 
     /**
      * returns all enums named Field in the given class
+     *
      * @param className
      * @return
      */

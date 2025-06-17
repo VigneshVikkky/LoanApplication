@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @NoArgsConstructor
 @ToString
-public class WebsiteSettingDto extends CommonDto{
+public class WebsiteSettingDto extends CommonDto {
     private MultipartFile logo;
     private MultipartFile favicon;
     private String sportsApiUrl;

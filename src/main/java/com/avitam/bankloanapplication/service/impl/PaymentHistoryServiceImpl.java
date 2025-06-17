@@ -21,18 +21,13 @@ import java.util.List;
 @Service
 public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
+    public static final String ADMIN_PAYMENTHISTORY = "/loans/paymentHistory";
     @Autowired
     private PaymentHistoryRepository paymentHistoryRepository;
-
-
     @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private LoanRepository loanRepository;
-
-
-    public static final String ADMIN_PAYMENTHISTORY = "/loans/paymentHistory";
 
     @Override
     public PaymentHistoryWsDto createPaymentHistory(PaymentHistoryWsDto request) {
@@ -44,7 +39,7 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
         for (PaymentHistoryDto paymentHistoryDto : paymentHistoryDtoList) {
             boolean exists = paymentHistoryRepository.existsByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
             //if (paymentHistoryDto.getRecordId() != null) {
-                if (exists) {
+            if (exists) {
                 //paymentHistory = paymentHistoryRepository.findByRecordId(paymentHistoryDto.getRecordId());
                 paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
                 modelMapper.map(paymentHistoryDto, paymentHistory);
@@ -88,25 +83,24 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 //            paymentDetailsDtoList = paymentHistory.getPaymentDetailsDtoList();
 //        }
 
-        if(paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId()) == null){
-            paymentDetailsDtoList=new ArrayList<>();
-        }
-        else{
+        if (paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId()) == null) {
+            paymentDetailsDtoList = new ArrayList<>();
+        } else {
             PaymentHistory paymentHistory = paymentHistoryRepository.findByLoan_RecordId(paymentHistoryDto.getLoan().getRecordId());
             paymentDetailsDtoList = paymentHistory.getPaymentDetailsDtoList();
         }
         PaymentDetailsDto paymentDetailsDto1 = new PaymentDetailsDto();
-        for(PaymentDetailsDto paymentDetailsDto : paymentHistoryDto.getPaymentDetailsDtoList()){
-        for (LoanEmiDetailDto loanEmiDetailDto:loan.getLoanEmiDetailDtoList()) {
-            int month = Integer.parseInt(loanEmiDetailDto.getRecordId());
-            if (paymentDetailsDto.getMonthlyIndex() == month) {
-                paymentDetailsDto1.setLoanEmiDetailDto(loanEmiDetailDto);
-                paymentDetailsDto1.setPaidStatus(paymentDetailsDto.getPaidStatus());
-                paymentDetailsDto1.setMonthlyIndex(paymentDetailsDto.getMonthlyIndex());
-                paymentDetailsDto1.setTransactionId(paymentDetailsDto.getTransactionId());
-                break;
+        for (PaymentDetailsDto paymentDetailsDto : paymentHistoryDto.getPaymentDetailsDtoList()) {
+            for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
+                int month = Integer.parseInt(loanEmiDetailDto.getRecordId());
+                if (paymentDetailsDto.getMonthlyIndex() == month) {
+                    paymentDetailsDto1.setLoanEmiDetailDto(loanEmiDetailDto);
+                    paymentDetailsDto1.setPaidStatus(paymentDetailsDto.getPaidStatus());
+                    paymentDetailsDto1.setMonthlyIndex(paymentDetailsDto.getMonthlyIndex());
+                    paymentDetailsDto1.setTransactionId(paymentDetailsDto.getTransactionId());
+                    break;
+                }
             }
-        }
             paymentDetailsDtoList.add(paymentDetailsDto1);
         }
         paymentHistoryDto.setPaymentDetailsDtoList(paymentDetailsDtoList);

@@ -2,9 +2,25 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.core.service.CoreService;
 import com.avitam.bankloanapplication.exception.InvalidLoanApplicationException;
-import com.avitam.bankloanapplication.model.dto.*;
-import com.avitam.bankloanapplication.model.entity.*;
-import com.avitam.bankloanapplication.repository.*;
+import com.avitam.bankloanapplication.model.dto.CustomerDto;
+import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
+import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDto;
+import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
+import com.avitam.bankloanapplication.model.dto.LoanWsDto;
+import com.avitam.bankloanapplication.model.entity.Customer;
+import com.avitam.bankloanapplication.model.entity.Loan;
+import com.avitam.bankloanapplication.model.entity.LoanApplication;
+import com.avitam.bankloanapplication.model.entity.LoanLimit;
+import com.avitam.bankloanapplication.model.entity.LoanScoreResult;
+import com.avitam.bankloanapplication.model.entity.LoanType;
+import com.avitam.bankloanapplication.repository.CustomerRepository;
+import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
+import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
+import com.avitam.bankloanapplication.repository.LoanLimitRepository;
+import com.avitam.bankloanapplication.repository.LoanRepository;
+import com.avitam.bankloanapplication.repository.LoanScoreResultRepository;
+import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,6 +37,7 @@ import java.util.List;
 @Slf4j
 public class LoanApplicationServiceImpl implements LoanApplicationService {
 
+    public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -39,9 +56,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private LoanLimitRepository loanLimitRepository;
     @Autowired
     private LoanTypeRepository loanTypeRepository;
-
-    public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
-
 
     @Override
     public LoanApplicationWsDto handleEdit(LoanApplicationWsDto request) {
@@ -80,7 +94,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         return request;
     }
 
-    public void getLoanType(LoanApplication loanApplication){
+    public void getLoanType(LoanApplication loanApplication) {
 
         Loan loan = loanRepository.findByRecordId(loanApplication.getLoanId());
         LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanTypeDto().getRecordId());
@@ -90,7 +104,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         loanApplication.setLoanTypeDto(loanTypeDto);
     }
 
-    public void getCustomer(LoanApplication loanApplication){
+    public void getCustomer(LoanApplication loanApplication) {
         Customer customer = customerRepository.findByRecordId(loanApplication.getCustomerId());
         Type listType = new TypeToken<CustomerDto>() {
         }.getType();
@@ -256,10 +270,10 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private Loan getNotResultedLoanApplicationOfCustomer(LoanApplication loanApplication) {
 
-            String loanId = loanApplication.getLoanId();
-            Loan loan = loanRepository.findByRecordId(loanId);
-            LoanScoreResult loanScoreResult = loanScoreResultRepository.findByRecordId(loan.getLoanScoreResultId());
-            return loan;
+        String loanId = loanApplication.getLoanId();
+        Loan loan = loanRepository.findByRecordId(loanId);
+        LoanScoreResult loanScoreResult = loanScoreResultRepository.findByRecordId(loan.getLoanScoreResultId());
+        return loan;
 
         /*var optionalLoan =
                 customer.getLoanApplicationId().stream()

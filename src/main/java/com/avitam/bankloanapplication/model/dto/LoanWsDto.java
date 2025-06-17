@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ToString
-public class LoanWsDto extends CommonWsDto{
+public class LoanWsDto extends CommonWsDto {
 
     private List<LoanDto> loanDtoList;
 

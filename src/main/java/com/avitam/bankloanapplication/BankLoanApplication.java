@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 

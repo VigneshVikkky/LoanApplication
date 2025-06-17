@@ -1,12 +1,13 @@
 package com.avitam.bankloanapplication.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-public class LoanDto extends CommonDto{
+public class LoanDto extends CommonDto {
     private String loanType;
     private LoanTypeDto loanTypeDto;
     private BigDecimal loanEmi;
@@ -39,5 +40,5 @@ public class LoanDto extends CommonDto{
     private double pendingInstallmentAmount;
     //private double  totalDesiredLoan;
     private double foreClosingCharges;
-    private boolean foreClosing=false;
+    private boolean foreClosing = false;
 }

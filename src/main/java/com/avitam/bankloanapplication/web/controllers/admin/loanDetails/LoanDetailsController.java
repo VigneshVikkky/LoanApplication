@@ -1,6 +1,5 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loanDetails;
 
-import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
@@ -16,7 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -24,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/loans/loanDetails")
 public class LoanDetailsController extends BaseController {
+    private static final String ADMIN_LOANDETAILS = "/loans/loanDetails";
     @Autowired
     private LoanDetailsService loanDetailsService;
     @Autowired
@@ -31,15 +36,14 @@ public class LoanDetailsController extends BaseController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static final String ADMIN_LOANDETAILS = "/loans/loanDetails";
-
     @PostMapping
     public LoanDetailsWsDto getAllLoan(@RequestBody LoanDetailsWsDto loanDetailsWsDto) {
         Pageable pageable = getPageable(loanDetailsWsDto.getPage(), loanDetailsWsDto.getSizePerPage(), loanDetailsWsDto.getSortDirection(), loanDetailsWsDto.getSortField());
         LoanDetailsDto loanDetailsDto = CollectionUtils.isNotEmpty(loanDetailsWsDto.getLoanDetailsDtos()) ? loanDetailsWsDto.getLoanDetailsDtos().get(0) : new LoanDetailsDto();
         LoanDetails loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
         Page<LoanDetails> page = isSearchActive(loanDetails) != null ? loanDetailsRepository.findAll(Example.of(loanDetails), pageable) : loanDetailsRepository.findAll(pageable);
-        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {
+        }.getType();
         loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(page.getContent(), listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         loanDetailsWsDto.setTotalPages(page.getTotalPages());
@@ -68,7 +72,8 @@ public class LoanDetailsController extends BaseController {
     public LoanDetailsWsDto getLoanDetailsById() {
         LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
         List<LoanDetails> loans = loanDetailsRepository.findByStatus(true);
-        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {
+        }.getType();
         loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loans, listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsWsDto;
@@ -86,19 +91,21 @@ public class LoanDetailsController extends BaseController {
     @PostMapping("/getByLoanRecordId")
     public LoanDetailsWsDto getByRecordId(@RequestBody LoanDetailsDto loanDetailsDto) {
         LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
-        List<LoanDetails> loanDetails = loanDetailsRepository.findByRecordIdAndStatus(loanDetailsDto.getRecordId(),true);
-        Type listType = new TypeToken<List<LoanDetailsDto>>() {}.getType();
-        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loanDetails,listType));
+        List<LoanDetails> loanDetails = loanDetailsRepository.findByRecordIdAndStatus(loanDetailsDto.getRecordId(), true);
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {
+        }.getType();
+        loanDetailsWsDto.setLoanDetailsDtos(modelMapper.map(loanDetails, listType));
         loanDetailsWsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsWsDto;
     }
 
     @PostMapping("/getByLoanId")
     public LoanDetailsDto getByLoanId(@RequestBody LoanDetailsDto loanDetailsDto) {
-       // LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
-       LoanDetails loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
-        Type listType = new TypeToken<LoanDetailsDto>() {}.getType();
-        loanDetailsDto = modelMapper.map(loanDetails,listType);
+        // LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
+        LoanDetails loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
+        Type listType = new TypeToken<LoanDetailsDto>() {
+        }.getType();
+        loanDetailsDto = modelMapper.map(loanDetails, listType);
         loanDetailsDto.setBaseUrl(ADMIN_LOANDETAILS);
         return loanDetailsDto;
     }

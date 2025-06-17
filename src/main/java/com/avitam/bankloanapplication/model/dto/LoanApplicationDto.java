@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @ToString
-public class LoanApplicationDto extends CommonDto{
+public class LoanApplicationDto extends CommonDto {
 
     private String customerId;
     private String notificationId;

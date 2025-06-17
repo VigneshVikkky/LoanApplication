@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface CreditRepository extends MongoRepository<Credit,String> {
+public interface CreditRepository extends MongoRepository<Credit, String> {
 
     Credit findByRecordId(String recordId);
 

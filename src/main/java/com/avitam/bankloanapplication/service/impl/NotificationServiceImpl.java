@@ -2,8 +2,8 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.model.dto.NotificationDto;
 import com.avitam.bankloanapplication.model.dto.NotificationWsDto;
-import com.avitam.bankloanapplication.repository.NotificationRepository;
 import com.avitam.bankloanapplication.model.entity.Notification;
+import com.avitam.bankloanapplication.repository.NotificationRepository;
 import com.avitam.bankloanapplication.service.NotificationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +33,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     public NotificationWsDto handelEdit(NotificationWsDto request) {
         NotificationWsDto notificationWsDto = new NotificationWsDto();
-        Notification notification=new Notification();
+        Notification notification = new Notification();
         List<NotificationDto> notificationDtos = request.getNotificationDtoList();
-        List<Notification> notifications= new ArrayList<>();
-        for(NotificationDto notificationDto:notificationDtos) {
+        List<Notification> notifications = new ArrayList<>();
+        for (NotificationDto notificationDto : notificationDtos) {
             if (notificationDto.getRecordId() != null) {
                 notification = notificationRepository.findByRecordId(notificationDto.getRecordId());
                 modelMapper.map(notificationDto, notification);
@@ -59,12 +59,9 @@ public class NotificationServiceImpl implements NotificationService {
             request.setMessage("Data added Successfully");
 
         }
-        request.setNotificationDtoList(modelMapper.map(notifications,List.class));
+        request.setNotificationDtoList(modelMapper.map(notifications, List.class));
         return request;
     }
-
-
-
 
 
 }

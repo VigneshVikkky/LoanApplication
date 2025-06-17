@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class NodeWsDto extends CommonWsDto{
+public class NodeWsDto extends CommonWsDto {
 
     List<NodeDto> nodeDtos;
 }

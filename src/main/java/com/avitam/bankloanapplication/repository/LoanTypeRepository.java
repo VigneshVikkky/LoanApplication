@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LoanTypeRepository extends MongoRepository<LoanType,String> {
+public interface LoanTypeRepository extends MongoRepository<LoanType, String> {
     LoanType findByRecordId(String recordId);
 
     LoanType findByName(String name);

@@ -1,6 +1,5 @@
 package com.avitam.bankloanapplication.service.impl;
 
-import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.RoleDto;
 import com.avitam.bankloanapplication.model.dto.RoleWsDto;
 import com.avitam.bankloanapplication.model.entity.Role;
@@ -25,11 +24,12 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
     @Autowired
     private ModelMapper modelMapper;
+
     public RoleWsDto createRole(RoleWsDto request) {
         Role role = new Role();
         List<RoleDto> roleDtos = request.getRoleDtoList();
         List<Role> roles = new ArrayList<>();
-        for(RoleDto roleDto :roleDtos) {
+        for (RoleDto roleDto : roleDtos) {
             if (roleDto.getRecordId() != null) {
                 role = roleRepository.findByRecordId(roleDto.getRecordId());
                 modelMapper.map(roleDto, role);
@@ -50,12 +50,13 @@ public class RoleServiceImpl implements RoleService {
             request.setMessage("Data added Successfully");
 
         }
-        Type listType = new TypeToken<List<RoleDto>>() {}.getType();
+        Type listType = new TypeToken<List<RoleDto>>() {
+        }.getType();
         request.setRoleDtoList(modelMapper.map(roles, listType));
         return request;
-        }
-
     }
+
+}
 
 
 

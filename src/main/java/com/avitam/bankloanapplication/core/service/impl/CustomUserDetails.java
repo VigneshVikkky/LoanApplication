@@ -10,7 +10,7 @@ public class CustomUserDetails implements UserDetails {
     private final boolean isActive;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(String username,  boolean isActive, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(String username, boolean isActive, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;
         this.isActive = isActive;
         this.authorities = authorities;
