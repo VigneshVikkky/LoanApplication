@@ -114,8 +114,10 @@ public class LoanServiceImpl implements LoanService {
                 loanEmiDetailDto.setDueDate(baseDate);
 
                 double instalment = 0.0;
+                double foreclosingCharges = 0.0;
                 if(loan.isForeClosing()) {
                     instalment = loanEmiDetailDto.getInstalment();
+                    foreclosingCharges = loan.getDesiredLoan()*5/100;
                 }
                 else {
                     instalment = loan.getPendingInstallmentAmount();
@@ -129,10 +131,11 @@ public class LoanServiceImpl implements LoanService {
                     int daysLate = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
                     penalty = roundToTwoDecimal(loanEmiDetailDto.getInstalment() * 0.05 * daysLate);
                 }
-                    double totalPayable = roundToTwoDecimal(baseAmount + penalty);
+                    double totalPayable = roundToTwoDecimal(baseAmount + penalty + foreclosingCharges);
                     loanEmiDetailDto.setInstalment(instalment);
                     loanEmiDetailDto.setPenalty(penalty);
                     loanEmiDetailDto.setTotalPayable(totalPayable);
+                    loan.setForeClosingCharges(foreclosingCharges);
                     //dueDate = loanEmiDetailDto.getDueDate();
                     loopCount++;
                     break;

@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                             try {
                                 requests
                                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm", "/admin/email/**", "/admin/mobile/send-otp", "/admin/mobile/validate-otp", "/admin/mobile/save-username", "/admin/role", "/admin/role/get", "admin/user/checkReferral").permitAll()
+                                        .requestMatchers("/css/**", "/images/**", "/vendors/**", "/api/**", "/maps/**", "/resources/**", "/register", "/login", "/forgotpassword", "/resetpassword", "/handleUploadOperation", "/registrationConfirm", "/admin/otp/**", "/admin/mobile/send-otp", "/admin/mobile/validate-otp", "/admin/mobile/save-username", "/admin/role", "/admin/role/get", "admin/user/checkReferral").permitAll()
                                         .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                             } catch (Exception e) {
                                 throw new RuntimeException();

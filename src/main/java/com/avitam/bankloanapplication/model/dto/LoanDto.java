@@ -38,6 +38,6 @@ public class LoanDto extends CommonDto{
     private String loanStatus;
     private double pendingInstallmentAmount;
     private double  totalDesiredLoan;
-    private double loanClosingCharges;
+    private double foreClosingCharges;
     private boolean foreClosing=false;
 }
