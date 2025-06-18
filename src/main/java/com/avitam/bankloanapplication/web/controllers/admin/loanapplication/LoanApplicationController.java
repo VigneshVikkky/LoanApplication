@@ -2,16 +2,22 @@ package com.avitam.bankloanapplication.web.controllers.admin.loanapplication;
 
 import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
 import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 import com.avitam.bankloanapplication.model.dto.LoanDto;
+import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
+import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
+import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
+import com.avitam.bankloanapplication.service.LoanService;
 import com.avitam.bankloanapplication.service.impl.LoanApplicationServiceImpl;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -53,6 +59,10 @@ public class LoanApplicationController extends BaseController {
     private LoanApplicationServiceImpl loanApplicationServiceImpl;
     @Autowired
     private LoanDetailsRepository loanDetailsRepository;
+    @Autowired
+    private LoanService loanService;
+    @Autowired
+    private LoanTemplateRepository loanTemplateRepository;
 
     @PostMapping
     @ResponseBody
@@ -125,6 +135,18 @@ public class LoanApplicationController extends BaseController {
         LoanApplication loanApplication = loanApplicationRepository.findByRecordId(loanApplicationDto.getRecordId());
         loanApplication.setLoanStatus(loanApplicationDto.getLoanStatus());
         loanApplicationRepository.save(loanApplication);
+        if(loanApplication.getLoanStatus().equalsIgnoreCase("Approved")){
+            LoanTemplateDto loanTemplateDto = modelMapper.map(loanTemplateRepository.findByRecordId(loanApplication.getLoanId()), LoanTemplateDto.class);
+            LoanWsDto loanWsDto = new LoanWsDto();
+            LoanDto loanDto = new LoanDto();
+            modelMapper.map(loanDto, loanTemplateDto);
+            loanService.createLoan(loanWsDto);
+            loanWsDto.setLoanDtoList(List.of(loanDto));
+            LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
+            LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
+            loanDetailsWsDto.setLoanDetailsDtos(List.of(loanDetailsDto));
+            loanDetailsService.createLoan(loanDetailsWsDto);
+        }
         loanApplicationWsDto.setMessage("Loan status updated successfully!!");
         loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
         return loanApplicationWsDto;
