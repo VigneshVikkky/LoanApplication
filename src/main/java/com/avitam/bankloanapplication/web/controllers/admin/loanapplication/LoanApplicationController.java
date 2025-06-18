@@ -8,6 +8,7 @@ import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
@@ -136,10 +137,16 @@ public class LoanApplicationController extends BaseController {
             LoanWsDto loanWsDto = new LoanWsDto();
             LoanDto loanDto = new LoanDto();
             modelMapper.map(loanDto, loanTemplateDto);
-            loanService.createLoan(loanWsDto);
             loanWsDto.setLoanDtoList(List.of(loanDto));
+            LoanWsDto loanWsDto1 = loanService.createLoan(loanWsDto);
+            Loan loan = new Loan();
+            List<Loan> loanList = modelMapper.map(loanWsDto1.getLoanDtoList(), List.class);
+            for(Loan loanDto1 : loanList){
+                loan = loanRepository.findByRecordId(loanDto1.getRecordId());
+            }
             LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
             LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
+            loanDetailsDto.setLoanId(loan.getRecordId());
             loanDetailsWsDto.setLoanDetailsDtos(List.of(loanDetailsDto));
             loanDetailsService.createLoan(loanDetailsWsDto);
         }
@@ -147,6 +154,8 @@ public class LoanApplicationController extends BaseController {
         loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
         return loanApplicationWsDto;
     }
+
+
 
     @PostMapping("/getedit")
     @ResponseBody

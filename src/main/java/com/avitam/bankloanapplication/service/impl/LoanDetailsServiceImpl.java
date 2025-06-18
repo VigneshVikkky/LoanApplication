@@ -183,7 +183,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
         double totalLoanAmount = 0.0;
         totalLoanAmount = loan.getDesiredLoan();
-        LocalDate sanctionDate = loan.getSanctionDate();
+        LocalDate sanctionDate = LocalDate.now();
 
         double installment = loan.getDesiredLoan() / loan.getTenure();
         double interestRate = loan.getInterestRate();
