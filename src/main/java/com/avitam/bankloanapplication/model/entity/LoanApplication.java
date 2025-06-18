@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @ToString
 @Document("loan_application")
 public class LoanApplication extends BaseEntity {
-
     private String customerId;
     private String notificationId;
     private String loanId;
@@ -25,5 +24,4 @@ public class LoanApplication extends BaseEntity {
     private LocalDate sanctionDate;
     private LoanTypeDto loanTypeDto;
     private CustomerDto customerDto;
-
 }

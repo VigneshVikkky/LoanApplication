@@ -110,8 +110,6 @@ public class LoanController extends BaseController {
     @PostMapping("/customerPaymentHistory")
     @ResponseBody
     public LoanDto customerPaymentHistory(@RequestBody LoanDto loanDto) {
-
-
         return loanDto;
     }
 

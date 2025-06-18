@@ -54,7 +54,11 @@ public class LoanDetailsController extends BaseController {
     @PostMapping("/edit")
     public LoanDetailsWsDto createLoan(@RequestBody LoanDetailsWsDto request) {
         return loanDetailsService.createLoan(request);
+    }
 
+    @PostMapping("/getLoanTemplate")
+    public LoanDetailsWsDto createLoanTemplate(@RequestBody LoanDetailsWsDto request) {
+        return loanDetailsService.createLoanTemplate(request);
     }
 
     @PostMapping("/delete")

@@ -5,8 +5,10 @@ import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanDetails;
+import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
+import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -29,10 +31,58 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     @Autowired
     private LoanRepository loanRepository;
     @Autowired
+    private LoanTemplateRepository loanTemplateRepository;
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public LoanDetailsWsDto createLoan(LoanDetailsWsDto request) {
+        List<LoanDetailsDto> loanDetailsDtos = request.getLoanDetailsDtos();
+        List<LoanDetails> loanDetailsList = new ArrayList<>();
+        for (LoanDetailsDto loanDetailsDto : loanDetailsDtos) {
+            LoanDetails loanDetails;
+            if (loanDetailsDto.getRecordId() != null) {
+                loanDetails = loanDetailsRepository.findByRecordId(loanDetailsDto.getRecordId());
+                calculateLoanDetails(loanDetails);
+                totalAmountCalculation(loanDetails);
+                loanDetailsRepository.save(loanDetails);
+                modelMapper.map(loanDetailsDto, loanDetails);
+                request.setMessage("Data updated successfully");
+            } else {
+                loanDetails = loanDetailsRepository.findByLoanId(loanDetailsDto.getLoanId());
+                if (loanDetails == null) {
+                    loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
+                    loanDetails.setCreationTime(new Date());
+                    loanDetails.setStatus(true);
+                    calculateLoanDetailsForLoan(loanDetails);
+                    totalAmountCalculation(loanDetails);
+                    loanDetailsRepository.save(loanDetails);
+                }
+                request.setMessage("Data added successfully");
+            }
+
+            if (request.getRecordId() == null) {
+                loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
+            }
+            loanDetailsRepository.save(loanDetails);
+            Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
+            loan.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
+            loanRepository.save(loan);
+            loanDetailsList.add(loanDetails);
+        }
+
+        Type listType = new TypeToken<List<LoanDetailsDto>>() {
+        }.getType();
+        List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, listType);
+        request.setLoanDetailsDtos(dtoList);
+        // List<LoanDetailsDto> dtoList = modelMapper.map(loanDetailsList, new org.modelmapper.TypeToken<List<LoanDetailsDto>>() {}.getType());
+        //request.setLoanDetailsDtos(dtoList);
+        request.setBaseUrl(ADMIN_LOANDETAILS);
+        return request;
+    }
+
+    @Override
+    public LoanDetailsWsDto createLoanTemplate(LoanDetailsWsDto request) {
         List<LoanDetailsDto> loanDetailsDtos = request.getLoanDetailsDtos();
         List<LoanDetails> loanDetailsList = new ArrayList<>();
         for (LoanDetailsDto loanDetailsDto : loanDetailsDtos) {
@@ -61,9 +111,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                 loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
             }
             loanDetailsRepository.save(loanDetails);
-            Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
+            LoanTemplate loan = loanTemplateRepository.findByRecordId(loanDetails.getLoanId());
             loan.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
-            loanRepository.save(loan);
+            loanTemplateRepository.save(loan);
             loanDetailsList.add(loanDetails);
         }
 
@@ -79,6 +129,56 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     }
 
     public LoanDetails calculateLoanDetails(LoanDetails loanDetails) {
+        LoanTemplate loan = loanTemplateRepository.findByRecordId(loanDetails.getLoanId());
+
+        double totalLoanAmount = 0.0;
+        totalLoanAmount = loan.getDesiredLoan();
+        //LocalDate sanctionDate = loan.getSanctionDate();
+
+        double installment = loan.getDesiredLoan() / loan.getTenure();
+        double interestRate = loan.getInterestRate();
+        double interestAmount;
+        double emi;
+
+
+        List<LoanEmiDetailDto> loanDetailsDtoList = new ArrayList<>();
+        List<LocalDate> duedatesList = new ArrayList<>();
+
+        //LocalDate baseDate = sanctionDate.withDayOfMonth(5);
+        //LocalDate currentDate = LocalDate.now();
+        //currentDate=currentDate.plusMonths(2);
+        //int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
+
+        /*if (sanctionDate.getDayOfMonth() > 5) {
+            baseDate = baseDate.plusMonths(1);
+        } else {
+            baseDate = baseDate.plusMonths(0);
+        }*/
+
+        for (int i = 0; i < loan.getTenure(); i++) {
+            LoanEmiDetailDto detail = new LoanEmiDetailDto();
+
+            interestAmount = totalLoanAmount * interestRate / 100;
+            emi = installment + interestAmount;
+            totalLoanAmount = totalLoanAmount - installment;
+            //LocalDate dueDate = baseDate.plusMonths(i);
+
+            detail.setInstalment(roundToTwoDecimal(installment));
+            detail.setInterestAmount(roundToTwoDecimal(interestAmount));
+            detail.setTotalPayable(roundToTwoDecimal(emi));
+            detail.setPenalty(0);
+            detail.setPaymentStatus("Unpaid");
+            //detail.setDueDate(dueDate);
+            detail.setLoanPaidDate(null);
+            detail.setRecordId(String.valueOf(i));
+
+            loanDetailsDtoList.add(detail);
+        }
+        loanDetails.setLoanDetailsDtoList(loanDetailsDtoList);
+        return loanDetails;
+    }
+
+    public LoanDetails calculateLoanDetailsForLoan(LoanDetails loanDetails) {
         Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
 
         double totalLoanAmount = 0.0;
@@ -96,7 +196,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        //currentDate=currentDate.plusMonths(2);
+        currentDate=currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         if (sanctionDate.getDayOfMonth() > 5) {
@@ -124,8 +224,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
             loanDetailsDtoList.add(detail);
         }
-
-
         loanDetails.setLoanDetailsDtoList(loanDetailsDtoList);
         return loanDetails;
     }

@@ -278,7 +278,6 @@ public class LoanServiceImpl implements LoanService {
                 loanEmiDetailDto.setInterestAmount(0);
                 loanEmiDetailDto.setTotalPayable(0);
                 loanEmiDetailDto.setPenalty(0);
-
             }
         }
 
@@ -290,7 +289,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
     public void checkLoanStatus(Loan loan) {
-
         int paidCount = 0;
         for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
             if (loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")) {
