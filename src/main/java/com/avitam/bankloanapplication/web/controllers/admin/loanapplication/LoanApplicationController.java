@@ -9,7 +9,6 @@ import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
-import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
@@ -135,7 +134,7 @@ public class LoanApplicationController extends BaseController {
         LoanApplication loanApplication = loanApplicationRepository.findByRecordId(loanApplicationDto.getRecordId());
         loanApplication.setLoanStatus(loanApplicationDto.getLoanStatus());
         loanApplicationRepository.save(loanApplication);
-        if(loanApplication.getLoanStatus().equalsIgnoreCase("Approved")){
+        if (loanApplication.getLoanStatus().equalsIgnoreCase("Approved")) {
             LoanTemplateDto loanTemplateDto = modelMapper.map(loanTemplateRepository.findByRecordId(loanApplication.getLoanId()), LoanTemplateDto.class);
             LoanWsDto loanWsDto = new LoanWsDto();
             LoanDto loanDto = new LoanDto();

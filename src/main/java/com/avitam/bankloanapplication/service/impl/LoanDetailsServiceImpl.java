@@ -196,7 +196,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        currentDate=currentDate.plusMonths(2);
+        currentDate = currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         if (sanctionDate.getDayOfMonth() > 5) {
