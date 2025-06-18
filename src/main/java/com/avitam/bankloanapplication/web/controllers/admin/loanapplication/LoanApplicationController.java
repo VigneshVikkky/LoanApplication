@@ -9,7 +9,6 @@ import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
-import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
@@ -42,8 +41,6 @@ import java.util.List;
 public class LoanApplicationController extends BaseController {
 
     public static final String ADMIN_LOANAPPLICATION = "/loans/loanApplication";
-    @Autowired
-    private CustomerRepository customerRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
