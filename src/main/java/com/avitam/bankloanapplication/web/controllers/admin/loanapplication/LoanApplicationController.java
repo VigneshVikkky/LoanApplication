@@ -125,7 +125,7 @@ public class LoanApplicationController extends BaseController {
         return loanApplicationWsDto;
     }
 
-    @PostMapping("/updateLoansStatus")
+        @PostMapping("/updateLoansStatus")
     @ResponseBody
     public LoanApplicationWsDto updateLoansStatus(@RequestBody LoanApplicationDto loanApplicationDto) {
         LoanApplicationWsDto loanApplicationWsDto = new LoanApplicationWsDto();
@@ -134,9 +134,10 @@ public class LoanApplicationController extends BaseController {
         loanApplicationRepository.save(loanApplication);
         if (loanApplication.getLoanStatus().equalsIgnoreCase("Approved")) {
             LoanTemplateDto loanTemplateDto = modelMapper.map(loanTemplateRepository.findByRecordId(loanApplication.getLoanId()), LoanTemplateDto.class);
+            loanTemplateDto.setRecordId(null);
             LoanWsDto loanWsDto = new LoanWsDto();
-            LoanDto loanDto = new LoanDto();
-            modelMapper.map(loanDto, loanTemplateDto);
+            LoanDto loanDto = modelMapper.map(loanTemplateDto, LoanDto.class);
+            loanDto.setRecordId(null);
             loanWsDto.setLoanDtoList(List.of(loanDto));
             LoanWsDto loanWsDto1 = loanService.createLoan(loanWsDto);
             Loan loan = new Loan();

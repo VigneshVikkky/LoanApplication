@@ -20,8 +20,8 @@ public class LoanDto extends CommonDto {
     private LoanTypeDto loanTypeDto;
     private BigDecimal loanEmi;
     private BigDecimal interestRate;
-    private Integer tenure;
-    private Double desiredLoan;
+    private int tenure;
+    private double desiredLoan;
     private String images;
     private String loanName;
     private String loanScoreResultId;

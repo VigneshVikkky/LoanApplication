@@ -196,7 +196,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
         LocalDate currentDate = LocalDate.now();
-        currentDate = currentDate.plusMonths(2);
+        //currentDate = currentDate.plusMonths(2);
         int noOfMonths = (int) ChronoUnit.MONTHS.between(baseDate, currentDate);
 
         if (sanctionDate.getDayOfMonth() > 5) {
@@ -233,6 +233,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         double totalInstalmentAmount = 0.0;
         double totalPayableAmount = 0.0;
 
+        Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
+
         for (LoanEmiDetailDto loanDetailDto : loanDetails.getLoanDetailsDtoList()) {
             totalInterestAmount += loanDetailDto.getInterestAmount();
             totalInstalmentAmount += loanDetailDto.getInstalment();
@@ -242,6 +244,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         loanDetails.setTotalInterestAmount(roundToTwoDecimal(totalInterestAmount));
         loanDetails.setTotalInstalmentAmount(roundToTwoDecimal(totalInstalmentAmount));
         loanDetails.setTotalPayableAmount(roundToTwoDecimal(totalPayableAmount));
+        loan.setPendingInstallmentAmount(totalInstalmentAmount);
+        loanRepository.save(loan);
 
         return loanDetails;
     }
