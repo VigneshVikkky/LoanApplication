@@ -48,12 +48,12 @@ public class LoanTemplateController extends BaseController {
     @PostMapping
     public LoanTemplateWsDto getAllLoan(@RequestBody LoanTemplateWsDto loanTemplateWsDto) {
         Pageable pageable = getPageable(loanTemplateWsDto.getPage(), loanTemplateWsDto.getSizePerPage(), loanTemplateWsDto.getSortDirection(), loanTemplateWsDto.getSortField());
-        LoanTemplateDto loanTemplateDto = CollectionUtils.isNotEmpty(loanTemplateWsDto.getLoanDtoList()) ? loanTemplateWsDto.getLoanDtoList().get(0) : new LoanTemplateDto();
+        LoanTemplateDto loanTemplateDto = CollectionUtils.isNotEmpty(loanTemplateWsDto.getLoanTemplateDtoList()) ? loanTemplateWsDto.getLoanTemplateDtoList().get(0) : new LoanTemplateDto();
         LoanTemplate loanTemplate = modelMapper.map(loanTemplateDto, LoanTemplate.class);
         Page<LoanTemplate> page = isSearchActive(loanTemplate) != null ? loanTemplateRepository.findAll(Example.of(loanTemplate), pageable) : loanTemplateRepository.findAll(pageable);
         Type listType = new TypeToken<List<LoanTemplateDto>>() {
         }.getType();
-        loanTemplateWsDto.setLoanDtoList(modelMapper.map(page.getContent(), listType));
+        loanTemplateWsDto.setLoanTemplateDtoList(modelMapper.map(page.getContent(), listType));
         loanTemplateWsDto.setBaseUrl(ADMIN_LOAN);
         loanTemplateWsDto.setTotalPages(page.getTotalPages());
         loanTemplateWsDto.setTotalRecords(page.getTotalElements());
@@ -69,7 +69,7 @@ public class LoanTemplateController extends BaseController {
 
     @PostMapping("/delete")
     public LoanTemplateWsDto deleteLoan(@RequestBody LoanTemplateWsDto request) {
-        for (LoanTemplateDto loanTemplateDto : request.getLoanDtoList()) {
+        for (LoanTemplateDto loanTemplateDto : request.getLoanTemplateDtoList()) {
             loanTemplateRepository.deleteByRecordId(loanTemplateDto.getRecordId());
         }
         request.setMessage("Data deleted Successfully");
@@ -83,7 +83,7 @@ public class LoanTemplateController extends BaseController {
         List<LoanTemplate> loans = loanTemplateRepository.findByStatus(true);
         Type listType = new TypeToken<List<LoanTemplateDto>>() {
         }.getType();
-        loanTemplateWsDto.setLoanDtoList(modelMapper.map(loans, listType));
+        loanTemplateWsDto.setLoanTemplateDtoList(modelMapper.map(loans, listType));
         loanTemplateWsDto.setBaseUrl(ADMIN_LOAN);
         return loanTemplateWsDto;
     }
@@ -94,7 +94,7 @@ public class LoanTemplateController extends BaseController {
         List<LoanTemplate> loans = loanTemplateRepository.findByLoanTypeAndStatus(loanType, true);
         Type listType = new TypeToken<List<LoanTemplateDto>>() {
         }.getType();
-        loanTemplateWsDto.setLoanDtoList(modelMapper.map(loans, listType));
+        loanTemplateWsDto.setLoanTemplateDtoList(modelMapper.map(loans, listType));
         loanTemplateWsDto.setBaseUrl(ADMIN_LOAN);
         return loanTemplateWsDto;
     }

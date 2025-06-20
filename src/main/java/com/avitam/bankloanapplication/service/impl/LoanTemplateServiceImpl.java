@@ -1,9 +1,13 @@
 package com.avitam.bankloanapplication.service.impl;
 
+import com.avitam.bankloanapplication.model.dto.LoanDetailsDto;
+import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanTemplateWsDto;
+import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
+import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.LoanTemplateService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,34 +26,38 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
     private LoanTemplateRepository loanTemplateRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private LoanDetailsService loanDetailsService;
 
     public LoanTemplateWsDto createLoan(LoanTemplateWsDto request) {
-        LoanTemplate loan = null;
-        List<LoanTemplateDto> loanDtos = request.getLoanDtoList();
-        List<LoanTemplate> loans = new ArrayList<>();
+        LoanTemplate loanTemplate = null;
+        List<LoanTemplateDto> loanDtos = request.getLoanTemplateDtoList();
+        List<LoanTemplate> loanTemplateList = new ArrayList<>();
         for (LoanTemplateDto loanDto : loanDtos) {
             if (loanDto.getRecordId() != null) {
-                loan = loanTemplateRepository.findByRecordId(loanDto.getRecordId());
-                modelMapper.map(loanDto, loan);
-                loanTemplateRepository.save(loan);
+                loanTemplate = loanTemplateRepository.findByRecordId(loanDto.getRecordId());
+                modelMapper.map(loanDto, loanTemplate);
+                loanTemplateRepository.save(loanTemplate);
                 request.setMessage("Data updated successfully");
             } else {
-                loan = modelMapper.map(loanDto, LoanTemplate.class);
-                loan.setStatus(true);
-                loan.setCreationTime(new Date());
-                modelMapper.map(loanDto, loan);
-                loanTemplateRepository.save(loan);
+                loanTemplate = modelMapper.map(loanDto, LoanTemplate.class);
+                loanTemplate.setStatus(true);
+                loanTemplate.setCreationTime(new Date());
+                modelMapper.map(loanDto, loanTemplate);
+                loanTemplateRepository.save(loanTemplate);
             }
             if (request.getRecordId() == null) {
-                loan.setRecordId(String.valueOf(loan.getId().getTimestamp()));
+                loanTemplate.setRecordId(String.valueOf(loanTemplate.getId().getTimestamp()));
             }
-            loanTemplateRepository.save(loan);
-            loans.add(loan);
+
+            loanTemplateRepository.save(loanTemplate);
+            loanTemplateList.add(loanTemplate);
             loanDto.setBaseUrl(ADMIN_lOAN);
 
             request.setMessage("Data added Successfully");
         }
-        request.setLoanDtoList(modelMapper.map(loans, List.class));
+        request.setLoanTemplateDtoList(modelMapper.map(loanTemplateList, List.class));
+
         return request;
     }
 }

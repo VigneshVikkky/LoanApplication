@@ -55,7 +55,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                     loanDetails.setCreationTime(new Date());
                     loanDetails.setStatus(true);
                     calculateLoanDetailsForLoan(loanDetails);
-                    totalAmountCalculation(loanDetails);
+                    totalAmountCalculationForLoan(loanDetails);
                     loanDetailsRepository.save(loanDetails);
                 }
                 request.setMessage("Data added successfully");
@@ -111,9 +111,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                 loanDetails.setRecordId(String.valueOf(loanDetails.getId().getTimestamp()));
             }
             loanDetailsRepository.save(loanDetails);
-            LoanTemplate loan = loanTemplateRepository.findByRecordId(loanDetails.getLoanId());
-            loan.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
-            loanTemplateRepository.save(loan);
+            LoanTemplate loanTemplate = loanTemplateRepository.findByRecordId(loanDetails.getLoanId());
+            loanTemplate.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
+            loanTemplateRepository.save(loanTemplate);
             loanDetailsList.add(loanDetails);
         }
 
@@ -228,7 +228,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         return loanDetails;
     }
 
-    public LoanDetails totalAmountCalculation(LoanDetails loanDetails) {
+    public LoanDetails totalAmountCalculationForLoan(LoanDetails loanDetails) {
         double totalInterestAmount = 0.0;
         double totalInstalmentAmount = 0.0;
         double totalPayableAmount = 0.0;
@@ -246,6 +246,26 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
         loanDetails.setTotalPayableAmount(roundToTwoDecimal(totalPayableAmount));
         loan.setPendingInstallmentAmount(totalInstalmentAmount);
         loanRepository.save(loan);
+
+        return loanDetails;
+    }
+
+    public LoanDetails totalAmountCalculation(LoanDetails loanDetails) {
+        double totalInterestAmount = 0.0;
+        double totalInstalmentAmount = 0.0;
+        double totalPayableAmount = 0.0;
+
+        //Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
+
+        for (LoanEmiDetailDto loanDetailDto : loanDetails.getLoanDetailsDtoList()) {
+            totalInterestAmount += loanDetailDto.getInterestAmount();
+            totalInstalmentAmount += loanDetailDto.getInstalment();
+            totalPayableAmount += loanDetailDto.getTotalPayable();
+        }
+
+        loanDetails.setTotalInterestAmount(roundToTwoDecimal(totalInterestAmount));
+        loanDetails.setTotalInstalmentAmount(roundToTwoDecimal(totalInstalmentAmount));
+        loanDetails.setTotalPayableAmount(roundToTwoDecimal(totalPayableAmount));
 
         return loanDetails;
     }
