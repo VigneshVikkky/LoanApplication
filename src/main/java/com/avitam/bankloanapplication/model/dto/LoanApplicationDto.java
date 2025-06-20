@@ -1,5 +1,6 @@
 package com.avitam.bankloanapplication.model.dto;
 
+import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class LoanApplicationDto extends CommonDto {
     private String notificationId;
     private String loanId;
     private CustomerDto customerDto;
-    private LoanDto loanDto;
+    private LoanTemplateDto loanTemplateDto;
     private String loanName;
     private String loanStatus;
     private String images;

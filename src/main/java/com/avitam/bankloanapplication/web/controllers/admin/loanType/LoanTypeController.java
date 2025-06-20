@@ -6,9 +6,11 @@ import com.avitam.bankloanapplication.model.dto.LoanTypeWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
+import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
+import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
 import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.service.LoanTypeService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
@@ -44,6 +46,8 @@ public class LoanTypeController extends BaseController {
     @Autowired
     private LoanRepository loanRepository;
     @Autowired
+    private LoanTemplateRepository loanTemplateRepository;
+    @Autowired
     private LoanLimitRepository loanLimitRepository;
 
     @PostMapping
@@ -69,9 +73,9 @@ public class LoanTypeController extends BaseController {
         if (loanLimit != null) {
             List<LoanType> loanTypeList = loanTypeRepository.findAll();
             for (LoanType loanType : loanTypeList) {
-                List<Loan> loans = loanRepository.findByLoanTypeAndStatus(loanType.getRecordId(), true);
+                List<LoanTemplate> loanTemplateList = loanTemplateRepository.findByLoanTypeAndStatus(loanType.getRecordId(), true);
                 Double loanLimitAmt = loanLimit.getLoanLimitAmount();
-                if (loans.stream().anyMatch(loan -> loanLimitAmt > loan.getDesiredLoan())) {
+                if (loanTemplateList.stream().anyMatch(loanTemplate -> loanLimitAmt > loanTemplate.getDesiredLoan())) {
                     loanTypeDtoList.add(modelMapper.map(loanType, LoanTypeDto.class));
                 }
             }

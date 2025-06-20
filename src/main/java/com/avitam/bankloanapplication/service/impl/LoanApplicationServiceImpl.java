@@ -2,12 +2,7 @@ package com.avitam.bankloanapplication.service.impl;
 
 import com.avitam.bankloanapplication.core.service.CoreService;
 import com.avitam.bankloanapplication.exception.InvalidLoanApplicationException;
-import com.avitam.bankloanapplication.model.dto.CustomerDto;
-import com.avitam.bankloanapplication.model.dto.LoanApplicationDto;
-import com.avitam.bankloanapplication.model.dto.LoanApplicationWsDto;
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
-import com.avitam.bankloanapplication.model.dto.LoanWsDto;
+import com.avitam.bankloanapplication.model.dto.*;
 import com.avitam.bankloanapplication.model.entity.Customer;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
@@ -86,6 +81,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 loanApplication.setRecordId(String.valueOf(loanApplication.getId().getTimestamp()));
             }
             getCustomer(loanApplication);
+            getLoanTemplate(loanApplication);
             //loanApplication.setLoanStatus("Applied");
             loanApplicationRepository.save(loanApplication);
             request.setBaseUrl(ADMIN_LOANAPPLICATION);
@@ -100,13 +96,21 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     public void getLoanType(LoanApplication loanApplication) {
 
-      //  Loan loan = loanRepository.findByRecordId(loanApplication.getLoanId());
         LoanTemplate loan = loanTemplateRepository.findByRecordId(loanApplication.getLoanId());
         LoanType loanType = loanTypeRepository.findByRecordId(loan.getLoanType());
         Type listType = new TypeToken<LoanTypeDto>() {
         }.getType();
         LoanTypeDto loanTypeDto = modelMapper.map(loanType, listType);
         loanApplication.setLoanTypeDto(loanTypeDto);
+    }
+
+    public void getLoanTemplate(LoanApplication loanApplication) {
+
+        LoanTemplate loanTemplate = loanTemplateRepository.findByRecordId(loanApplication.getLoanId());
+        Type listType = new TypeToken<LoanTemplateDto>() {
+        }.getType();
+        LoanTemplateDto loanTemplateDto = modelMapper.map(loanTemplate, listType);
+        loanApplication.setLoanTemplateDto(loanTemplateDto);
     }
 
     public void getCustomer(LoanApplication loanApplication) {

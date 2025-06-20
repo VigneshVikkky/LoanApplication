@@ -10,6 +10,7 @@ import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanApplication;
+import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.repository.LoanApplicationRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
@@ -98,7 +99,7 @@ public class LoanApplicationController extends BaseController {
         List<LoanApplicationDto> loanApplicationDtoList = modelMapper.map(loanApplicationList, listType);
         List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
         for (LoanApplicationDto loanApplicationDto1 : loanApplicationDtoList) {
-            loanApplicationDto1.setLoanDto(modelMapper.map(loanRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanDto.class));
+            loanApplicationDto1.setLoanTemplateDto(modelMapper.map(loanTemplateRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanTemplateDto.class));
             loanApplicationDtos.add(loanApplicationDto1);
         }
         loanApplicationWsDto.setLoanApplicationDtos(loanApplicationDtos);
@@ -117,7 +118,7 @@ public class LoanApplicationController extends BaseController {
         List<LoanApplicationDto> loanApplicationDtoList = modelMapper.map(loanApplicationList, listType);
         List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
         for (LoanApplicationDto loanApplicationDto1 : loanApplicationDtoList) {
-            loanApplicationDto1.setLoanDto(modelMapper.map(loanRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanDto.class));
+            loanApplicationDto1.setLoanTemplateDto(modelMapper.map(loanTemplateRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanTemplateDto.class));
             loanApplicationDtos.add(loanApplicationDto1);
         }
         loanApplicationWsDto.setLoanApplicationDtos(loanApplicationDtos);

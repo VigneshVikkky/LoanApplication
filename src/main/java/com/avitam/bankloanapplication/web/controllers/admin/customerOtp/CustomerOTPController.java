@@ -1,4 +1,4 @@
-package com.avitam.bankloanapplication.web.controllers.admin.customerOTP;
+package com.avitam.bankloanapplication.web.controllers.admin.customerOtp;
 
 
 import com.avitam.bankloanapplication.model.dto.CustomerDto;

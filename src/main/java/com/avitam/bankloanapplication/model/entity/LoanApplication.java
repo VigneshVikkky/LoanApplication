@@ -1,6 +1,7 @@
 package com.avitam.bankloanapplication.model.entity;
 
 import com.avitam.bankloanapplication.model.dto.CustomerDto;
+import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,5 @@ public class LoanApplication extends BaseEntity {
     private LocalDate sanctionDate;
     private LoanTypeDto loanTypeDto;
     private CustomerDto customerDto;
+    private LoanTemplateDto loanTemplateDto;
 }

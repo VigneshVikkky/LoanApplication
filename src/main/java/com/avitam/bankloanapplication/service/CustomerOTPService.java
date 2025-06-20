@@ -12,7 +12,7 @@ public interface CustomerOTPService {
 
     CustomerWsDto saveUserName(CustomerDto userDto);
 
-    CustomerWsDto sendMobileOtp(CustomerDto userDto);
+    CustomerWsDto   sendMobileOtp(CustomerDto userDto);
 
     CustomerWsDto validateMobileOtp(CustomerDto userDto);
 }

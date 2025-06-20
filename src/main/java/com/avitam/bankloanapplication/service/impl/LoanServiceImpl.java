@@ -172,7 +172,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public LoanDto getEmiStatusTillDate(LoanDto loanDto) {
-        Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
+        Loan loan = loanRepository.findByRecordIdAndCustomerId(loanDto.getRecordId(), loanDto.getCustomerId());
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate currentDate = LocalDate.now();
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);

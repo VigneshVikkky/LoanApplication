@@ -1,8 +1,11 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loan;
 
+import com.avitam.bankloanapplication.model.dto.LoanDto;
 import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
 import com.avitam.bankloanapplication.model.dto.LoanTemplateWsDto;
 import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.entity.Loan;
+import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanTemplate;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanLimitRepository;
@@ -26,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/loans/loantemplate")
@@ -59,6 +64,21 @@ public class LoanTemplateController extends BaseController {
         loanTemplateWsDto.setTotalRecords(page.getTotalElements());
         return loanTemplateWsDto;
 
+    }
+
+    @GetMapping("/getEligibleLoans")
+    public List<LoanTemplateDto> getEligibleLoans(@RequestParam String customerId, @RequestParam String loanTypeId) {
+        List<LoanTemplateDto> loanTemplateDtoList = new ArrayList<>();
+        LoanLimit loanLimit = loanLimitRepository.findByCustomerId(customerId);
+        if (loanLimit != null) {
+            List<LoanTemplate> loanTemplateList = loanTemplateRepository.findByLoanTypeAndStatus(loanTypeId, true);
+            Double loanLimitAmt = loanLimit.getLoanLimitAmount();
+            Type listType = new TypeToken<List<LoanTemplateDto>>() {
+            }.getType();
+            loanTemplateDtoList.addAll(modelMapper.map(loanTemplateList.stream().filter(loan -> loanLimitAmt >
+                    loan.getDesiredLoan()).collect(Collectors.toList()), listType));
+        }
+        return loanTemplateDtoList;
     }
 
 
