@@ -47,6 +47,7 @@ public class LoanServiceImpl implements LoanService {
         List<LoanDto> loanDtos = request.getLoanDtoList();
         List<Loan> loans = new ArrayList<>();
         for (LoanDto loanDto : loanDtos) {
+//            loanDto.setRecordId(null);
             if (loanDto.getRecordId() != null) {
                 loan = loanRepository.findByRecordId(loanDto.getRecordId());
                 modelMapper.map(loanDto, loan);
@@ -56,6 +57,8 @@ public class LoanServiceImpl implements LoanService {
                 loan = modelMapper.map(loanDto, Loan.class);
                 loan.setStatus(true);
                 loan.setCreationTime(new Date());
+                LocalDate localDate = LocalDate.now();
+                loan.setSanctionDate(localDate);
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
             }
@@ -66,6 +69,7 @@ public class LoanServiceImpl implements LoanService {
             }
             //getLoanType(loan);
             //getCustomer(loan);
+
 
             loanRepository.save(loan);
             loans.add(loan);
@@ -172,7 +176,8 @@ public class LoanServiceImpl implements LoanService {
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate currentDate = LocalDate.now();
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-        currentDate = currentDate.plusMonths(1);
+        currentDate = currentDate.plusMonths(4);
+        currentDate = currentDate.plusDays(20);
 
         int noOfMonths = 0;
         for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
@@ -197,11 +202,13 @@ public class LoanServiceImpl implements LoanService {
 
                 double instalment = 0.0;
                 double foreclosingCharges = 0.0;
-                if (loan.isForeClosing()) {
-                    instalment = roundToTwoDecimal(loanEmiDetailDto.getInstalment());
-                    foreclosingCharges = roundToTwoDecimal(loan.getDesiredLoan() * 5 / 100);
-                } else {
+                if (loanDto.isForeClosing()) {
                     instalment = roundToTwoDecimal(loan.getPendingInstallmentAmount());
+                    foreclosingCharges = roundToTwoDecimal(loan.getDesiredLoan() * 5 / 100);
+
+                } else {
+                    instalment = roundToTwoDecimal(loanEmiDetailDto.getInstalment());
+
                 }
 
                 double interest = roundToTwoDecimal(loanEmiDetailDto.getInterestAmount());
@@ -210,7 +217,7 @@ public class LoanServiceImpl implements LoanService {
                 double penalty = 0.0;
                 if (currentDate.isAfter(baseDate)) {
                     int daysLate = (int) ChronoUnit.DAYS.between(baseDate, currentDate);
-                    penalty = roundToTwoDecimal(instalment * 0.05 * daysLate);
+                    penalty = roundToTwoDecimal(loanEmiDetailDto.getInstalment() * 0.05 * daysLate);
                 }
 
                 double totalPayable = roundToTwoDecimal(baseAmount + penalty + foreclosingCharges);
@@ -218,14 +225,14 @@ public class LoanServiceImpl implements LoanService {
                 loanEmiDetailDto.setPenalty(penalty);
                 loanEmiDetailDto.setTotalPayable(totalPayable);
                 loan.setForeClosingCharges(foreclosingCharges);
-
+                loan.setPendingInstallmentAmount(roundToTwoDecimal(loan.getPendingInstallmentAmount()-loanEmiDetailDto.getInstalment()));
                 loopCount++;
                 break;
             }
             loopCount++;
         }
 
-        for (int i = 0; i < loopCount - 1; i++) {
+        for (int i = 0; i <= loopCount - 1; i++) {
             LoanEmiDetailDto loanEmiDetailDto = loan.getLoanEmiDetailDtoList().get(i);
 
             totalPayableAmount += loanEmiDetailDto.getTotalPayable();
@@ -238,9 +245,8 @@ public class LoanServiceImpl implements LoanService {
         loan.setTotalInterestAmount(roundToTwoDecimal(totalInterestAmount));
         loan.setTotalInstalmentAmount(roundToTwoDecimal(totalInstalmentAmount));
         loan.setTotalPenalty(roundToTwoDecimal(totalPenalty));
-        loan.setPendingInstallmentAmount(roundToTwoDecimal(loan.getDesiredLoan() - loan.getTotalInstalmentAmount()));
-        loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
 
+        loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
         loanRepository.save(loan);
         modelMapper.map(loan, loanDto);
         return loanDto;
@@ -257,11 +263,11 @@ public class LoanServiceImpl implements LoanService {
                 if (loanEmiDetailDto1.getRecordId().equalsIgnoreCase(loanEmiDetail.getRecordId())) {
                     loanEmiDetail.setPaymentStatus(loanEmiDetailDto1.getPaymentStatus());
                     loanEmiDetail.setRecordId(loanEmiDetailDto1.getRecordId());
-                    loan.setTotalInterestAmount(loan.getTotalInterestAmount() + loanEmiDetail.getInterestAmount());
-                    loan.setTotalInstalmentAmount(loan.getTotalInstalmentAmount() + loanEmiDetail.getInstalment());
-                    loan.setTotalPayableAmount(loan.getTotalPayableAmount() + loanEmiDetail.getTotalPayable());
-                    loan.setTotalPenalty(loan.getTotalPenalty() + loanEmiDetail.getPenalty());
-                    loan.setPendingInstallmentAmount(loan.getPendingInstallmentAmount() - loanEmiDetail.getInstalment());
+//                    loan.setTotalInterestAmount(loan.getTotalInterestAmount() + loanEmiDetail.getInterestAmount());
+//                    loan.setTotalInstalmentAmount(loan.getTotalInstalmentAmount() + loanEmiDetail.getInstalment());
+//                    loan.setTotalPayableAmount(loan.getTotalPayableAmount() + loanEmiDetail.getTotalPayable());
+//                    loan.setTotalPenalty(loan.getTotalPenalty() + loanEmiDetail.getPenalty());
+//                    loan.setPendingInstallmentAmount(loan.getPendingInstallmentAmount() - loanEmiDetail.getInstalment());
                     loopCount++;
                     break;
                 }
@@ -278,6 +284,9 @@ public class LoanServiceImpl implements LoanService {
                 loanEmiDetailDto.setInterestAmount(0);
                 loanEmiDetailDto.setTotalPayable(0);
                 loanEmiDetailDto.setPenalty(0);
+            }
+            if(loopCount<loan.getTenure()) {
+                loan.setForeClosing(true);
             }
         }
 

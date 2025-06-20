@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class LoanTemplateWsDto extends CommonWsDto {
-    private List<LoanTemplateDto> loanDtoList;
+    private List<LoanTemplateDto> loanTemplateDtoList;
 }
