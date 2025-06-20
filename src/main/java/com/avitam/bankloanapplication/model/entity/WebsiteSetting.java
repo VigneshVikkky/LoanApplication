@@ -26,5 +26,7 @@ public class WebsiteSetting extends BaseEntity {
     private String otpExpiryTime;
     private String paymentKey;
     private String paymentProvider;
-
+    private String notificationAppId;
+    private String notificationProviderUrl;
+    private String notificationProviderKey;
 }

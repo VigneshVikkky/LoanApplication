@@ -1,6 +1,5 @@
 package com.avitam.bankloanapplication.service.impl;
 
-import com.avitam.bankloanapplication.core.service.ReflectionDataService;
 import com.avitam.bankloanapplication.model.dto.NotificationDto;
 import com.avitam.bankloanapplication.model.dto.NotificationWsDto;
 import com.avitam.bankloanapplication.model.entity.Notification;
@@ -24,7 +23,7 @@ import java.util.Scanner;
 @Service
 public class NotificationServiceImpl implements NotificationService {
     private static final String ADMIN_NOTIFICATION = "/admin/notification";
-    Logger LOG = LoggerFactory.getLogger(NotificationService.class);
+    Logger LOG = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     @Autowired
     private NotificationRepository notificationRepository;
