@@ -10,8 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class NotificationDto extends CommonDto {
-
-    private String text;
-
-
+    private String message;
+    private String title;
 }

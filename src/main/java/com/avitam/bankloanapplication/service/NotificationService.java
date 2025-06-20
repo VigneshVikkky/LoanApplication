@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface NotificationService {
 
-
     Optional<Notification> findNotificationById(String id);
 
     NotificationWsDto handelEdit(NotificationWsDto request);
+    void sendNotification(String title, String message);
 }

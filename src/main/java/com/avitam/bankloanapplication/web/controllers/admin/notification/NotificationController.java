@@ -86,6 +86,12 @@ public class NotificationController extends BaseController {
         return notificationwsDto;
     }
 
+    @PostMapping("/send")
+    public String delete(@RequestBody NotificationDto notificationDto) {
+        notificationService.sendNotification(notificationDto.getTitle(), notificationDto.getMessage());
+        return "Success";
+    }
+
     @GetMapping("/getAdvancedSearch")
     @ResponseBody
     public List<SearchDto> getSearchAttributes() {

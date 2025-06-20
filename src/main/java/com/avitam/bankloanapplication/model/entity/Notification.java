@@ -11,9 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document("notification")
 public class Notification extends BaseEntity {
-
-
-    private String text;
-
-
+    private String message;
+    private String title;
 }
