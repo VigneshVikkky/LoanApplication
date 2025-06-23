@@ -36,7 +36,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
     private ModelMapper modelMapper;
 
     @Override
-    public LoanDetailsWsDto createLoan(LoanDetailsWsDto request) {
+    public LoanDetailsWsDto createLoanDetails(LoanDetailsWsDto request) {
         List<LoanDetailsDto> loanDetailsDtos = request.getLoanDetailsDtos();
         List<LoanDetails> loanDetailsList = new ArrayList<>();
         for (LoanDetailsDto loanDetailsDto : loanDetailsDtos) {
@@ -54,10 +54,11 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                     loanDetails = modelMapper.map(loanDetailsDto, LoanDetails.class);
                     loanDetails.setCreationTime(new Date());
                     loanDetails.setStatus(true);
-                    calculateLoanDetailsForLoan(loanDetails);
-                    totalAmountCalculationForLoan(loanDetails);
                     loanDetailsRepository.save(loanDetails);
                 }
+
+                calculateLoanDetailsForLoan(loanDetails);
+                totalAmountCalculationForLoan(loanDetails);
                 request.setMessage("Data added successfully");
             }
 
@@ -104,6 +105,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
                     totalAmountCalculation(loanDetails);
                     loanDetailsRepository.save(loanDetails);
                 }
+
                 request.setMessage("Data added successfully");
             }
 

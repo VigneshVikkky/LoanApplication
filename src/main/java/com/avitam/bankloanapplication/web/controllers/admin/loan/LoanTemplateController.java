@@ -51,7 +51,7 @@ public class LoanTemplateController extends BaseController {
     private CustomerRepository customerRepository;
 
     @PostMapping
-    public LoanTemplateWsDto getAllLoan(@RequestBody LoanTemplateWsDto loanTemplateWsDto) {
+    public LoanTemplateWsDto getAllLoanTemplates(@RequestBody LoanTemplateWsDto loanTemplateWsDto) {
         Pageable pageable = getPageable(loanTemplateWsDto.getPage(), loanTemplateWsDto.getSizePerPage(), loanTemplateWsDto.getSortDirection(), loanTemplateWsDto.getSortField());
         LoanTemplateDto loanTemplateDto = CollectionUtils.isNotEmpty(loanTemplateWsDto.getLoanTemplateDtoList()) ? loanTemplateWsDto.getLoanTemplateDtoList().get(0) : new LoanTemplateDto();
         LoanTemplate loanTemplate = modelMapper.map(loanTemplateDto, LoanTemplate.class);
@@ -83,12 +83,12 @@ public class LoanTemplateController extends BaseController {
 
 
     @PostMapping("/edit")
-    public LoanTemplateWsDto createLoan(@RequestBody LoanTemplateWsDto request) {
-        return loanTemplateService.createLoan(request);
+    public LoanTemplateWsDto createLoanTemplate(@RequestBody LoanTemplateWsDto request) {
+        return loanTemplateService.createLoanTemplate(request);
     }
 
     @PostMapping("/delete")
-    public LoanTemplateWsDto deleteLoan(@RequestBody LoanTemplateWsDto request) {
+    public LoanTemplateWsDto deleteLoanTemplates(@RequestBody LoanTemplateWsDto request) {
         for (LoanTemplateDto loanTemplateDto : request.getLoanTemplateDtoList()) {
             loanTemplateRepository.deleteByRecordId(loanTemplateDto.getRecordId());
         }

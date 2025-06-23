@@ -6,6 +6,10 @@ import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.entity.Customer;
+import com.avitam.bankloanapplication.model.entity.LoanDetails;
+import com.avitam.bankloanapplication.model.entity.LoanType;
+import com.avitam.bankloanapplication.repository.*;
+
 import com.avitam.bankloanapplication.model.entity.Loan;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
@@ -64,7 +68,8 @@ public class LoanServiceImpl implements LoanService {
             }
             if (request.getRecordId() == null) {
                 loan.setRecordId(String.valueOf(loan.getId().getTimestamp()));
-            } else {
+            }
+            else{
                 checkLoanStatus(loan);
             }
             //getLoanType(loan);
@@ -169,15 +174,14 @@ public class LoanServiceImpl implements LoanService {
 //        return loanDto;
 //    }
 
-
     @Override
     public LoanDto getEmiStatusTillDate(LoanDto loanDto) {
-        Loan loan = loanRepository.findByRecordIdAndCustomerId(loanDto.getRecordId(), loanDto.getCustomerId());
+        Loan loan = loanRepository.findByRecordId(loanDto.getRecordId());
         LocalDate sanctionDate = loan.getSanctionDate();
         LocalDate currentDate = LocalDate.now();
         LocalDate baseDate = sanctionDate.withDayOfMonth(5);
-        currentDate = currentDate.plusMonths(4);
-        currentDate = currentDate.plusDays(20);
+        //currentDate = currentDate.plusMonths(4);
+        //currentDate = currentDate.plusDays(20);
 
         int noOfMonths = 0;
         for (LoanEmiDetailDto loanEmiDetailDto : loan.getLoanEmiDetailDtoList()) {
@@ -406,6 +410,7 @@ public class LoanServiceImpl implements LoanService {
 //        }
 
 
+
 //        for(LoanEmiDetailDto loanEmiDetailDto: loan.getLoanEmiDetailDtoList()) {
 //            if(loanEmiDetailDto.getPaymentStatus().equalsIgnoreCase("Paid")) {
 //                totalPayableAmount=totalPayableAmount+loanEmiDetailDto.getTotalPayable();
@@ -432,6 +437,7 @@ public class LoanServiceImpl implements LoanService {
 //                }
 //            }
 //        }
+
 
 
 //        for(int i=0; i<loan.getTenure(); i++) {
