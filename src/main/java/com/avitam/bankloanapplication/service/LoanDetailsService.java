@@ -4,7 +4,7 @@ import com.avitam.bankloanapplication.model.dto.LoanDetailsWsDto;
 
 public interface LoanDetailsService {
 
-    LoanDetailsWsDto createLoan(LoanDetailsWsDto request);
+    LoanDetailsWsDto createLoanDetails(LoanDetailsWsDto request);
 
     LoanDetailsWsDto createLoanTemplate(LoanDetailsWsDto request);
 

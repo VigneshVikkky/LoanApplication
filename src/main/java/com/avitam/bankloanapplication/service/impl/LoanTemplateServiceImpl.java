@@ -29,7 +29,7 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
     @Autowired
     private LoanDetailsService loanDetailsService;
 
-    public LoanTemplateWsDto createLoan(LoanTemplateWsDto request) {
+    public LoanTemplateWsDto createLoanTemplate(LoanTemplateWsDto request) {
         LoanTemplate loanTemplate = null;
         List<LoanTemplateDto> loanDtos = request.getLoanTemplateDtoList();
         List<LoanTemplate> loanTemplateList = new ArrayList<>();

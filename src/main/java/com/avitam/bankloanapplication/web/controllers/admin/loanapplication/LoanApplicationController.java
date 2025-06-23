@@ -150,7 +150,7 @@ public class LoanApplicationController extends BaseController {
             LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
             loanDetailsDto.setLoanId(loan.getRecordId());
             loanDetailsWsDto.setLoanDetailsDtos(List.of(loanDetailsDto));
-            loanDetailsService.createLoan(loanDetailsWsDto);
+            loanDetailsService.createLoanDetails(loanDetailsWsDto);
         }
         loanApplicationWsDto.setMessage("Loan status updated successfully!!");
         loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);

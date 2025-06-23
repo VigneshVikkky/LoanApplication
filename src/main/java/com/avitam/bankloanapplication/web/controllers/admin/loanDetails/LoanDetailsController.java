@@ -53,7 +53,7 @@ public class LoanDetailsController extends BaseController {
 
     @PostMapping("/edit")
     public LoanDetailsWsDto createLoan(@RequestBody LoanDetailsWsDto request) {
-        return loanDetailsService.createLoan(request);
+        return loanDetailsService.createLoanDetails(request);
     }
 
     @PostMapping("/getLoanTemplate")
