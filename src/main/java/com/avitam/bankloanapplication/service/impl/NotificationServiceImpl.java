@@ -78,9 +78,9 @@ public class NotificationServiceImpl implements NotificationService {
             con.setDoOutput(true);
             con.setDoInput(true);
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic OGUwNDJjZmMtZjA1Mi00NTU3LWE4N2MtNTNjY2ZiNDRhMzQ2");
+            con.setRequestProperty("Authorization", "Basic os_v2_app_jax2fprgdna57alwhbz3bhnksonddgfho5fug2m3xysekqqqjz4gsa356dvjuwpcl35ete6wi75vz7fwjeagwyuaj4ovjjdx6emalty");
             con.setRequestMethod("POST");
-            String strJsonBody = "{\"app_id\": \"2fa2f97f-1c8d-41f1-888c-d468aa9899a3\",\"included_segments\": [\"All\"],\"data\": {\"foo\": \"bar\"},\"contents\": {\"en\": \""
+            String strJsonBody = "{\"app_id\": \"482fa2be-261b-41df-8176-3873b09daa93\",\"included_segments\": [\"All\"],\"data\": {\"foo\": \"bar\"},\"contents\": {\"en\": \""
                     + message + "\"}," + "\"headings\": {\"en\": " + "\"" + title + "\"}" + "}";
             byte[] sendBytes = strJsonBody.getBytes("UTF-8");
             con.setFixedLengthStreamingMode(sendBytes.length);
@@ -109,9 +109,9 @@ public class NotificationServiceImpl implements NotificationService {
             con.setDoOutput(true);
             con.setDoInput(true);
             con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            con.setRequestProperty("Authorization", "Basic OGUwNDJjZmMtZjA1Mi00NTU3LWE4N2MtNTNjY2ZiNDRhMzQ2");
+            con.setRequestProperty("Authorization", "Basic os_v2_app_q2nk324la5cbhcrprcwrmc5idcn3suexbjpeudn6sjcy2edgccttbjbb2mtdrkf2zwkdeyb7biapjtf6rwj4h3r5put4bx4lpujideq");
             con.setRequestMethod("POST");
-            String strJsonBody = "{\"app_id\": \"2fa2f97f-1c8d-41f1-888c-d468aa9899a3\",\"included_segments\": [\"All\"],\"data\": {\"foo\": \"bar\"},\"contents\": {\"en\": \""
+            String strJsonBody = "{\"app_id\": \"869aadeb-8b07-4413-8a2f-88ad160ba818\",\"included_segments\": [\"All\"],\"data\": {\"foo\": \"bar\"},\"contents\": {\"en\": \""
                     + message + "\"}," + "\"headings\": {\"en\": " + "\"" + title + "\"}" + "}";
             byte[] sendBytes = strJsonBody.getBytes("UTF-8");
             con.setFixedLengthStreamingMode(sendBytes.length);

@@ -215,7 +215,8 @@ public class LoanServiceImpl implements LoanService {
                 double foreclosingCharges = 0.0;
                 if (loanDto.isForeClosing()) {
                     instalment = roundToTwoDecimal(loan.getPendingInstallmentAmount());
-                    foreclosingCharges = roundToTwoDecimal(loan.getDesiredLoan() * 5 / 100);
+                   foreclosingCharges = roundToTwoDecimal(loan.getDesiredLoan() * 5 / 100);
+                    loan.setForeClosingCharges(foreclosingCharges);
 
                 } else {
                     instalment = roundToTwoDecimal(loanEmiDetailDto.getInstalment());
@@ -235,7 +236,6 @@ public class LoanServiceImpl implements LoanService {
                 loanEmiDetailDto.setInstalment(instalment);
                 loanEmiDetailDto.setPenalty(penalty);
                 loanEmiDetailDto.setTotalPayable(totalPayable);
-                loan.setForeClosingCharges(foreclosingCharges);
                 loan.setPendingInstallmentAmount(roundToTwoDecimal(loan.getPendingInstallmentAmount()-loanEmiDetailDto.getInstalment()));
                 loopCount++;
                 break;
