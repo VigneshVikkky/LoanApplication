@@ -99,7 +99,25 @@ public class LoanApplicationController extends BaseController {
         List<LoanApplicationDto> loanApplicationDtoList = modelMapper.map(loanApplicationList, listType);
         List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
         for (LoanApplicationDto loanApplicationDto1 : loanApplicationDtoList) {
-            loanApplicationDto1.setLoanTemplateDto(modelMapper.map(loanTemplateRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanTemplateDto.class));
+            loanApplicationDto1.setLoanDto(modelMapper.map(loanRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanDto.class));
+            loanApplicationDtos.add(loanApplicationDto1);
+        }
+        loanApplicationWsDto.setLoanApplicationDtos(loanApplicationDtos);
+        loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
+        return loanApplicationWsDto;
+    }
+
+    @PostMapping("/getLoanTemplatesByStatusAndId")
+    @ResponseBody
+    public LoanApplicationWsDto getLoansTemplateByStatusAndId(@RequestBody LoanApplicationDto loanApplicationDto) {
+        LoanApplicationWsDto loanApplicationWsDto = new LoanApplicationWsDto();
+        List<LoanApplication> loanApplicationList = loanApplicationRepository.findByCustomerIdAndLoanStatus(loanApplicationDto.getCustomerId(), loanApplicationDto.getLoanStatus());
+        Type listType = new TypeToken<List<LoanApplicationDto>>() {
+        }.getType();
+        List<LoanApplicationDto> loanApplicationDtoList = modelMapper.map(loanApplicationList, listType);
+        List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
+        for (LoanApplicationDto loanApplicationDto1 : loanApplicationDtoList) {
+            loanApplicationDto1.setLoanTemplateDto(modelMapper.map(loanTemplateRepository.findByRecordId(loanApplicationDto1.getLoanTemplateId()), LoanTemplateDto.class));
             loanApplicationDtos.add(loanApplicationDto1);
         }
         loanApplicationWsDto.setLoanApplicationDtos(loanApplicationDtos);
@@ -134,7 +152,7 @@ public class LoanApplicationController extends BaseController {
         loanApplication.setLoanStatus(loanApplicationDto.getLoanStatus());
         loanApplicationRepository.save(loanApplication);
         if (loanApplication.getLoanStatus().equalsIgnoreCase("Approved")) {
-            LoanTemplateDto loanTemplateDto = modelMapper.map(loanTemplateRepository.findByRecordId(loanApplication.getLoanId()), LoanTemplateDto.class);
+            LoanTemplateDto loanTemplateDto = modelMapper.map(loanTemplateRepository.findByRecordId(loanApplication.getLoanTemplateId()), LoanTemplateDto.class);
             loanTemplateDto.setRecordId(null);
             LoanWsDto loanWsDto = new LoanWsDto();
             LoanDto loanDto = modelMapper.map(loanTemplateDto, LoanDto.class);
@@ -145,6 +163,8 @@ public class LoanApplicationController extends BaseController {
             List<Loan> loanList = modelMapper.map(loanWsDto1.getLoanDtoList(), List.class);
             for(Loan loanDto1 : loanList){
                 loan = loanRepository.findByRecordId(loanDto1.getRecordId());
+                loanApplication.setLoanId(loan.getRecordId());
+                loanApplicationRepository.save(loanApplication);
             }
             LoanDetailsWsDto loanDetailsWsDto = new LoanDetailsWsDto();
             LoanDetailsDto loanDetailsDto = new LoanDetailsDto();
