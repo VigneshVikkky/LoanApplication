@@ -6,14 +6,11 @@ import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.entity.Customer;
+import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.model.entity.LoanType;
 
 import com.avitam.bankloanapplication.model.entity.Loan;
-import com.avitam.bankloanapplication.repository.CustomerRepository;
-import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
-import com.avitam.bankloanapplication.repository.LoanRepository;
-import com.avitam.bankloanapplication.repository.LoanScoreResultRepository;
-import com.avitam.bankloanapplication.repository.LoanTypeRepository;
+import com.avitam.bankloanapplication.repository.*;
 import com.avitam.bankloanapplication.service.LoanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +37,8 @@ public class LoanServiceImpl implements LoanService {
     private ModelMapper modelMapper;
     @Autowired
     private LoanTypeRepository loanTypeRepository;
+    @Autowired
+    private LoanApplicationRepository loanApplicationRepository;
     @Autowired
     private LoanScoreResultRepository loanScoreResultRepository;
 
@@ -318,6 +317,9 @@ public class LoanServiceImpl implements LoanService {
         }
         if (loan.getTenure() == paidCount) {
             loan.setLoanStatus("Completed");
+            LoanApplication loanApplication = loanApplicationRepository.findByLoanId(loan.getRecordId());
+            loanApplication.setLoanStatus("Completed");
+            loanApplicationRepository.save(loanApplication);
         } else {
             loan.setLoanStatus("Active");
         }

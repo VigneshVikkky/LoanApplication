@@ -139,7 +139,7 @@ public class LoanApplicationController extends BaseController {
         List<LoanApplicationDto> loanApplicationDtoList = modelMapper.map(loanApplicationList, listType);
         List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
         for (LoanApplicationDto loanApplicationDto1 : loanApplicationDtoList) {
-            loanApplicationDto1.setLoanTemplateDto(modelMapper.map(loanTemplateRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanTemplateDto.class));
+            loanApplicationDto1.setLoanTemplateDto(modelMapper.map(loanTemplateRepository.findByRecordId(loanApplicationDto1.getLoanTemplateId()), LoanTemplateDto.class));
             loanApplicationDtos.add(loanApplicationDto1);
         }
         loanApplicationWsDto.setLoanApplicationDtos(loanApplicationDtos);
