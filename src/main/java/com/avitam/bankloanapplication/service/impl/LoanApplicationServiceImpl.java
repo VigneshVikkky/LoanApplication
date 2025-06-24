@@ -19,6 +19,7 @@ import com.avitam.bankloanapplication.repository.LoanScoreResultRepository;
 import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
 import com.avitam.bankloanapplication.repository.LoanTypeRepository;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
+import com.avitam.bankloanapplication.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -55,6 +56,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private LoanLimitRepository loanLimitRepository;
     @Autowired
     private LoanTypeRepository loanTypeRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public LoanApplicationWsDto handleEdit(LoanApplicationWsDto request) {
@@ -91,6 +94,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         Type listType = new TypeToken<List<LoanApplicationDto>>() {
         }.getType();
         request.setLoanApplicationDtos(modelMapper.map(loanApplications, listType));
+        notificationService.sendNotificationAdmin("New Loan Applied", "New loan has been applied, please review");
         return request;
     }
 

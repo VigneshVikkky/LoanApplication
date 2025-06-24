@@ -101,7 +101,6 @@ public class LoanController extends BaseController {
         return loanDtoList;
     }
 
-
     @PostMapping("/totalDesiredLoan")
     public LoanWsDto getTotalDesiredLoan(@RequestBody LoanWsDto request) {
         return loanService.getTotalDesiredLoanByCustomerRecordId(request);
@@ -112,8 +111,6 @@ public class LoanController extends BaseController {
     public LoanDto customerPaymentHistory(@RequestBody LoanDto loanDto) {
         return loanDto;
     }
-
-
 
   /*  @GetMapping("/getEligibleLoans")
     public LoanWsDto getEligibleLoans(@RequestBody CustomerDto customerDto) {

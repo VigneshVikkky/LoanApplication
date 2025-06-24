@@ -18,6 +18,7 @@ import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
 import com.avitam.bankloanapplication.service.LoanApplicationService;
 import com.avitam.bankloanapplication.service.LoanDetailsService;
 import com.avitam.bankloanapplication.service.LoanService;
+import com.avitam.bankloanapplication.service.NotificationService;
 import com.avitam.bankloanapplication.service.impl.LoanApplicationServiceImpl;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -61,6 +62,8 @@ public class LoanApplicationController extends BaseController {
     private LoanService loanService;
     @Autowired
     private LoanTemplateRepository loanTemplateRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     @PostMapping
     @ResponseBody
@@ -144,7 +147,7 @@ public class LoanApplicationController extends BaseController {
         return loanApplicationWsDto;
     }
 
-        @PostMapping("/updateLoansStatus")
+    @PostMapping("/updateLoansStatus")
     @ResponseBody
     public LoanApplicationWsDto updateLoansStatus(@RequestBody LoanApplicationDto loanApplicationDto) {
         LoanApplicationWsDto loanApplicationWsDto = new LoanApplicationWsDto();
@@ -161,7 +164,7 @@ public class LoanApplicationController extends BaseController {
             LoanWsDto loanWsDto1 = loanService.createLoan(loanWsDto);
             Loan loan = new Loan();
             List<Loan> loanList = modelMapper.map(loanWsDto1.getLoanDtoList(), List.class);
-            for(Loan loanDto1 : loanList){
+            for (Loan loanDto1 : loanList) {
                 loan = loanRepository.findByRecordId(loanDto1.getRecordId());
                 loanApplication.setLoanId(loan.getRecordId());
                 loanApplicationRepository.save(loanApplication);
@@ -171,13 +174,13 @@ public class LoanApplicationController extends BaseController {
             loanDetailsDto.setLoanId(loan.getRecordId());
             loanDetailsWsDto.setLoanDetailsDtos(List.of(loanDetailsDto));
             loanDetailsService.createLoanDetails(loanDetailsWsDto);
+            notificationService.sendNotification("Loan Approved", "Hurray!!, your loan -" + loan.getRecordId() + " has been approved");
         }
+
         loanApplicationWsDto.setMessage("Loan status updated successfully!!");
         loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
         return loanApplicationWsDto;
     }
-
-
 
     @PostMapping("/getedit")
     @ResponseBody
