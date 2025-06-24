@@ -59,6 +59,7 @@ public class LoanServiceImpl implements LoanService {
                 loan.setCreationTime(new Date());
                 LocalDate localDate = LocalDate.now();
                 loan.setSanctionDate(localDate);
+                loan.setLoanStatus("Active");
                 //loan.setForeClosingCharges(loan.getDesiredLoan()*5/100);
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);

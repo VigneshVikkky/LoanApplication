@@ -1,16 +1,11 @@
 package com.avitam.bankloanapplication.web.controllers.admin.loan;
 
-import com.avitam.bankloanapplication.model.dto.LoanDto;
-import com.avitam.bankloanapplication.model.dto.LoanTemplateDto;
-import com.avitam.bankloanapplication.model.dto.LoanTemplateWsDto;
-import com.avitam.bankloanapplication.model.dto.SearchDto;
+import com.avitam.bankloanapplication.model.dto.*;
 import com.avitam.bankloanapplication.model.entity.Loan;
+import com.avitam.bankloanapplication.model.entity.LoanApplication;
 import com.avitam.bankloanapplication.model.entity.LoanLimit;
 import com.avitam.bankloanapplication.model.entity.LoanTemplate;
-import com.avitam.bankloanapplication.repository.CustomerRepository;
-import com.avitam.bankloanapplication.repository.LoanLimitRepository;
-import com.avitam.bankloanapplication.repository.LoanTemplateRepository;
-import com.avitam.bankloanapplication.repository.LoanTypeRepository;
+import com.avitam.bankloanapplication.repository.*;
 import com.avitam.bankloanapplication.service.LoanTemplateService;
 import com.avitam.bankloanapplication.web.controllers.BaseController;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,6 +43,8 @@ public class LoanTemplateController extends BaseController {
     @Autowired
     private LoanTypeRepository loanTypeRepository;
     @Autowired
+    private LoanApplicationRepository loanApplicationRepository;
+    @Autowired
     private CustomerRepository customerRepository;
 
     @PostMapping
@@ -75,9 +72,19 @@ public class LoanTemplateController extends BaseController {
             Double loanLimitAmt = loanLimit.getLoanLimitAmount();
             Type listType = new TypeToken<List<LoanTemplateDto>>() {
             }.getType();
-            loanTemplateDtoList.addAll(modelMapper.map(loanTemplateList.stream().filter(loan -> loanLimitAmt >
-                    loan.getDesiredLoan()).collect(Collectors.toList()), listType));
-        }
+//            loanTemplateDtoList.addAll(modelMapper.map(loanTemplateList.stream().filter(loan -> loanLimitAmt >
+//                    loan.getDesiredLoan()).collect(Collectors.toList()), listType));
+            for(LoanTemplate loanTemplate : loanTemplateList) {
+                if (loanLimitAmt > loanTemplate.getDesiredLoan()) {
+                    List<LoanApplication> loanApplicationList = loanApplicationRepository.findByCustomerIdAndLoanStatus(customerId, "Approved");
+                    for (LoanApplication loanApplication : loanApplicationList) {
+                        if (!loanApplication.getLoanTemplateDto().getRecordId().equalsIgnoreCase(loanTemplate.getRecordId())) {
+                            loanTemplateDtoList.add(modelMapper.map(loanTemplate, LoanTemplateDto.class));
+                        }
+                    }
+                }
+                }
+            }
         return loanTemplateDtoList;
     }
 
