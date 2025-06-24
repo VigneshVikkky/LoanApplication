@@ -174,7 +174,7 @@ public class LoanApplicationController extends BaseController {
             loanDetailsDto.setLoanId(loan.getRecordId());
             loanDetailsWsDto.setLoanDetailsDtos(List.of(loanDetailsDto));
             loanDetailsService.createLoanDetails(loanDetailsWsDto);
-            notificationService.sendNotification("Loan Approved", "Hurray!!, your loan -" + loan.getRecordId() + " has been approved");
+            notificationService.sendNotification("Loan Approved", "Hurray!!, your loan -" + loan.getLoanType() + " has been approved");
         }
         else if(loanApplication.getLoanStatus().equalsIgnoreCase("Rejected")) {
             notificationService.sendNotification("Loan rejected", "Sorry!!, your loan has been rejected");
