@@ -258,6 +258,7 @@ public class LoanServiceImpl implements LoanService {
         loan.setTotalPenalty(roundToTwoDecimal(totalPenalty));
 
         loan.setLoanEmiDetailDtoList(loan.getLoanEmiDetailDtoList());
+        checkLoanStatus(loan);
         loanRepository.save(loan);
         modelMapper.map(loan, loanDto);
         return loanDto;
