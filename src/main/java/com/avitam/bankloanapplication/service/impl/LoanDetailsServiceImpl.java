@@ -68,6 +68,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             loanDetailsRepository.save(loanDetails);
             Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
             loan.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
+            loan.setTotalInstalmentAmount(loanDetails.getTotalInstalmentAmount());
+            loan.setTotalInterestAmount(loanDetails.getTotalInterestAmount());
+            loan.setTotalPayableAmount(loanDetails.getTotalPayableAmount());
             loanRepository.save(loan);
             loanDetailsList.add(loanDetails);
         }

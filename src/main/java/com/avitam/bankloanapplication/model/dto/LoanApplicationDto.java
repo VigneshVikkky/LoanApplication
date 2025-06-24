@@ -16,7 +16,7 @@ public class LoanApplicationDto extends CommonDto {
 
     private String customerId;
     private String notificationId;
-    private String loanId;
+    private String loanTemplateId;
     private CustomerDto customerDto;
     private LoanTemplateDto loanTemplateDto;
     private String loanName;
@@ -24,5 +24,7 @@ public class LoanApplicationDto extends CommonDto {
     private String images;
     private LocalDate sanctionDate;
     private LoanTypeDto loanTypeDto;
+    private LoanDto loanDto;
+    private String loanId;
 
 }

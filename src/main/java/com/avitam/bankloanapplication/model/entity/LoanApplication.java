@@ -19,11 +19,12 @@ import java.time.LocalDate;
 public class LoanApplication extends BaseEntity {
     private String customerId;
     private String notificationId;
-    private String loanId;
+    private String loanTemplateId;
     private String loanStatus;
     private String images;
     private LocalDate sanctionDate;
     private LoanTypeDto loanTypeDto;
     private CustomerDto customerDto;
     private LoanTemplateDto loanTemplateDto;
+    private String loanId;
 }
