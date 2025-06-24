@@ -11,4 +11,6 @@ public interface NotificationService {
 
     NotificationWsDto handelEdit(NotificationWsDto request);
     void sendNotification(String title, String message);
+    void sendNotificationAdmin(String title, String message);
+
 }
