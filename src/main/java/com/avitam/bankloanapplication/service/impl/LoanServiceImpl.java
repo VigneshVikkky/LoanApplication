@@ -6,12 +6,9 @@ import com.avitam.bankloanapplication.model.dto.LoanEmiDetailDto;
 import com.avitam.bankloanapplication.model.dto.LoanTypeDto;
 import com.avitam.bankloanapplication.model.dto.LoanWsDto;
 import com.avitam.bankloanapplication.model.entity.Customer;
-import com.avitam.bankloanapplication.model.entity.LoanDetails;
 import com.avitam.bankloanapplication.model.entity.LoanType;
-import com.avitam.bankloanapplication.repository.*;
 
 import com.avitam.bankloanapplication.model.entity.Loan;
-import com.avitam.bankloanapplication.model.entity.LoanType;
 import com.avitam.bankloanapplication.repository.CustomerRepository;
 import com.avitam.bankloanapplication.repository.LoanDetailsRepository;
 import com.avitam.bankloanapplication.repository.LoanRepository;
@@ -63,6 +60,7 @@ public class LoanServiceImpl implements LoanService {
                 loan.setCreationTime(new Date());
                 LocalDate localDate = LocalDate.now();
                 loan.setSanctionDate(localDate);
+                //loan.setForeClosingCharges(loan.getDesiredLoan()*5/100);
                 modelMapper.map(loanDto, loan);
                 loanRepository.save(loan);
             }
@@ -78,6 +76,7 @@ public class LoanServiceImpl implements LoanService {
 
             loanRepository.save(loan);
             loans.add(loan);
+            getForeclosingCharges(loan);
             loanDto.setBaseUrl(ADMIN_lOAN);
 
             request.setMessage("Data added Successfully");
@@ -87,6 +86,14 @@ public class LoanServiceImpl implements LoanService {
         return request;
 
     }
+
+
+    public void getForeclosingCharges(Loan loan){
+        double foreClosingCharges = loan.getDesiredLoan()*5/100;
+        loan.setForeClosingCharges(foreClosingCharges);
+        loanRepository.save(loan);
+    }
+
 
 //
 //    @Override
