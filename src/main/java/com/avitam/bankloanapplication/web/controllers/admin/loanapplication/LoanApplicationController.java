@@ -176,6 +176,9 @@ public class LoanApplicationController extends BaseController {
             loanDetailsService.createLoanDetails(loanDetailsWsDto);
             notificationService.sendNotification("Loan Approved", "Hurray!!, your loan -" + loan.getRecordId() + " has been approved");
         }
+        else if(loanApplication.getLoanStatus().equalsIgnoreCase("Rejected")) {
+            notificationService.sendNotification("Loan rejected", "Sorry!!, your loan has been rejected");
+        }
 
         loanApplicationWsDto.setMessage("Loan status updated successfully!!");
         loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
