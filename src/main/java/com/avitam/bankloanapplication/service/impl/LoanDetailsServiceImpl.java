@@ -43,8 +43,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             LoanDetails loanDetails;
             if (loanDetailsDto.getRecordId() != null) {
                 loanDetails = loanDetailsRepository.findByRecordId(loanDetailsDto.getRecordId());
-                calculateLoanDetails(loanDetails);
-                totalAmountCalculation(loanDetails);
+                calculateLoanDetailsForLoan(loanDetails);
+                totalAmountCalculationForLoan(loanDetails);
                 loanDetailsRepository.save(loanDetails);
                 modelMapper.map(loanDetailsDto, loanDetails);
                 request.setMessage("Data updated successfully");
@@ -68,9 +68,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
             loanDetailsRepository.save(loanDetails);
             Loan loan = loanRepository.findByRecordId(loanDetails.getLoanId());
             loan.setLoanEmiDetailDtoList(loanDetails.getLoanDetailsDtoList());
-            loan.setTotalInstalmentAmount(loanDetails.getTotalInstalmentAmount());
-            loan.setTotalInterestAmount(loanDetails.getTotalInterestAmount());
-            loan.setTotalPayableAmount(loanDetails.getTotalPayableAmount());
+//            loan.setTotalInstalmentAmount(loanDetails.getTotalInstalmentAmount());
+//            loan.setTotalInterestAmount(loanDetails.getTotalInterestAmount());
+//            loan.setTotalPayableAmount(loanDetails.getTotalPayableAmount());
             loanRepository.save(loan);
             loanDetailsList.add(loanDetails);
         }
