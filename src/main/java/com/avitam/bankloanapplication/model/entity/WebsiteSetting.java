@@ -13,8 +13,6 @@ import org.bson.types.Binary;
 public class WebsiteSetting extends BaseEntity {
     private Binary logo;
     private Binary favicon;
-    private String sportsApiUrl;
-    private String sportsApiKey;
     private String mailId;
     private String mailPassword;
     private String smtpHost;
