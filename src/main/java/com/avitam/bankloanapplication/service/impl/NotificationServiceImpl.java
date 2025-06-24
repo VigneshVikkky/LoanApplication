@@ -100,4 +100,35 @@ public class NotificationServiceImpl implements NotificationService {
             LOG.error(t.getMessage(), t);
         }
     }
+
+    public void sendNotificationAdmin(String title, String message) {
+        try {
+            URL url = new URL("https://onesignal.com/api/v1/notifications");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setUseCaches(false);
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            con.setRequestProperty("Authorization", "Basic OGUwNDJjZmMtZjA1Mi00NTU3LWE4N2MtNTNjY2ZiNDRhMzQ2");
+            con.setRequestMethod("POST");
+            String strJsonBody = "{\"app_id\": \"2fa2f97f-1c8d-41f1-888c-d468aa9899a3\",\"included_segments\": [\"All\"],\"data\": {\"foo\": \"bar\"},\"contents\": {\"en\": \""
+                    + message + "\"}," + "\"headings\": {\"en\": " + "\"" + title + "\"}" + "}";
+            byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+            con.setFixedLengthStreamingMode(sendBytes.length);
+            OutputStream outputStream = con.getOutputStream();
+            outputStream.write(sendBytes);
+            int httpResponse = con.getResponseCode();
+            if (httpResponse >= 200 && httpResponse < 400) {
+                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                LOG.debug(scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "");
+                scanner.close();
+            } else {
+                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                LOG.debug(scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "");
+                scanner.close();
+            }
+        } catch (Exception t) {
+            LOG.error(t.getMessage(), t);
+        }
+    }
 }

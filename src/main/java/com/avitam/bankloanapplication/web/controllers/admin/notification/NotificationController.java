@@ -87,8 +87,14 @@ public class NotificationController extends BaseController {
     }
 
     @PostMapping("/send")
-    public String delete(@RequestBody NotificationDto notificationDto) {
+    public String send(@RequestBody NotificationDto notificationDto) {
         notificationService.sendNotification(notificationDto.getTitle(), notificationDto.getMessage());
+        return "Success";
+    }
+
+    @PostMapping("/sendAdmin")
+    public String sendAdmin(@RequestBody NotificationDto notificationDto) {
+        notificationService.sendNotificationAdmin(notificationDto.getTitle(), notificationDto.getMessage());
         return "Success";
     }
 
