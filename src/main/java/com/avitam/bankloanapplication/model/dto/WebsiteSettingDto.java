@@ -13,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class WebsiteSettingDto extends CommonDto {
     private MultipartFile logo;
     private MultipartFile favicon;
-    private String sportsApiUrl;
-    private String sportsApiKey;
     private String mailId;
     private String mailPassword;
     private String smtpHost;
