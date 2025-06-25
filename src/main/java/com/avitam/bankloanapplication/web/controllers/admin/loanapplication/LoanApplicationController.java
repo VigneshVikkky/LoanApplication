@@ -160,6 +160,7 @@ public class LoanApplicationController extends BaseController {
             LoanWsDto loanWsDto = new LoanWsDto();
             LoanDto loanDto = modelMapper.map(loanTemplateDto, LoanDto.class);
             loanDto.setRecordId(null);
+            loanDto.setCustomerId(loanApplication.getCustomerId());
             loanWsDto.setLoanDtoList(List.of(loanDto));
             LoanWsDto loanWsDto1 = loanService.createLoan(loanWsDto);
             Loan loan = new Loan();

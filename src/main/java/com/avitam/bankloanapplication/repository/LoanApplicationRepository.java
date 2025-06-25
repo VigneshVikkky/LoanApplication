@@ -18,4 +18,6 @@ public interface LoanApplicationRepository extends MongoRepository<LoanApplicati
     List<LoanApplication> findByLoanStatus(String loanStatus);
 
     LoanApplication findByLoanId(String loanId);
+
+    LoanApplication findByCustomerIdAndLoanTemplateId(String customerId, String recordId);
 }
