@@ -70,19 +70,18 @@ public class LoanTemplateController extends BaseController {
         if (loanLimit != null) {
             List<LoanTemplate> loanTemplateList = loanTemplateRepository.findByLoanTypeAndStatus(loanTypeId, true);
             Double loanLimitAmt = loanLimit.getLoanLimitAmount();
-            Type listType = new TypeToken<List<LoanTemplateDto>>() {
+            Type listType = new TypeToken<LoanTemplateDto>() {
             }.getType();
 //            loanTemplateDtoList.addAll(modelMapper.map(loanTemplateList.stream().filter(loan -> loanLimitAmt >
 //                    loan.getDesiredLoan()).collect(Collectors.toList()), listType));
             for(LoanTemplate loanTemplate : loanTemplateList) {
                 if (loanLimitAmt > loanTemplate.getDesiredLoan()) {
-                    List<LoanApplication> loanApplicationList = loanApplicationRepository.findByCustomerIdAndLoanStatus(customerId, "Approved");
-                    for (LoanApplication loanApplication : loanApplicationList) {
-                        if (!loanApplication.getLoanTemplateDto().getRecordId().equalsIgnoreCase(loanTemplate.getRecordId())) {
-                            loanTemplateDtoList.add(modelMapper.map(loanTemplate, LoanTemplateDto.class));
+                    LoanApplication loanApplication = loanApplicationRepository.findByCustomerIdAndLoanTemplateId(customerId, loanTemplate.getRecordId());
+                          if(loanApplication == null){
+                            loanTemplateDtoList.add(modelMapper.map(loanTemplate, listType));
                         }
                     }
-                }
+
                 }
             }
         return loanTemplateDtoList;
