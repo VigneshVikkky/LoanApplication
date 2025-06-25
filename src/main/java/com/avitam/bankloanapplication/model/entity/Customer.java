@@ -43,6 +43,8 @@ public class Customer extends BaseEntity {
     private String otp;
     private Integer profileVerificationIndex = 1;
     private boolean profileVerificationStatus;
+    private String latitude;
+    private String longitude;
 
 
 }
