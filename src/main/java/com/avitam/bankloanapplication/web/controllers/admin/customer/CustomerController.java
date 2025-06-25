@@ -43,7 +43,7 @@ public class CustomerController extends BaseController {
         Pageable pageable = getPageable(customerWsDto.getPage(), customerWsDto.getSizePerPage(), customerWsDto.getSortDirection(), customerWsDto.getSortField());
         CustomerDto customerDto = CollectionUtils.isNotEmpty(customerWsDto.getCustomerDtoList()) ? customerWsDto.getCustomerDtoList().get(0) : new CustomerDto();
         Customer customer = modelMapper.map(customerDto, Customer.class);
-        Page<Customer> page = isSearchActive(customer) != null ? customerRepository.findAll(Example.of(customer), pageable) : customerRepository.findAll(pageable);
+        Page<Customer> page = isSearchActive(customer) == null ? customerRepository.findAll(Example.of(customer), pageable) : customerRepository.findAll(pageable);
         Type listType = new TypeToken<List<CustomerDto>>() {
         }.getType();
         customerWsDto.setCustomerDtoList(modelMapper.map(page.getContent(), listType));
