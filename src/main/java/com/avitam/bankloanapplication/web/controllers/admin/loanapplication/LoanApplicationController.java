@@ -105,6 +105,16 @@ public class LoanApplicationController extends BaseController {
             loanApplicationDto1.setLoanDto(modelMapper.map(loanRepository.findByRecordId(loanApplicationDto1.getLoanId()), LoanDto.class));
             loanApplicationDtos.add(loanApplicationDto1);
         }
+
+        List<LoanApplication> loanApplicationList2 = loanApplicationRepository.findByCustomerId(loanApplicationDto.getCustomerId());
+        if(loanApplicationList2 != null) {
+            for (LoanApplication loanApplication : loanApplicationList2) {
+                if (loanApplication.getLoanStatus().equalsIgnoreCase("Completed")) {
+                    loanApplicationDtos.add(modelMapper.map(loanApplication, LoanApplicationDto.class));
+                }
+            }
+        }
+
         loanApplicationWsDto.setLoanApplicationDtos(loanApplicationDtos);
         loanApplicationWsDto.setBaseUrl(ADMIN_LOANAPPLICATION);
         return loanApplicationWsDto;
